@@ -103,11 +103,11 @@ export function CostBreakdownTable({ comparison }: CostBreakdownTableProps) {
       footer: formatVaultTotal(comparison.vaultAdvanced),
     }),
     columnHelper.accessor("diyOption1", {
-      header: "DIY Option 1",
+      header: comparison.diyOption1Label,
       footer: formatUSD(comparison.diyOption1.total),
     }),
     columnHelper.accessor("diyOption2", {
-      header: "DIY Option 2",
+      header: comparison.diyOption2Label,
       footer: formatUSD(comparison.diyOption2.total),
     }),
   ];

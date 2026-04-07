@@ -37,7 +37,7 @@ describe("fetchRegions", () => {
 
   it("returns all regions from a successful response", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify(mockRegions), { status: 200 }),
+      new Response(JSON.stringify({ data: mockRegions }), { status: 200 }),
     );
 
     const regions = await fetchRegions();
@@ -47,13 +47,25 @@ describe("fetchRegions", () => {
 
   it("calls fetch only once across two successive fetchRegions() calls", async () => {
     vi.mocked(fetch).mockResolvedValue(
-      new Response(JSON.stringify(mockRegions), { status: 200 }),
+      new Response(JSON.stringify({ data: mockRegions }), { status: 200 }),
     );
 
     await fetchRegions();
     await fetchRegions();
 
     expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls fetch only once when multiple concurrent fetchRegions() calls are in-flight", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ data: mockRegions }), { status: 200 }),
+    );
+
+    const [a, b] = await Promise.all([fetchRegions(), fetchRegions()]);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(a).toEqual(mockRegions);
+    expect(b).toEqual(mockRegions);
   });
 
   it("throws API error: 500 for a non-OK response", async () => {

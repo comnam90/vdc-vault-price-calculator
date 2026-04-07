@@ -39,7 +39,7 @@ describe("useRegions", () => {
 
   it("returns regions on successful fetch", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify(mockRegions), { status: 200 }),
+      new Response(JSON.stringify({ data: mockRegions }), { status: 200 }),
     );
 
     const { result } = renderHook(() => useRegions());

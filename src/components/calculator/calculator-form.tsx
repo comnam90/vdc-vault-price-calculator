@@ -54,14 +54,16 @@ export function CalculatorForm({ onInputsChange }: CalculatorFormProps) {
       <CardContent className="py-6">
         <form
           aria-label="Vault pricing inputs"
-          className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(14rem,1fr)_minmax(12rem,0.9fr)] lg:items-start"
+          className="grid gap-5 lg:grid-cols-2 lg:items-start"
         >
-          <RegionSelector
-            regions={regions}
-            isLoading={isLoading}
-            selectedRegion={selectedRegion}
-            onRegionChange={setSelectedRegion}
-          />
+          <div className="lg:col-span-2">
+            <RegionSelector
+              regions={regions}
+              isLoading={isLoading}
+              selectedRegion={selectedRegion}
+              onRegionChange={setSelectedRegion}
+            />
+          </div>
           <TermSelector value={termYears} onTermChange={setTermYears} />
           <CapacityInput
             value={capacityTiB}

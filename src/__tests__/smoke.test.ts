@@ -1,8 +1,26 @@
-import { describe, expect, it } from "vitest";
+import { createElement } from "react";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@/hooks/use-regions", () => ({
+  useRegions: vi.fn(() => ({
+    regions: [],
+    isLoading: false,
+    error: null,
+  })),
+}));
 
 describe("smoke", () => {
-  it("can import App", async () => {
+  it("renders the shell and calculator form", async () => {
     const mod = await import("@/App");
-    expect(mod.default).toBeDefined();
+    const App = mod.default;
+
+    render(createElement(App));
+
+    expect(screen.getByText("VDC Vault Price Calculator")).toBeInTheDocument();
+    expect(
+      screen.getByRole("form", { name: /vault pricing inputs/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/not affiliated with veeam/i)).toBeInTheDocument();
   });
 });

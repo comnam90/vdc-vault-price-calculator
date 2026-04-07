@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# VDC Vault Price Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An unofficial price comparison tool for [Veeam Data Cloud Vault](https://www.veeam.com/products/veeam-data-cloud/vault.html). Compare VDC Vault costs against DIY cloud storage across 60+ global regions.
 
-Currently, two official plugins are available:
+> **Disclaimer:** This is an unofficial, community-maintained tool. It is not affiliated with, endorsed by, or supported by Veeam Software. All pricing is approximate and based on publicly available list prices. Always verify with your Veeam representative or cloud provider for accurate quotes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What It Does
 
-## React Compiler
+Select a cloud region, term length (1-5 years), and storage capacity (TiB) to see a 4-way cost comparison:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Comparison | Description |
+|---|---|
+| **VDC Vault Foundation** | Veeam Data Cloud Vault Foundation edition RRP |
+| **VDC Vault Advanced** | Veeam Data Cloud Vault Advanced edition RRP |
+| **DIY Cloud Option 1** | Azure Blob Hot / AWS S3 Standard (self-managed) |
+| **DIY Cloud Option 2** | Azure Blob Cool / AWS S3 Infrequent Access (self-managed) |
 
-## Expanding the ESLint configuration
+DIY costs are broken down into: Storage, Write Operations, Read Operations, Data Retrieval, and Internet Egress.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Results are displayed as summary cards, a stacked bar chart, and a detailed cost breakdown table.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Data Sources
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Region availability:** [VDC Services Map API](https://vdcmap.bcthomas.com) (community-maintained)
+- **Cloud storage pricing:** Static data based on published Azure Blob Storage and AWS S3 list prices
+- **VDC Vault pricing:** Based on published Veeam recommended retail prices
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Tech Stack
+
+- [React](https://react.dev/) 19 + [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vite.dev/) 7
+- [Tailwind CSS](https://tailwindcss.com/) v4 + [shadcn/ui](https://ui.shadcn.com/)
+- [TanStack Table](https://tanstack.com/table) for data tables
+- [Recharts](https://recharts.org/) for charts
+- [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for testing
+- Hosted on [Cloudflare Pages](https://pages.cloudflare.com/)
+
+## Development
+
+```bash
+npm install          # Install dependencies
+npm run dev          # Start dev server
+npm run build        # Production build
+npm run test         # Run tests in watch mode
+npm run test:run     # Single test run
+npm run lint         # Lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Contributing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow) and [Conventional Commits](https://www.conventionalcommits.org/).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## License
+
+MIT

@@ -1,7 +1,75 @@
+import { useMemo, useState } from "react";
+
+import { CalculatorForm } from "@/components/calculator/calculator-form";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteHeader } from "@/components/layout/site-header";
+import { ResultsPanel } from "@/components/results/results-panel";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CLOUD_PRICING } from "@/data/cloud-pricing";
+import { useRegions } from "@/hooks/use-regions";
+import { buildComparison } from "@/lib/comparison-engine";
+import type { CalculatorInputs } from "@/types/calculator";
+
 function App() {
+  const [inputs, setInputs] = useState<CalculatorInputs | null>(null);
+  const { regions, isLoading, error } = useRegions();
+
+  const selectedRegion = useMemo(() => {
+    if (inputs === null) {
+      return null;
+    }
+
+    return regions.find((region) => region.id === inputs.regionId) ?? null;
+  }, [inputs, regions]);
+
+  const comparison = useMemo(() => {
+    if (inputs === null || selectedRegion === null) {
+      return null;
+    }
+
+    const pricing = CLOUD_PRICING[selectedRegion.id];
+
+    if (pricing === undefined) {
+      return null;
+    }
+
+    return buildComparison(inputs, selectedRegion, pricing);
+  }, [inputs, selectedRegion]);
+
   return (
-    <div className="bg-background text-foreground min-h-screen">
-      <h1 className="p-8 text-2xl font-semibold">VDC Vault Price Calculator</h1>
+    <div className="bg-background text-foreground flex min-h-screen flex-col">
+      <SiteHeader />
+      <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+          {isLoading ? (
+            <p role="status" className="text-muted-foreground text-sm">
+              Loading available regions…
+            </p>
+          ) : null}
+
+          {error ? (
+            <Alert variant="destructive">
+              <AlertTitle>Unable to load regions</AlertTitle>
+              <AlertDescription>
+                {error}. Refresh the page and try again.
+              </AlertDescription>
+            </Alert>
+          ) : null}
+
+          <CalculatorForm onInputsChange={setInputs} />
+
+          <div aria-live="polite">
+            {comparison !== null && inputs !== null ? (
+              <ResultsPanel
+                comparison={comparison}
+                capacityTiB={inputs.capacityTiB}
+                termYears={inputs.termYears}
+              />
+            ) : null}
+          </div>
+        </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }

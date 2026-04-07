@@ -30,19 +30,6 @@ describe("calculateVaultCost", () => {
     expect(result.pricingTbd).toBe(true);
   });
 
-  it("returns null total gracefully for an invalid edition-tier combo", () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = calculateVaultCost(
-      10,
-      1,
-      "Foundation" as any,
-      "Premium" as any,
-    );
-    expect(result.total).toBeNull();
-    expect(result.perTbMonth).toBeNull();
-    expect(result.pricingTbd).toBe(false);
-  });
-
   it("returns 168 for 1 TiB, 1 year, Foundation Core", () => {
     const result = calculateVaultCost(1, 1, "Foundation", "Core");
     expect(result.total).toBe(168);

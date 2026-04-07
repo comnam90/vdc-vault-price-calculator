@@ -2,7 +2,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -53,6 +52,14 @@ const EMPTY_SERIES: Omit<ChartDatum, "label"> = {
   diy2Retrieval: 0,
   diy2Egress: 0,
 };
+
+const DIY_LEGEND_ITEMS: Array<{ name: string; fill: string }> = [
+  { name: "Storage", fill: "var(--color-chart-1)" },
+  { name: "Write Operations", fill: "var(--color-chart-2)" },
+  { name: "Read Operations", fill: "var(--color-chart-3)" },
+  { name: "Data Retrieval", fill: "var(--warning)" },
+  { name: "Internet Egress", fill: "var(--ignis)" },
+];
 
 function normalizeTooltipValue(value: unknown): number {
   if (typeof value === "number") {
@@ -106,6 +113,40 @@ function buildChartData(comparison: ComparisonResult): ChartDatum[] {
   });
 
   return data;
+}
+
+interface ChartLegendProps {
+  data: ChartDatum[];
+}
+
+function ChartLegend({ data }: ChartLegendProps) {
+  const vaultItems: Array<{ name: string; fill: string }> = [];
+
+  if (data.some((d) => d.vaultFoundation > 0)) {
+    vaultItems.push({ name: "VDC Vault Foundation", fill: "var(--success)" });
+  }
+  if (data.some((d) => d.vaultAdvanced > 0)) {
+    vaultItems.push({ name: "VDC Vault Advanced", fill: "var(--info)" });
+  }
+
+  const items = [...vaultItems, ...DIY_LEGEND_ITEMS];
+
+  return (
+    <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-5">
+      {items.map((item) => (
+        <span
+          key={item.name}
+          className="text-muted-foreground flex items-center gap-1.5 text-xs"
+        >
+          <span
+            className="size-2.5 shrink-0 rounded-[3px]"
+            style={{ backgroundColor: item.fill }}
+          />
+          {item.name}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 export function ComparisonChart({ comparison }: ComparisonChartProps) {
@@ -169,31 +210,23 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                   background: "var(--color-card)",
                 }}
               />
-              <Legend
-                wrapperStyle={{
-                  paddingTop: "16px",
-                  fontSize: "12px",
-                  color: "var(--color-muted-foreground)",
-                }}
-              />
               <Bar
                 dataKey="vaultFoundation"
                 name="VDC Vault Foundation"
                 fill="var(--success)"
-                radius={[10, 10, 0, 0]}
+                radius={[6, 6, 0, 0]}
               />
               <Bar
                 dataKey="vaultAdvanced"
                 name="VDC Vault Advanced"
                 fill="var(--info)"
-                radius={[10, 10, 0, 0]}
+                radius={[6, 6, 0, 0]}
               />
               <Bar
                 dataKey="diy1Storage"
                 name="Storage"
                 stackId="diy1"
                 fill="var(--color-chart-1)"
-                radius={[10, 10, 0, 0]}
               />
               <Bar
                 dataKey="diy1WriteOps"
@@ -218,13 +251,13 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                 name="Internet Egress"
                 stackId="diy1"
                 fill="var(--ignis)"
+                radius={[6, 6, 0, 0]}
               />
               <Bar
                 dataKey="diy2Storage"
                 name="Storage"
                 stackId="diy2"
                 fill="var(--color-chart-1)"
-                radius={[10, 10, 0, 0]}
               />
               <Bar
                 dataKey="diy2WriteOps"
@@ -249,10 +282,12 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                 name="Internet Egress"
                 stackId="diy2"
                 fill="var(--ignis)"
+                radius={[6, 6, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <ChartLegend data={data} />
       </CardContent>
     </Card>
   );

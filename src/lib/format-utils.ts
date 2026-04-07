@@ -14,17 +14,19 @@ export function formatUSD(value: number): string {
  * Format a dollar value in compact notation.
  * Values ≥ 1M → "$1.2M", ≥ 1K → "$1.2K", else "$42".
  * Trailing ".0" is suppressed (e.g. "$2.0K" → "$2K").
+ * Rounding is applied before threshold checks so that e.g. 999.5 → "$1K".
  */
 export function formatUSDCompact(value: number): string {
-  if (value >= 1_000_000) {
-    const compact = (value / 1_000_000).toFixed(1).replace(/\.0$/, "");
+  const rounded = Math.round(value);
+  if (rounded >= 1_000_000) {
+    const compact = (rounded / 1_000_000).toFixed(1).replace(/\.0$/, "");
     return `$${compact}M`;
   }
-  if (value >= 1_000) {
-    const compact = (value / 1_000).toFixed(1).replace(/\.0$/, "");
+  if (rounded >= 1_000) {
+    const compact = (rounded / 1_000).toFixed(1).replace(/\.0$/, "");
     return `$${compact}K`;
   }
-  return `$${Math.round(value)}`;
+  return `$${rounded}`;
 }
 
 /**

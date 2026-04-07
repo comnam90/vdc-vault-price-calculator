@@ -35,6 +35,14 @@ describe("formatUSDCompact", () => {
   it("formats 42 as $42 (no suffix for small amounts)", () => {
     expect(formatUSDCompact(42)).toBe("$42");
   });
+
+  it("rounds 999.5 up to $1K rather than $1000", () => {
+    expect(formatUSDCompact(999.5)).toBe("$1K");
+  });
+
+  it("rounds 999999.5 up to $1M rather than $1000K", () => {
+    expect(formatUSDCompact(999999.5)).toBe("$1M");
+  });
 });
 
 describe("formatPerTbMonth", () => {

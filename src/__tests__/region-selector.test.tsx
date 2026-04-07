@@ -53,6 +53,11 @@ describe("RegionSelector", () => {
       />,
     );
 
+    expect(screen.getByLabelText(/region/i)).toHaveAttribute(
+      "id",
+      "region-selector-trigger",
+    );
+
     fireEvent.click(screen.getByRole("combobox", { name: /select a region/i }));
 
     expect(screen.getByRole("listbox")).toBeInTheDocument();

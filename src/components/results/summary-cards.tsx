@@ -110,16 +110,17 @@ export function SummaryCards({
   }, null);
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {cards.map((card) => {
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card, index) => {
         const isCheapest =
           cheapestTotal !== null && card.total === cheapestTotal;
 
         return (
           <Card
             key={card.id}
+            style={{ animationDelay: `${index * 80}ms` }}
             className={cn(
-              "border-border/70 bg-background/90 rounded-[1.5rem] shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--electric-azure)_60%,transparent)]",
+              "border-border/70 bg-background/90 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 rounded-[1.5rem] shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--electric-azure)_60%,transparent)] motion-safe:duration-500",
               isCheapest &&
                 "bg-card-tint-success border-[color:var(--success)]/25 shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--success)_50%,transparent)]",
             )}

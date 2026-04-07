@@ -27,7 +27,10 @@ export function ResultsPanel({
   }
 
   return (
-    <section className="space-y-5" aria-label="Comparison results">
+    <section
+      className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 space-y-5 motion-safe:duration-500"
+      aria-label="Comparison results"
+    >
       <div className="space-y-2">
         <p className="text-muted-foreground font-mono text-[0.7rem] tracking-[0.28em] uppercase">
           Result set

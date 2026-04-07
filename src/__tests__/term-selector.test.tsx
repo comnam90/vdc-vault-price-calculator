@@ -8,7 +8,7 @@ describe("TermSelector", () => {
 
     const radios = screen.getAllByRole("radio");
     expect(
-      screen.getByRole("radiogroup", { name: /term length/i }),
+      screen.getByRole("radiogroup", { name: /commitment term/i }),
     ).toBeInTheDocument();
     expect(radios).toHaveLength(5);
     expect(screen.getByRole("radio", { name: "1 Year" })).toHaveAttribute(

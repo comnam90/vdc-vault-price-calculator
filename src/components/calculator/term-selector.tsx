@@ -4,6 +4,7 @@ import type { KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 
 const TERM_OPTIONS = [1, 2, 3, 4, 5] as const;
+const TERM_LABEL_ID = "term-selector-label";
 
 interface TermSelectorProps {
   value?: number;
@@ -49,13 +50,13 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
   };
 
   return (
-    <div className="grid gap-2">
-      <span className="text-foreground text-sm font-medium">
+    <fieldset className="grid gap-2">
+      <legend id={TERM_LABEL_ID} className="text-sm leading-none font-medium">
         Commitment term
-      </span>
+      </legend>
       <div
         role="radiogroup"
-        aria-label="Term length"
+        aria-labelledby={TERM_LABEL_ID}
         className="border-border/70 flex flex-wrap gap-2 rounded-2xl border bg-[color:var(--card-tint-neutral)]/70 p-2 md:flex-nowrap"
       >
         {TERM_OPTIONS.map((years) => {
@@ -83,6 +84,6 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
           );
         })}
       </div>
-    </div>
+    </fieldset>
   );
 }

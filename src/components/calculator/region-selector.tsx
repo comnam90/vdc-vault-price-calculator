@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { Region } from "@/types/region";
 
@@ -27,6 +28,7 @@ interface RegionSelectorProps {
 }
 
 const PROVIDER_ORDER = ["AWS", "Azure"] as const;
+const REGION_TRIGGER_ID = "region-selector-trigger";
 
 function ProviderBadge({ provider }: { provider: Region["provider"] }) {
   const providerClasses =
@@ -65,17 +67,17 @@ export function RegionSelector({
   if (isLoading) {
     return (
       <div className="grid gap-2">
-        <span className="text-foreground text-sm font-medium">Region</span>
+        <Label htmlFor={REGION_TRIGGER_ID}>Region</Label>
         <div
           role="status"
           aria-label="Loading regions"
           className="border-border/70 space-y-3 rounded-2xl border bg-[color:var(--card-tint-neutral)]/60 p-4"
         >
-          <div className="bg-background/80 h-11 animate-pulse rounded-xl" />
+          <div className="bg-background/80 h-11 rounded-xl motion-safe:animate-pulse" />
           <div className="grid gap-2">
-            <div className="bg-background/70 h-3 w-20 animate-pulse rounded" />
-            <div className="bg-background/70 h-9 animate-pulse rounded-lg" />
-            <div className="bg-background/60 h-9 animate-pulse rounded-lg" />
+            <div className="bg-background/70 h-3 w-20 rounded motion-safe:animate-pulse" />
+            <div className="bg-background/70 h-9 rounded-lg motion-safe:animate-pulse" />
+            <div className="bg-background/60 h-9 rounded-lg motion-safe:animate-pulse" />
           </div>
         </div>
       </div>
@@ -84,10 +86,11 @@ export function RegionSelector({
 
   return (
     <div className="grid gap-2">
-      <span className="text-foreground text-sm font-medium">Region</span>
+      <Label htmlFor={REGION_TRIGGER_ID}>Region</Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            id={REGION_TRIGGER_ID}
             type="button"
             variant="outline"
             role="combobox"

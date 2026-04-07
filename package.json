@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",
@@ -51,5 +55,10 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,md}": [
+      "prettier --write"
+    ]
   }
 }

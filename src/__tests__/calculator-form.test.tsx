@@ -110,4 +110,17 @@ describe("CalculatorForm", () => {
       expect(onInputsChange).toHaveBeenLastCalledWith(null);
     });
   });
+
+  it("avoids the rigid custom lg grid that causes laptop-width overlap", () => {
+    vi.mocked(useRegions).mockReturnValue({
+      regions,
+      isLoading: false,
+      error: null,
+    });
+
+    render(<CalculatorForm onInputsChange={vi.fn()} />);
+
+    const form = screen.getByRole("form", { name: /vault pricing inputs/i });
+    expect(form.className).not.toMatch(/lg:grid-cols-\[/);
+  });
 });

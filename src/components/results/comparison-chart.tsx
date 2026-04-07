@@ -2,6 +2,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -166,6 +167,13 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                   border:
                     "1px solid color-mix(in oklab, var(--border) 80%, transparent)",
                   background: "var(--color-card)",
+                }}
+              />
+              <Legend
+                wrapperStyle={{
+                  paddingTop: "16px",
+                  fontSize: "12px",
+                  color: "var(--color-muted-foreground)",
                 }}
               />
               <Bar

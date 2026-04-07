@@ -4,8 +4,8 @@ import { CLOUD_PRICING } from "@/data/cloud-pricing";
 describe("cloud pricing data integrity", () => {
   const entries = Object.entries(CLOUD_PRICING);
 
-  it("has pricing for at least 60 regions", () => {
-    expect(entries.length).toBeGreaterThanOrEqual(60);
+  it("has pricing for exactly 62 regions", () => {
+    expect(entries.length).toBe(62);
   });
 
   it("every entry has required fields with valid numbers", () => {
@@ -19,6 +19,11 @@ describe("cloud pricing data integrity", () => {
         expect(option.retrievalPerGb).toBeGreaterThanOrEqual(0);
         expect(option.egressPerGb).toBeGreaterThan(0);
         expect(Number.isFinite(option.storagePerGbMonth)).toBe(true);
+        expect(Number.isFinite(option.writeOpsCost)).toBe(true);
+        expect(Number.isFinite(option.readOpsCost)).toBe(true);
+        expect(Number.isFinite(option.opsBatchSize)).toBe(true);
+        expect(Number.isFinite(option.retrievalPerGb)).toBe(true);
+        expect(Number.isFinite(option.egressPerGb)).toBe(true);
       }
     }
   });

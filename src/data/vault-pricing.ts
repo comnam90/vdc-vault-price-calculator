@@ -1,3 +1,4 @@
+import type { VaultEdition, VaultTier } from "@/types/region";
 import type { VaultPricing } from "@/types/pricing";
 
 /**
@@ -17,8 +18,8 @@ export const VAULT_PRICING: VaultPricing[] = [
  * Returns the pricing entry or undefined if not found.
  */
 export function getVaultPrice(
-  edition: string,
-  tier: string,
+  edition: VaultEdition,
+  tier: VaultTier,
 ): VaultPricing | undefined {
   return VAULT_PRICING.find((p) => p.edition === edition && p.tier === tier);
 }

@@ -54,8 +54,4 @@ describe("getVaultPrice", () => {
       pricePerTbMonth: 0,
     });
   });
-
-  it("returns undefined for unknown edition/tier combo", () => {
-    expect(getVaultPrice("Unknown", "Core")).toBeUndefined();
-  });
 });

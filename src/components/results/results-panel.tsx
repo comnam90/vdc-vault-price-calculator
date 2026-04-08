@@ -33,7 +33,7 @@ export function ResultsPanel({
     >
       <div className="space-y-2">
         <p className="text-muted-foreground font-mono text-[0.7rem] tracking-[0.28em] uppercase">
-          Result set
+          Cost analysis
         </p>
         <h2 className="dark:text-foreground text-2xl font-semibold tracking-[-0.04em] text-[color:var(--dark-mineral)]">
           Comparison results
@@ -43,10 +43,7 @@ export function ResultsPanel({
       <NonCoreBanner comparison={comparison} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-4">
-        <TabsList
-          variant="line"
-          className="border-border/70 bg-background/80 w-full justify-start rounded-full border p-1"
-        >
+        <TabsList className="border-border/70 bg-background/80 h-auto w-full justify-start rounded-full border p-1">
           <TabsTrigger value="overview" className="rounded-full px-4">
             <BarChart3 className="size-4" />
             Overview

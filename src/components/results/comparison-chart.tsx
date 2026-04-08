@@ -26,44 +26,29 @@ interface ChartDatum {
   label: string;
   vaultFoundation: number;
   vaultAdvanced: number;
-  diy1Storage: number;
-  diy1WriteOps: number;
-  diy1ReadOps: number;
-  diy1Retrieval: number;
-  diy1Egress: number;
-  diy2Storage: number;
-  diy2WriteOps: number;
-  diy2ReadOps: number;
-  diy2Retrieval: number;
-  diy2Egress: number;
+  storage: number;
+  writeOps: number;
+  readOps: number;
+  retrieval: number;
+  egress: number;
 }
 
-const EMPTY_SERIES: Omit<ChartDatum, "label"> = {
-  vaultFoundation: 0,
-  vaultAdvanced: 0,
-  diy1Storage: 0,
-  diy1WriteOps: 0,
-  diy1ReadOps: 0,
-  diy1Retrieval: 0,
-  diy1Egress: 0,
-  diy2Storage: 0,
-  diy2WriteOps: 0,
-  diy2ReadOps: 0,
-  diy2Retrieval: 0,
-  diy2Egress: 0,
+const DIY_LEGEND_ITEMS: Array<{ name: string; fill: string }> = [
+  { name: "Storage", fill: "var(--color-chart-1)" },
+  { name: "Write Operations", fill: "var(--color-chart-2)" },
+  { name: "Read Operations", fill: "var(--color-chart-3)" },
+  { name: "Data Retrieval", fill: "var(--warning)" },
+  { name: "Internet Egress", fill: "var(--ignis)" },
+];
+
+const VAULT_ZERO = { vaultFoundation: 0, vaultAdvanced: 0 };
+const DIY_ZERO = {
+  storage: 0,
+  writeOps: 0,
+  readOps: 0,
+  retrieval: 0,
+  egress: 0,
 };
-
-function normalizeTooltipValue(value: unknown): number {
-  if (typeof value === "number") {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    return Number(value[0] ?? 0);
-  }
-
-  return Number(value ?? 0);
-}
 
 function buildChartData(comparison: ComparisonResult): ChartDatum[] {
   const data: ChartDatum[] = [];
@@ -71,40 +56,127 @@ function buildChartData(comparison: ComparisonResult): ChartDatum[] {
   if (comparison.vaultFoundation.total !== null) {
     data.push({
       label: "VDC Vault Foundation",
-      ...EMPTY_SERIES,
+      ...VAULT_ZERO,
       vaultFoundation: comparison.vaultFoundation.total,
+      ...DIY_ZERO,
     });
   }
 
   if (comparison.vaultAdvanced.total !== null) {
     data.push({
       label: "VDC Vault Advanced",
-      ...EMPTY_SERIES,
+      ...VAULT_ZERO,
       vaultAdvanced: comparison.vaultAdvanced.total,
+      ...DIY_ZERO,
     });
   }
 
   data.push({
     label: comparison.diyOption1Label,
-    ...EMPTY_SERIES,
-    diy1Storage: comparison.diyOption1.storage,
-    diy1WriteOps: comparison.diyOption1.writeOps,
-    diy1ReadOps: comparison.diyOption1.readOps,
-    diy1Retrieval: comparison.diyOption1.dataRetrieval,
-    diy1Egress: comparison.diyOption1.internetEgress,
+    ...VAULT_ZERO,
+    storage: comparison.diyOption1.storage,
+    writeOps: comparison.diyOption1.writeOps,
+    readOps: comparison.diyOption1.readOps,
+    retrieval: comparison.diyOption1.dataRetrieval,
+    egress: comparison.diyOption1.internetEgress,
   });
 
   data.push({
     label: comparison.diyOption2Label,
-    ...EMPTY_SERIES,
-    diy2Storage: comparison.diyOption2.storage,
-    diy2WriteOps: comparison.diyOption2.writeOps,
-    diy2ReadOps: comparison.diyOption2.readOps,
-    diy2Retrieval: comparison.diyOption2.dataRetrieval,
-    diy2Egress: comparison.diyOption2.internetEgress,
+    ...VAULT_ZERO,
+    storage: comparison.diyOption2.storage,
+    writeOps: comparison.diyOption2.writeOps,
+    readOps: comparison.diyOption2.readOps,
+    retrieval: comparison.diyOption2.dataRetrieval,
+    egress: comparison.diyOption2.internetEgress,
   });
 
   return data;
+}
+
+interface ChartLegendProps {
+  data: ChartDatum[];
+}
+
+function ChartLegend({ data }: ChartLegendProps) {
+  const vaultItems: Array<{ name: string; fill: string }> = [];
+
+  if (data.some((d) => d.vaultFoundation > 0)) {
+    vaultItems.push({ name: "VDC Vault Foundation", fill: "var(--success)" });
+  }
+  if (data.some((d) => d.vaultAdvanced > 0)) {
+    vaultItems.push({ name: "VDC Vault Advanced", fill: "var(--info)" });
+  }
+
+  const items = [...vaultItems, ...DIY_LEGEND_ITEMS];
+
+  return (
+    <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-5">
+      {items.map((item) => (
+        <span
+          key={item.name}
+          className="text-muted-foreground flex items-center gap-1.5 text-xs"
+        >
+          <span
+            className="size-2.5 shrink-0 rounded-[3px]"
+            style={{ backgroundColor: item.fill }}
+          />
+          {item.name}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+interface TooltipEntry {
+  name?: string | number;
+  value?: string | number | readonly (string | number)[];
+  fill?: string;
+}
+
+function numericValue(value: TooltipEntry["value"]): number {
+  return typeof value === "number" ? value : 0;
+}
+
+function ChartTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: ReadonlyArray<TooltipEntry>;
+  label?: string | number;
+}) {
+  if (!active || !payload?.length) return null;
+
+  const entries = payload.filter((e) => numericValue(e.value) > 0);
+  if (!entries.length) return null;
+
+  return (
+    <div className="border-border/80 bg-card rounded-2xl border p-3 shadow-lg">
+      <p className="text-foreground mb-2 text-sm font-medium">
+        {String(label ?? "")}
+      </p>
+      <div className="space-y-1">
+        {entries.map((entry) => (
+          <div
+            key={String(entry.name ?? "")}
+            className="flex items-center justify-between gap-6 text-xs"
+          >
+            <span className="text-muted-foreground">
+              {String(entry.name ?? "")}
+            </span>
+            <span
+              className="font-medium [font-variant-numeric:tabular-nums]"
+              style={{ color: entry.fill }}
+            >
+              {formatUSD(numericValue(entry.value))}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function ComparisonChart({ comparison }: ComparisonChartProps) {
@@ -156,95 +228,69 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                 tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
                 width={72}
               />
-              <Tooltip
-                formatter={(value, name) => [
-                  formatUSD(normalizeTooltipValue(value)),
-                  String(name),
-                ]}
-                contentStyle={{
-                  borderRadius: "1rem",
-                  border:
-                    "1px solid color-mix(in oklab, var(--border) 80%, transparent)",
-                  background: "var(--color-card)",
-                }}
-              />
+              <Tooltip content={ChartTooltip} />
+              {/*
+               * All bars share stackId="cost" so each data point renders as
+               * a single stacked unit — one bar centered under its x-axis label.
+               * Vault rows have only vaultFoundation or vaultAdvanced non-zero;
+               * DIY rows have only storage/writeOps/etc non-zero.
+               */}
               <Bar
                 dataKey="vaultFoundation"
                 name="VDC Vault Foundation"
+                stackId="cost"
                 fill="var(--success)"
-                radius={[10, 10, 0, 0]}
+                legendType="none"
+                radius={[6, 6, 0, 0]}
               />
               <Bar
                 dataKey="vaultAdvanced"
                 name="VDC Vault Advanced"
+                stackId="cost"
                 fill="var(--info)"
-                radius={[10, 10, 0, 0]}
+                legendType="none"
+                radius={[6, 6, 0, 0]}
               />
               <Bar
-                dataKey="diy1Storage"
+                dataKey="storage"
                 name="Storage"
-                stackId="diy1"
+                stackId="cost"
                 fill="var(--color-chart-1)"
-                radius={[10, 10, 0, 0]}
+                legendType="none"
               />
               <Bar
-                dataKey="diy1WriteOps"
+                dataKey="writeOps"
                 name="Write Operations"
-                stackId="diy1"
+                stackId="cost"
                 fill="var(--color-chart-2)"
+                legendType="none"
               />
               <Bar
-                dataKey="diy1ReadOps"
+                dataKey="readOps"
                 name="Read Operations"
-                stackId="diy1"
+                stackId="cost"
                 fill="var(--color-chart-3)"
+                legendType="none"
               />
               <Bar
-                dataKey="diy1Retrieval"
+                dataKey="retrieval"
                 name="Data Retrieval"
-                stackId="diy1"
+                stackId="cost"
                 fill="var(--warning)"
+                legendType="none"
               />
               <Bar
-                dataKey="diy1Egress"
+                dataKey="egress"
                 name="Internet Egress"
-                stackId="diy1"
+                stackId="cost"
                 fill="var(--ignis)"
-              />
-              <Bar
-                dataKey="diy2Storage"
-                name="Storage"
-                stackId="diy2"
-                fill="var(--color-chart-1)"
-                radius={[10, 10, 0, 0]}
-              />
-              <Bar
-                dataKey="diy2WriteOps"
-                name="Write Operations"
-                stackId="diy2"
-                fill="var(--color-chart-2)"
-              />
-              <Bar
-                dataKey="diy2ReadOps"
-                name="Read Operations"
-                stackId="diy2"
-                fill="var(--color-chart-3)"
-              />
-              <Bar
-                dataKey="diy2Retrieval"
-                name="Data Retrieval"
-                stackId="diy2"
-                fill="var(--warning)"
-              />
-              <Bar
-                dataKey="diy2Egress"
-                name="Internet Egress"
-                stackId="diy2"
-                fill="var(--ignis)"
+                legendType="none"
+                radius={[6, 6, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <ChartLegend data={data} />
       </CardContent>
     </Card>
   );

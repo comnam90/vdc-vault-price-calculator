@@ -13,8 +13,8 @@ describe("CostBreakdownTable", () => {
     expect(screen.getByText("Category")).toBeInTheDocument();
     expect(screen.getByText("VDC Foundation")).toBeInTheDocument();
     expect(screen.getByText("VDC Advanced")).toBeInTheDocument();
-    expect(screen.getByText("DIY Option 1")).toBeInTheDocument();
-    expect(screen.getByText("DIY Option 2")).toBeInTheDocument();
+    expect(screen.getByText("S3 Standard")).toBeInTheDocument();
+    expect(screen.getByText("S3 Infrequent Access")).toBeInTheDocument();
 
     expect(screen.getByText("Storage")).toBeInTheDocument();
     expect(screen.getByText("Write Operations")).toBeInTheDocument();

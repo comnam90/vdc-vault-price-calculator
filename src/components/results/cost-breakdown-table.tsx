@@ -39,14 +39,8 @@ interface BreakdownRow {
 const columnHelper = createColumnHelper<BreakdownRow>();
 
 function formatVaultTotal(result: VaultCostResult): string {
-  if (result.pricingTbd) {
-    return "TBD";
-  }
-
-  if (result.total === null) {
-    return "N/A";
-  }
-
+  if (result.pricingTbd) return "TBD";
+  if (result.total === null) return "N/A";
   return formatUSD(result.total);
 }
 
@@ -54,8 +48,8 @@ export function CostBreakdownTable({ comparison }: CostBreakdownTableProps) {
   const data: BreakdownRow[] = [
     {
       category: "Storage",
-      foundation: "--",
-      advanced: "--",
+      foundation: formatVaultTotal(comparison.vaultFoundation),
+      advanced: formatVaultTotal(comparison.vaultAdvanced),
       diyOption1: formatUSD(comparison.diyOption1.storage),
       diyOption2: formatUSD(comparison.diyOption2.storage),
     },

@@ -22,7 +22,12 @@ describe("CostBreakdownTable", () => {
     expect(screen.getByText("Data Retrieval")).toBeInTheDocument();
     expect(screen.getByText("Internet Egress")).toBeInTheDocument();
 
-    expect(screen.getAllByText("--")).toHaveLength(10);
+    // Storage row shows vault totals; remaining 4 rows × 2 vault columns = 8 dashes
+    expect(screen.getAllByText("--")).toHaveLength(8);
+
+    // Vault totals appear in both the Storage row and the footer
+    expect(screen.getAllByText("$5,040.00").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText("$8,640.00").length).toBeGreaterThanOrEqual(2);
 
     const footer = container.querySelector("tfoot");
     expect(footer).not.toBeNull();

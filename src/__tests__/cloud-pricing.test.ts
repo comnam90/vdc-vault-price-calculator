@@ -70,6 +70,22 @@ describe("cloud pricing data integrity", () => {
     );
   });
 
+  it("preserves exact published decimals for AWS premium-region storage", () => {
+    // Source: AWS public S3 offer data (first 50 TB/month tier and Standard-IA)
+    expect(CLOUD_PRICING["aws-eu-central-2"].option1.storagePerGbMonth).toBe(
+      0.02695,
+    );
+    expect(CLOUD_PRICING["aws-eu-central-2"].option2.storagePerGbMonth).toBe(
+      0.01485,
+    );
+    expect(CLOUD_PRICING["aws-ap-southeast-5"].option2.storagePerGbMonth).toBe(
+      0.01242,
+    );
+    expect(CLOUD_PRICING["aws-ap-southeast-7"].option2.storagePerGbMonth).toBe(
+      0.01242,
+    );
+  });
+
   it("spot-checks AWS and Azure egress prices match published list prices", () => {
     // Source: https://aws.amazon.com/s3/pricing/ (first 10 TB/month tier)
     expect(CLOUD_PRICING["aws-us-east-1"].option1.egressPerGb).toBe(0.09);

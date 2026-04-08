@@ -53,4 +53,72 @@ describe("cloud pricing data integrity", () => {
       }
     }
   });
+
+  it("spot-checks AWS storage prices match published list prices", () => {
+    // Source: https://aws.amazon.com/s3/pricing/ (50 TB–500 TB/month tier)
+    expect(CLOUD_PRICING["aws-us-east-1"].option1.storagePerGbMonth).toBe(
+      0.022,
+    );
+    expect(CLOUD_PRICING["aws-ap-southeast-2"].option1.storagePerGbMonth).toBe(
+      0.024,
+    );
+    expect(CLOUD_PRICING["aws-eu-west-2"].option1.storagePerGbMonth).toBe(
+      0.023,
+    );
+    expect(CLOUD_PRICING["aws-ap-northeast-1"].option1.storagePerGbMonth).toBe(
+      0.024,
+    );
+  });
+
+  it("preserves exact published decimals for AWS premium-region storage", () => {
+    // Source: AWS public S3 offer data (50 TB–500 TB/month tier and Standard-IA)
+    expect(CLOUD_PRICING["aws-eu-central-2"].option1.storagePerGbMonth).toBe(
+      0.02585,
+    );
+    expect(CLOUD_PRICING["aws-eu-central-2"].option2.storagePerGbMonth).toBe(
+      0.01485,
+    );
+    expect(CLOUD_PRICING["aws-ap-southeast-5"].option2.storagePerGbMonth).toBe(
+      0.01242,
+    );
+    expect(CLOUD_PRICING["aws-ap-southeast-7"].option2.storagePerGbMonth).toBe(
+      0.01242,
+    );
+  });
+
+  it("spot-checks AWS and Azure egress prices match published list prices", () => {
+    // Source: https://aws.amazon.com/s3/pricing/ (10 TB–50 TB/month tier)
+    expect(CLOUD_PRICING["aws-us-east-1"].option1.egressPerGb).toBe(0.085);
+    expect(CLOUD_PRICING["aws-ap-southeast-2"].option1.egressPerGb).toBe(0.098);
+    // Source: https://azure.microsoft.com/en-us/pricing/details/bandwidth/
+    expect(CLOUD_PRICING["azure-us-east"].option1.egressPerGb).toBe(0.087);
+    expect(CLOUD_PRICING["azure-west-europe"].option1.egressPerGb).toBe(0.087);
+  });
+
+  it("spot-checks Azure storage prices match published list prices", () => {
+    // Source: https://azure.microsoft.com/en-us/pricing/details/storage/blobs/ (Hot LRS, first tier)
+    expect(CLOUD_PRICING["azure-us-east"].option1.storagePerGbMonth).toBe(
+      0.0208,
+    );
+    expect(CLOUD_PRICING["azure-west-europe"].option1.storagePerGbMonth).toBe(
+      0.0196,
+    );
+  });
+
+  it("AWS S3 IA write ops cost is higher than S3 Standard write ops cost", () => {
+    for (const [, pricing] of entries) {
+      if (pricing.provider === "AWS") {
+        expect(pricing.option2.writeOpsCost).toBeGreaterThan(
+          pricing.option1.writeOpsCost,
+        );
+      }
+    }
+  });
+
+  it("option1 has no retrieval fee and option2 has a retrieval fee", () => {
+    for (const [, pricing] of entries) {
+      expect(pricing.option1.retrievalPerGb).toBe(0);
+      expect(pricing.option2.retrievalPerGb).toBeGreaterThan(0);
+    }
+  });
 });

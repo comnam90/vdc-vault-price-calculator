@@ -50,18 +50,6 @@ const DIY_ZERO = {
   egress: 0,
 };
 
-function normalizeTooltipValue(value: unknown): number {
-  if (typeof value === "number") {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    return Number(value[0] ?? 0);
-  }
-
-  return Number(value ?? 0);
-}
-
 function buildChartData(comparison: ComparisonResult): ChartDatum[] {
   const data: ChartDatum[] = [];
 
@@ -140,6 +128,57 @@ function ChartLegend({ data }: ChartLegendProps) {
   );
 }
 
+interface TooltipEntry {
+  name?: string | number;
+  value?: string | number | readonly (string | number)[];
+  fill?: string;
+}
+
+function numericValue(value: TooltipEntry["value"]): number {
+  return typeof value === "number" ? value : 0;
+}
+
+function ChartTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: ReadonlyArray<TooltipEntry>;
+  label?: string | number;
+}) {
+  if (!active || !payload?.length) return null;
+
+  const entries = payload.filter((e) => numericValue(e.value) > 0);
+  if (!entries.length) return null;
+
+  return (
+    <div className="border-border/80 bg-card rounded-2xl border p-3 shadow-lg">
+      <p className="text-foreground mb-2 text-sm font-medium">
+        {String(label ?? "")}
+      </p>
+      <div className="space-y-1">
+        {entries.map((entry) => (
+          <div
+            key={String(entry.name ?? "")}
+            className="flex items-center justify-between gap-6 text-xs"
+          >
+            <span className="text-muted-foreground">
+              {String(entry.name ?? "")}
+            </span>
+            <span
+              className="font-medium [font-variant-numeric:tabular-nums]"
+              style={{ color: entry.fill }}
+            >
+              {formatUSD(numericValue(entry.value))}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function ComparisonChart({ comparison }: ComparisonChartProps) {
   const data = buildChartData(comparison);
 
@@ -189,18 +228,7 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                 tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
                 width={72}
               />
-              <Tooltip
-                formatter={(value, name) => [
-                  formatUSD(normalizeTooltipValue(value)),
-                  String(name),
-                ]}
-                contentStyle={{
-                  borderRadius: "1rem",
-                  border:
-                    "1px solid color-mix(in oklab, var(--border) 80%, transparent)",
-                  background: "var(--color-card)",
-                }}
-              />
+              <Tooltip content={ChartTooltip} />
               {/*
                * All bars share stackId="cost" so each data point renders as
                * a single stacked unit — one bar centered under its x-axis label.

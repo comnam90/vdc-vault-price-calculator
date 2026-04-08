@@ -15,8 +15,8 @@ import type { CloudStoragePricing, RegionCloudPricing } from "@/types/pricing";
  *     https://azure.microsoft.com/en-us/pricing/details/bandwidth/
  *
  * Pricing tiers used:
- *   AWS storage  — first 50 TB/month tier
- *   AWS egress   — first 10 TB/month tier (after 100 GB global free)
+ *   AWS storage  — 50 TB–500 TB/month tier (representative enterprise-scale rate)
+ *   AWS egress   — 10 TB–50 TB/month tier (representative enterprise-scale rate)
  *   Azure Blob   — first storage tier (LRS redundancy)
  *   Azure egress — first paid tier (~100 GB threshold, Zone pricing)
  *
@@ -47,12 +47,12 @@ const AWS_US: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.023,
+    storagePerGbMonth: 0.022,
     writeOpsCost: 0.005,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0125,
@@ -60,7 +60,7 @@ const AWS_US: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -70,12 +70,12 @@ const AWS_CA: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.0055,
     readOpsCost: 0.00044,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -83,7 +83,7 @@ const AWS_CA: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -93,12 +93,12 @@ const AWS_EU_DE: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.0245,
+    storagePerGbMonth: 0.0235,
     writeOpsCost: 0.0054,
     readOpsCost: 0.00043,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0135,
@@ -106,7 +106,7 @@ const AWS_EU_DE: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -116,12 +116,12 @@ const AWS_EU_GB_FR: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.024,
+    storagePerGbMonth: 0.023,
     writeOpsCost: 0.0053,
     readOpsCost: 0.00042,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0131,
@@ -129,7 +129,7 @@ const AWS_EU_GB_FR: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -139,12 +139,12 @@ const AWS_EU_ZH: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.02695,
+    storagePerGbMonth: 0.02585,
     writeOpsCost: 0.0054,
     readOpsCost: 0.00043,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.01485,
@@ -152,7 +152,7 @@ const AWS_EU_ZH: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -162,12 +162,12 @@ const AWS_EU_MI: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.024,
+    storagePerGbMonth: 0.023,
     writeOpsCost: 0.0053,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0131,
@@ -175,7 +175,7 @@ const AWS_EU_MI: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -185,12 +185,12 @@ const AWS_EU_ES: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.023,
+    storagePerGbMonth: 0.022,
     writeOpsCost: 0.0053,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0125,
@@ -198,7 +198,7 @@ const AWS_EU_ES: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.09,
+    egressPerGb: 0.085,
   },
 };
 
@@ -208,12 +208,12 @@ const AWS_IL: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.0055,
     readOpsCost: 0.00044,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.11,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -221,7 +221,7 @@ const AWS_IL: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.11,
+    egressPerGb: 0.085,
   },
 };
 
@@ -231,12 +231,12 @@ const AWS_AP_JP: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.0047,
     readOpsCost: 0.00037,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.114,
+    egressPerGb: 0.089,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -244,7 +244,7 @@ const AWS_AP_JP: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.114,
+    egressPerGb: 0.089,
   },
 };
 
@@ -254,12 +254,12 @@ const AWS_AP_KR: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.0045,
     readOpsCost: 0.00035,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.126,
+    egressPerGb: 0.122,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -267,7 +267,7 @@ const AWS_AP_KR: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.126,
+    egressPerGb: 0.122,
   },
 };
 
@@ -277,12 +277,12 @@ const AWS_AP_IN: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.005,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.1093,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -290,7 +290,7 @@ const AWS_AP_IN: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.1093,
+    egressPerGb: 0.085,
   },
 };
 
@@ -300,12 +300,12 @@ const AWS_AP_SG: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.005,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.12,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -313,7 +313,7 @@ const AWS_AP_SG: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.12,
+    egressPerGb: 0.085,
   },
 };
 
@@ -323,12 +323,12 @@ const AWS_AP_AU: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.0055,
     readOpsCost: 0.00044,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.114,
+    egressPerGb: 0.098,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -336,7 +336,7 @@ const AWS_AP_AU: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.114,
+    egressPerGb: 0.098,
   },
 };
 
@@ -346,12 +346,12 @@ const AWS_AP_MY: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.0225,
+    storagePerGbMonth: 0.0216,
     writeOpsCost: 0.00423,
     readOpsCost: 0.000333,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.1083,
+    egressPerGb: 0.08455,
   },
   option2: {
     storagePerGbMonth: 0.01242,
@@ -359,7 +359,7 @@ const AWS_AP_MY: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.1083,
+    egressPerGb: 0.08455,
   },
 };
 
@@ -369,12 +369,12 @@ const AWS_AP_JK: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.005,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.132,
+    egressPerGb: 0.1,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -382,7 +382,7 @@ const AWS_AP_JK: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.132,
+    egressPerGb: 0.1,
   },
 };
 
@@ -392,12 +392,12 @@ const AWS_AP_NEW: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.0225,
+    storagePerGbMonth: 0.0216,
     writeOpsCost: 0.0045,
     readOpsCost: 0.00036,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.108,
+    egressPerGb: 0.0765,
   },
   option2: {
     storagePerGbMonth: 0.01242,
@@ -405,7 +405,7 @@ const AWS_AP_NEW: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.108,
+    egressPerGb: 0.0765,
   },
 };
 
@@ -415,12 +415,12 @@ const AWS_ME: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.025,
+    storagePerGbMonth: 0.024,
     writeOpsCost: 0.0055,
     readOpsCost: 0.00044,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.11,
+    egressPerGb: 0.085,
   },
   option2: {
     storagePerGbMonth: 0.0138,
@@ -428,7 +428,7 @@ const AWS_ME: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.11,
+    egressPerGb: 0.085,
   },
 };
 
@@ -438,12 +438,12 @@ const AWS_AF: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.0274,
+    storagePerGbMonth: 0.0262,
     writeOpsCost: 0.006,
     readOpsCost: 0.0004,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.154,
+    egressPerGb: 0.147,
   },
   option2: {
     storagePerGbMonth: 0.0149,
@@ -451,7 +451,7 @@ const AWS_AF: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.154,
+    egressPerGb: 0.147,
   },
 };
 
@@ -461,12 +461,12 @@ const AWS_SA: PricingGroup = {
   option1Label: "S3 Standard",
   option2Label: "S3 Infrequent Access",
   option1: {
-    storagePerGbMonth: 0.0405,
+    storagePerGbMonth: 0.039,
     writeOpsCost: 0.007,
     readOpsCost: 0.00056,
     opsBatchSize: 1000,
     retrievalPerGb: 0,
-    egressPerGb: 0.15,
+    egressPerGb: 0.138,
   },
   option2: {
     storagePerGbMonth: 0.0221,
@@ -474,7 +474,7 @@ const AWS_SA: PricingGroup = {
     readOpsCost: 0.001,
     opsBatchSize: 1000,
     retrievalPerGb: 0.01,
-    egressPerGb: 0.15,
+    egressPerGb: 0.138,
   },
 };
 

@@ -35,6 +35,11 @@ export function Assumptions() {
             platform.
           </li>
           <li>
+            AWS storage rates use the published 50 TB–500 TB price tier and
+            egress rates use the 10 TB–50 TB price tier as representative rates
+            for enterprise-scale workloads.
+          </li>
+          <li>
             Calculator totals combine published VDC Vault Core pricing with
             repository-maintained DIY assumptions for directional comparison
             only.

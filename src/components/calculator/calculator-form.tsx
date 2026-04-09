@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { CapacityInput } from "@/components/calculator/capacity-input";
 import { RegionSelector } from "@/components/calculator/region-selector";
@@ -25,22 +25,37 @@ export function CalculatorForm({
   initialValues,
 }: CalculatorFormProps) {
   const { regions, isLoading } = useRegions();
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+
+  // Explicit user selection — null means "not yet chosen by the user"
+  const [userSelectedRegion, setUserSelectedRegion] = useState<Region | null>(
+    null,
+  );
+  const [userHasSelected, setUserHasSelected] = useState(false);
+
   const [termYears, setTermYears] = useState(initialValues?.termYears ?? 1);
   const [capacityTiB, setCapacityTiB] = useState(
     initialValues?.capacityTiB ?? 0,
   );
 
-  const regionHydratedRef = useRef(false);
-  useEffect(() => {
-    if (regionHydratedRef.current || isLoading || !initialValues?.regionId)
-      return;
-    const match = regions.find((r) => r.id === initialValues.regionId) ?? null;
-    if (match) {
-      setSelectedRegion(match);
-      regionHydratedRef.current = true;
-    }
-  }, [isLoading, regions, initialValues?.regionId]);
+  // Before the user makes an explicit choice, derive the region from initialValues.
+  // After user interaction, userHasSelected takes precedence.
+  const initialRegionId = initialValues?.regionId;
+  const selectedRegion = useMemo<Region | null>(() => {
+    if (userHasSelected) return userSelectedRegion;
+    if (!initialRegionId || isLoading) return null;
+    return regions.find((r) => r.id === initialRegionId) ?? null;
+  }, [
+    userHasSelected,
+    userSelectedRegion,
+    initialRegionId,
+    isLoading,
+    regions,
+  ]);
+
+  const handleRegionChange = (region: Region | null) => {
+    setUserHasSelected(true);
+    setUserSelectedRegion(region);
+  };
 
   const completeInputs = useMemo<CalculatorInputs | null>(() => {
     if (!selectedRegion || capacityTiB < 1) {
@@ -82,7 +97,7 @@ export function CalculatorForm({
               regions={regions}
               isLoading={isLoading}
               selectedRegion={selectedRegion}
-              onRegionChange={setSelectedRegion}
+              onRegionChange={handleRegionChange}
             />
           </div>
           <TermSelector value={termYears} onTermChange={setTermYears} />

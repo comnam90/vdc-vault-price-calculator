@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { CapacityInput } from "@/components/calculator/capacity-input";
 import { RegionSelector } from "@/components/calculator/region-selector";
-import { ShareButton } from "@/components/calculator/share-button";
 import { TermSelector } from "@/components/calculator/term-selector";
 import {
   Card,
@@ -76,12 +75,9 @@ export function CalculatorForm({
   return (
     <Card className="border-border/70 bg-background/90 overflow-hidden rounded-[1.75rem] shadow-[0_32px_100px_-56px_color-mix(in_oklab,var(--electric-azure)_75%,transparent)] backdrop-blur">
       <CardHeader className="border-border/70 gap-3 border-b bg-[image:var(--surface-gradient)] py-5">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl tracking-[-0.03em]">
-            Calculation inputs
-          </CardTitle>
-          <ShareButton />
-        </div>
+        <CardTitle className="text-xl tracking-[-0.03em]">
+          Calculation inputs
+        </CardTitle>
         <CardDescription>
           Select a provider region, commitment term, and protected capacity.
           Inputs update immediately—no submit flow.

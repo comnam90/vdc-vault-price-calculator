@@ -124,18 +124,6 @@ describe("CalculatorForm", () => {
     expect(form.className).not.toMatch(/lg:grid-cols-\[/);
   });
 
-  it("renders the share button", () => {
-    vi.mocked(useRegions).mockReturnValue({
-      regions,
-      isLoading: false,
-      error: null,
-    });
-
-    render(<CalculatorForm onInputsChange={vi.fn()} />);
-
-    expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
-  });
-
   describe("initialValues pre-population", () => {
     it("pre-fills term and capacity from initialValues", () => {
       vi.mocked(useRegions).mockReturnValue({

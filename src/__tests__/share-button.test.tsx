@@ -27,15 +27,24 @@ describe("ShareButton", () => {
     vi.useRealTimers();
   });
 
-  it("renders a button with accessible name 'Share'", () => {
+  it("renders a button with accessible name 'Copy shareable link'", () => {
     render(<ShareButton />);
-    expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /copy shareable link/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders 'Copy link' as the visible label", () => {
+    render(<ShareButton />);
+    expect(screen.getByText("Copy link")).toBeInTheDocument();
   });
 
   it("calls navigator.clipboard.writeText with the current URL on click", async () => {
     render(<ShareButton />);
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /share/i }));
+      fireEvent.click(
+        screen.getByRole("button", { name: /copy shareable link/i }),
+      );
     });
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
       "https://example.com/?region=aws-us-east-1&term=3&capacity=50",
@@ -45,15 +54,19 @@ describe("ShareButton", () => {
   it("shows 'Copied!' after successful clipboard write", async () => {
     render(<ShareButton />);
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /share/i }));
+      fireEvent.click(
+        screen.getByRole("button", { name: /copy shareable link/i }),
+      );
     });
     expect(screen.getByText(/copied!/i)).toBeInTheDocument();
   });
 
-  it("reverts label back to 'Share' after 2 seconds", async () => {
+  it("reverts label back to 'Copy link' after 2 seconds", async () => {
     render(<ShareButton />);
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /share/i }));
+      fireEvent.click(
+        screen.getByRole("button", { name: /copy shareable link/i }),
+      );
     });
     expect(screen.getByText(/copied!/i)).toBeInTheDocument();
 
@@ -61,7 +74,7 @@ describe("ShareButton", () => {
       vi.advanceTimersByTime(2000);
     });
 
-    expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
+    expect(screen.getByText("Copy link")).toBeInTheDocument();
     expect(screen.queryByText(/copied!/i)).not.toBeInTheDocument();
   });
 

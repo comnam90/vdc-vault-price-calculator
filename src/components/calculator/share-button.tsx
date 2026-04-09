@@ -1,7 +1,8 @@
-import { Check, Share2 } from "lucide-react";
+import { Check, Link2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function ShareButton() {
   const [copied, setCopied] = useState(false);
@@ -16,17 +17,21 @@ export function ShareButton() {
     <Button
       type="button"
       variant="outline"
-      size="sm"
       onClick={() => void handleShare()}
-      aria-label={copied ? "Link copied" : "Share"}
-      className="gap-1.5 rounded-full text-xs"
+      aria-label={copied ? "Link copied to clipboard" : "Copy shareable link"}
+      className={cn(
+        "w-full justify-center rounded-full transition-colors sm:w-auto",
+        copied
+          ? "border-[color:var(--viridis)]/40 bg-[color:var(--success-muted)] text-[color:var(--viridis)] shadow-[0_0_0_1px_color-mix(in_oklab,var(--viridis)_20%,transparent)] hover:bg-[color:var(--success-muted)]"
+          : "bg-background/80 border-[color:var(--electric-azure)]/35 text-[color:var(--electric-azure)] shadow-[0_0_0_1px_color-mix(in_oklab,var(--electric-azure)_16%,transparent)] hover:bg-[color:var(--info-muted)]",
+      )}
     >
       {copied ? (
-        <Check className="size-3.5" aria-hidden="true" />
+        <Check className="size-4" aria-hidden="true" />
       ) : (
-        <Share2 className="size-3.5" aria-hidden="true" />
+        <Link2 className="size-4" aria-hidden="true" />
       )}
-      {copied ? "Copied!" : "Share"}
+      {copied ? "Copied!" : "Copy link"}
     </Button>
   );
 }

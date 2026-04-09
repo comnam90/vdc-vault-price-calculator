@@ -1,11 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MONTHS_PER_YEAR } from "@/lib/constants";
 import { formatPerTbMonth, formatUSD } from "@/lib/format-utils";
 import { cn } from "@/lib/utils";

@@ -677,8 +677,31 @@ const AZURE_AU_SE: PricingGroup = {
   },
 };
 
-/** EU France Central + UK South (francecentral, uksouth) */
-const AZURE_EU_FR_UK: PricingGroup = {
+/** EU France Central (francecentral) — ZRS $0.0131, LRS $0.0105 */
+const AZURE_EU_FR: PricingGroup = {
+  provider: "Azure" as CloudProvider,
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1: {
+    storagePerGbMonth: 0.0131,
+    writeOpsCost: 0.11,
+    readOpsCost: 0.011,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.011,
+    egressPerGb: 0.087,
+  },
+  option2: {
+    storagePerGbMonth: 0.0105,
+    writeOpsCost: 0.11,
+    readOpsCost: 0.011,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.011,
+    egressPerGb: 0.087,
+  },
+};
+
+/** EU UK South (uksouth) — ZRS $0.013125, LRS $0.0105 */
+const AZURE_EU_UK: PricingGroup = {
   provider: "Azure" as CloudProvider,
   option1Label: "Cool Blob ZRS",
   option2Label: "Cool Blob LRS",
@@ -1194,7 +1217,7 @@ export const CLOUD_PRICING: Record<string, RegionCloudPricing> = {
   // ── Azure Europe ────────────────────────────────────────────────────────────
   "azure-france-central": {
     regionId: "azure-france-central",
-    ...AZURE_EU_FR_UK,
+    ...AZURE_EU_FR,
   },
   "azure-germany-west-central": {
     regionId: "azure-germany-west-central",
@@ -1202,7 +1225,7 @@ export const CLOUD_PRICING: Record<string, RegionCloudPricing> = {
   },
   "azure-north-europe": { regionId: "azure-north-europe", ...AZURE_EU_IE },
   "azure-sweden-central": { regionId: "azure-sweden-central", ...AZURE_EU_SE },
-  "azure-uk-south": { regionId: "azure-uk-south", ...AZURE_EU_FR_UK },
+  "azure-uk-south": { regionId: "azure-uk-south", ...AZURE_EU_UK },
   "azure-west-europe": { regionId: "azure-west-europe", ...AZURE_EU_DE_NL_AT },
   "azure-austria-east": {
     regionId: "azure-austria-east",

@@ -110,6 +110,13 @@ describe("cloud pricing data integrity", () => {
     expect(CLOUD_PRICING["azure-brazil-south"].option1.storagePerGbMonth).toBe(
       0.0221,
     );
+    // France Central and UK South share the same LRS price but have distinct ZRS prices
+    expect(
+      CLOUD_PRICING["azure-france-central"].option1.storagePerGbMonth,
+    ).toBe(0.0131);
+    expect(CLOUD_PRICING["azure-uk-south"].option1.storagePerGbMonth).toBe(
+      0.013125,
+    );
   });
 
   it("AWS S3 IA write ops cost is higher than S3 Standard write ops cost", () => {

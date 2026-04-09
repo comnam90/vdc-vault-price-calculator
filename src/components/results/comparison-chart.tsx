@@ -71,15 +71,17 @@ function buildChartData(comparison: ComparisonResult): ChartDatum[] {
     });
   }
 
-  data.push({
-    label: comparison.diyOption1Label,
-    ...VAULT_ZERO,
-    storage: comparison.diyOption1.storage,
-    writeOps: comparison.diyOption1.writeOps,
-    readOps: comparison.diyOption1.readOps,
-    retrieval: comparison.diyOption1.dataRetrieval,
-    egress: comparison.diyOption1.internetEgress,
-  });
+  if (!comparison.diyOption1Unavailable) {
+    data.push({
+      label: comparison.diyOption1Label,
+      ...VAULT_ZERO,
+      storage: comparison.diyOption1.storage,
+      writeOps: comparison.diyOption1.writeOps,
+      readOps: comparison.diyOption1.readOps,
+      retrieval: comparison.diyOption1.dataRetrieval,
+      egress: comparison.diyOption1.internetEgress,
+    });
+  }
 
   data.push({
     label: comparison.diyOption2Label,

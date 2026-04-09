@@ -45,40 +45,43 @@ function formatVaultTotal(result: VaultCostResult): string {
 }
 
 export function CostBreakdownTable({ comparison }: CostBreakdownTableProps) {
+  const fmt1 = (val: number) =>
+    comparison.diyOption1Unavailable ? "N/A" : formatUSD(val);
+
   const data: BreakdownRow[] = [
     {
       category: "Storage",
       foundation: formatVaultTotal(comparison.vaultFoundation),
       advanced: formatVaultTotal(comparison.vaultAdvanced),
-      diyOption1: formatUSD(comparison.diyOption1.storage),
+      diyOption1: fmt1(comparison.diyOption1.storage),
       diyOption2: formatUSD(comparison.diyOption2.storage),
     },
     {
       category: "Write Operations",
       foundation: "--",
       advanced: "--",
-      diyOption1: formatUSD(comparison.diyOption1.writeOps),
+      diyOption1: fmt1(comparison.diyOption1.writeOps),
       diyOption2: formatUSD(comparison.diyOption2.writeOps),
     },
     {
       category: "Read Operations",
       foundation: "--",
       advanced: "--",
-      diyOption1: formatUSD(comparison.diyOption1.readOps),
+      diyOption1: fmt1(comparison.diyOption1.readOps),
       diyOption2: formatUSD(comparison.diyOption2.readOps),
     },
     {
       category: "Data Retrieval",
       foundation: "--",
       advanced: "--",
-      diyOption1: formatUSD(comparison.diyOption1.dataRetrieval),
+      diyOption1: fmt1(comparison.diyOption1.dataRetrieval),
       diyOption2: formatUSD(comparison.diyOption2.dataRetrieval),
     },
     {
       category: "Internet Egress",
       foundation: "--",
       advanced: "--",
-      diyOption1: formatUSD(comparison.diyOption1.internetEgress),
+      diyOption1: fmt1(comparison.diyOption1.internetEgress),
       diyOption2: formatUSD(comparison.diyOption2.internetEgress),
     },
   ];
@@ -98,7 +101,9 @@ export function CostBreakdownTable({ comparison }: CostBreakdownTableProps) {
     }),
     columnHelper.accessor("diyOption1", {
       header: comparison.diyOption1Label,
-      footer: formatUSD(comparison.diyOption1.total),
+      footer: comparison.diyOption1Unavailable
+        ? "N/A"
+        : formatUSD(comparison.diyOption1.total),
     }),
     columnHelper.accessor("diyOption2", {
       header: comparison.diyOption2Label,

@@ -17,7 +17,7 @@ import type { CloudStoragePricing, RegionCloudPricing } from "@/types/pricing";
  * Pricing tiers used:
  *   AWS storage  — 50 TB–500 TB/month tier (representative enterprise-scale rate)
  *   AWS egress   — 10 TB–50 TB/month tier (representative enterprise-scale rate)
- *   Azure Blob   — first storage tier (LRS redundancy)
+ *   Azure Blob   — Cool tier, ZRS and LRS redundancy (prices from Azure Retail Prices API)
  *   Azure egress — first paid tier (~100 GB threshold, Zone pricing)
  *
  * DISCLAIMER: Prices are approximate and unofficial. No discounts, reserved
@@ -31,6 +31,7 @@ type PricingGroup = {
   option2Label: string;
   option1: CloudStoragePricing;
   option2: CloudStoragePricing;
+  option1Unavailable?: true;
 };
 
 // ─── AWS PRICING GROUPS ───────────────────────────────────────────────────────
@@ -480,20 +481,25 @@ const AWS_SA: PricingGroup = {
 
 // ─── AZURE PRICING GROUPS ─────────────────────────────────────────────────────
 //
-// option1 = Blob Hot LRS   (opsBatchSize 10000, retrievalPerGb 0)
-// option2 = Blob Cool LRS  (opsBatchSize 10000, retrievalPerGb varies)
+// option1 = Cool Blob ZRS  (opsBatchSize 10000; storagePerGbMonth from Azure Retail API;
+//                           ops/retrieval/egress identical to Cool LRS for the same region)
+// option2 = Cool Blob LRS  (opsBatchSize 10000, retrievalPerGb varies)
+//
+// Six Azure regions lack ZRS availability (northcentralus, westus, canadaeast,
+// australiasoutheast, southindia, southafricawest). Those groups carry
+// option1Unavailable: true and a placeholder option1 that is never used in calculations.
 
 /** US Standard (centralus, eastus2, southcentralus, westus2) */
 const AZURE_US_STD: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0184,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0125,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -506,11 +512,35 @@ const AZURE_US_STD: PricingGroup = {
   },
 };
 
-/** US East + North Central (eastus, northcentralus) */
+/** US East (eastus) */
 const AZURE_US_EAST: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1: {
+    storagePerGbMonth: 0.019,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.01,
+    egressPerGb: 0.087,
+  },
+  option2: {
+    storagePerGbMonth: 0.0152,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.01,
+    egressPerGb: 0.087,
+  },
+};
+
+/** US North Central (northcentralus) — ZRS not available in this region */
+const AZURE_US_NORTH_CENTRAL: PricingGroup = {
+  provider: "Azure" as CloudProvider,
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1Unavailable: true,
   option1: {
     storagePerGbMonth: 0.0208,
     writeOpsCost: 0.05,
@@ -529,11 +559,12 @@ const AZURE_US_EAST: PricingGroup = {
   },
 };
 
-/** US West (westus) */
+/** US West (westus) — ZRS not available in this region */
 const AZURE_US_WEST: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1Unavailable: true,
   option1: {
     storagePerGbMonth: 0.0208,
     writeOpsCost: 0.055,
@@ -552,11 +583,35 @@ const AZURE_US_WEST: PricingGroup = {
   },
 };
 
-/** Canada (canadacentral, canadaeast) */
-const AZURE_CA: PricingGroup = {
+/** Canada Central (canadacentral) */
+const AZURE_CA_CENTRAL: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1: {
+    storagePerGbMonth: 0.01375,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.01,
+    egressPerGb: 0.087,
+  },
+  option2: {
+    storagePerGbMonth: 0.011,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.01,
+    egressPerGb: 0.087,
+  },
+};
+
+/** Canada East (canadaeast) — ZRS not available in this region */
+const AZURE_CA_EAST: PricingGroup = {
+  provider: "Azure" as CloudProvider,
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1Unavailable: true,
   option1: {
     storagePerGbMonth: 0.02,
     writeOpsCost: 0.055,
@@ -578,14 +633,14 @@ const AZURE_CA: PricingGroup = {
 /** Australia East (australiaeast) */
 const AZURE_AU_E: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.055,
-    readOpsCost: 0.0044,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -598,11 +653,12 @@ const AZURE_AU_E: PricingGroup = {
   },
 };
 
-/** Australia Southeast (australiasoutheast) */
+/** Australia Southeast (australiasoutheast) — ZRS not available in this region */
 const AZURE_AU_SE: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1Unavailable: true,
   option1: {
     storagePerGbMonth: 0.02,
     writeOpsCost: 0.055,
@@ -621,17 +677,40 @@ const AZURE_AU_SE: PricingGroup = {
   },
 };
 
-/** EU France Central + UK South (francecentral, uksouth) */
-const AZURE_EU_FR_UK: PricingGroup = {
+/** EU France Central (francecentral) — ZRS $0.0131, LRS $0.0105 */
+const AZURE_EU_FR: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0192,
-    writeOpsCost: 0.059,
-    readOpsCost: 0.0047,
+    storagePerGbMonth: 0.0131,
+    writeOpsCost: 0.11,
+    readOpsCost: 0.011,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.011,
+    egressPerGb: 0.087,
+  },
+  option2: {
+    storagePerGbMonth: 0.0105,
+    writeOpsCost: 0.11,
+    readOpsCost: 0.011,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.011,
+    egressPerGb: 0.087,
+  },
+};
+
+/** EU UK South (uksouth) — ZRS $0.013125, LRS $0.0105 */
+const AZURE_EU_UK: PricingGroup = {
+  provider: "Azure" as CloudProvider,
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1: {
+    storagePerGbMonth: 0.013125,
+    writeOpsCost: 0.11,
+    readOpsCost: 0.011,
+    opsBatchSize: 10000,
+    retrievalPerGb: 0.011,
     egressPerGb: 0.087,
   },
   option2: {
@@ -647,14 +726,14 @@ const AZURE_EU_FR_UK: PricingGroup = {
 /** EU Germany + Netherlands + Austria (germanywestcentral, westeurope, austriaeast) */
 const AZURE_EU_DE_NL_AT: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0196,
-    writeOpsCost: 0.054,
-    readOpsCost: 0.0043,
+    storagePerGbMonth: 0.0131,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -670,14 +749,14 @@ const AZURE_EU_DE_NL_AT: PricingGroup = {
 /** EU North (Ireland) (northeurope) */
 const AZURE_EU_IE: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.022,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0125,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -693,14 +772,14 @@ const AZURE_EU_IE: PricingGroup = {
 /** EU Sweden (swedencentral) */
 const AZURE_EU_SE: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0184,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0125,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -716,14 +795,14 @@ const AZURE_EU_SE: PricingGroup = {
 /** EU Italy North (italynorth) */
 const AZURE_EU_IT: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0192,
-    writeOpsCost: 0.053,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0131,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -739,14 +818,14 @@ const AZURE_EU_IT: PricingGroup = {
 /** EU Switzerland North (switzerlandnorth) */
 const AZURE_EU_CH: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02156,
-    writeOpsCost: 0.054,
-    readOpsCost: 0.0043,
+    storagePerGbMonth: 0.01441,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -762,14 +841,14 @@ const AZURE_EU_CH: PricingGroup = {
 /** AP Japan East + West (japaneast, japanwest) */
 const AZURE_JP: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -785,14 +864,14 @@ const AZURE_JP: PricingGroup = {
 /** AP Korea Central (koreacentral) */
 const AZURE_KR: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -808,14 +887,14 @@ const AZURE_KR: PricingGroup = {
 /** AP India Central (centralindia) */
 const AZURE_IN_C: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.055,
-    readOpsCost: 0.0044,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -828,11 +907,12 @@ const AZURE_IN_C: PricingGroup = {
   },
 };
 
-/** AP India South (southindia) */
+/** AP India South (southindia) — ZRS not available in this region */
 const AZURE_IN_S: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1Unavailable: true,
   option1: {
     storagePerGbMonth: 0.0238,
     writeOpsCost: 0.05,
@@ -854,14 +934,14 @@ const AZURE_IN_S: PricingGroup = {
 /** AP Southeast Asia / Singapore (southeastasia) */
 const AZURE_SEA: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -877,14 +957,14 @@ const AZURE_SEA: PricingGroup = {
 /** AP East Asia / Hong Kong (eastasia) */
 const AZURE_EA: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.024,
-    writeOpsCost: 0.05,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -900,14 +980,14 @@ const AZURE_EA: PricingGroup = {
 /** AP Indonesia + Malaysia (indonesiacentral, malaysiawest) */
 const AZURE_INDO_MY: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.018,
-    writeOpsCost: 0.045,
-    readOpsCost: 0.0036,
+    storagePerGbMonth: 0.0125,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.12,
   },
   option2: {
@@ -923,14 +1003,14 @@ const AZURE_INDO_MY: PricingGroup = {
 /** AP New Zealand North (newzealandnorth) */
 const AZURE_NZ: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.05775,
-    readOpsCost: 0.00462,
+    storagePerGbMonth: 0.01449,
+    writeOpsCost: 0.105,
+    readOpsCost: 0.0105,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.0105,
     egressPerGb: 0.12,
   },
   option2: {
@@ -946,14 +1026,14 @@ const AZURE_NZ: PricingGroup = {
 /** Middle East Israel Central (israelcentral) */
 const AZURE_IL: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.02,
-    writeOpsCost: 0.055,
-    readOpsCost: 0.0044,
+    storagePerGbMonth: 0.0138,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.087,
   },
   option2: {
@@ -969,14 +1049,14 @@ const AZURE_IL: PricingGroup = {
 /** Middle East UAE North (uaenorth) */
 const AZURE_UAE: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.020275,
-    writeOpsCost: 0.06,
-    readOpsCost: 0.0048,
+    storagePerGbMonth: 0.015,
+    writeOpsCost: 0.12,
+    readOpsCost: 0.012,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.012,
     egressPerGb: 0.181,
   },
   option2: {
@@ -992,14 +1072,14 @@ const AZURE_UAE: PricingGroup = {
 /** Africa South Africa North (southafricanorth) */
 const AZURE_ZA_N: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0219,
-    writeOpsCost: 0.06,
-    readOpsCost: 0.004,
+    storagePerGbMonth: 0.0149,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.181,
   },
   option2: {
@@ -1012,11 +1092,12 @@ const AZURE_ZA_N: PricingGroup = {
   },
 };
 
-/** Africa South Africa West (southafricawest) */
+/** Africa South Africa West (southafricawest) — ZRS not available in this region */
 const AZURE_ZA_W: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
+  option1Unavailable: true,
   option1: {
     storagePerGbMonth: 0.0274,
     writeOpsCost: 0.075,
@@ -1038,14 +1119,14 @@ const AZURE_ZA_W: PricingGroup = {
 /** South America Brazil South (brazilsouth) */
 const AZURE_BR: PricingGroup = {
   provider: "Azure" as CloudProvider,
-  option1Label: "Blob Hot",
-  option2Label: "Blob Cool",
+  option1Label: "Cool Blob ZRS",
+  option2Label: "Cool Blob LRS",
   option1: {
-    storagePerGbMonth: 0.0326,
-    writeOpsCost: 0.07,
-    readOpsCost: 0.0056,
+    storagePerGbMonth: 0.0221,
+    writeOpsCost: 0.1,
+    readOpsCost: 0.01,
     opsBatchSize: 10000,
-    retrievalPerGb: 0,
+    retrievalPerGb: 0.01,
     egressPerGb: 0.181,
   },
   option2: {
@@ -1110,7 +1191,7 @@ export const CLOUD_PRICING: Record<string, RegionCloudPricing> = {
   "azure-us-east2": { regionId: "azure-us-east2", ...AZURE_US_STD },
   "azure-us-north-central": {
     regionId: "azure-us-north-central",
-    ...AZURE_US_EAST,
+    ...AZURE_US_NORTH_CENTRAL,
   },
   "azure-us-south-central": {
     regionId: "azure-us-south-central",
@@ -1120,8 +1201,11 @@ export const CLOUD_PRICING: Record<string, RegionCloudPricing> = {
   "azure-us-west": { regionId: "azure-us-west", ...AZURE_US_WEST },
 
   // ── Azure Canada ────────────────────────────────────────────────────────────
-  "azure-canada-central": { regionId: "azure-canada-central", ...AZURE_CA },
-  "azure-canada-east": { regionId: "azure-canada-east", ...AZURE_CA },
+  "azure-canada-central": {
+    regionId: "azure-canada-central",
+    ...AZURE_CA_CENTRAL,
+  },
+  "azure-canada-east": { regionId: "azure-canada-east", ...AZURE_CA_EAST },
 
   // ── Azure Australia ─────────────────────────────────────────────────────────
   "azure-au-east": { regionId: "azure-au-east", ...AZURE_AU_E },
@@ -1133,7 +1217,7 @@ export const CLOUD_PRICING: Record<string, RegionCloudPricing> = {
   // ── Azure Europe ────────────────────────────────────────────────────────────
   "azure-france-central": {
     regionId: "azure-france-central",
-    ...AZURE_EU_FR_UK,
+    ...AZURE_EU_FR,
   },
   "azure-germany-west-central": {
     regionId: "azure-germany-west-central",
@@ -1141,7 +1225,7 @@ export const CLOUD_PRICING: Record<string, RegionCloudPricing> = {
   },
   "azure-north-europe": { regionId: "azure-north-europe", ...AZURE_EU_IE },
   "azure-sweden-central": { regionId: "azure-sweden-central", ...AZURE_EU_SE },
-  "azure-uk-south": { regionId: "azure-uk-south", ...AZURE_EU_FR_UK },
+  "azure-uk-south": { regionId: "azure-uk-south", ...AZURE_EU_UK },
   "azure-west-europe": { regionId: "azure-west-europe", ...AZURE_EU_DE_NL_AT },
   "azure-austria-east": {
     regionId: "azure-austria-east",

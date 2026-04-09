@@ -48,6 +48,27 @@ describe("CostBreakdownTable", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows N/A for diyOption1 column when option1 unavailable", () => {
+    const { container } = render(
+      <CostBreakdownTable
+        comparison={{
+          ...fixtureComparison,
+          diyOption1Label: "Cool Blob ZRS",
+          diyOption1Unavailable: true,
+        }}
+      />,
+    );
+
+    const footer = container.querySelector("tfoot");
+
+    // Column header still shows label
+    expect(screen.getByText("Cool Blob ZRS")).toBeInTheDocument();
+
+    // Footer total for unavailable column shows N/A (not a dollar amount)
+    const naInFooter = within(footer as HTMLElement).getAllByText("N/A");
+    expect(naInFooter.length).toBeGreaterThanOrEqual(1);
+  });
+
   it("shows N/A and TBD in vault totals when editions are unavailable", () => {
     const { container } = render(
       <CostBreakdownTable

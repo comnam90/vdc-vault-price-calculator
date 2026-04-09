@@ -77,4 +77,33 @@ describe("SummaryCards", () => {
       within(advancedCard as HTMLElement).getByText("TBD"),
     ).toBeInTheDocument();
   });
+
+  it("shows ZRS not available text and excludes it from cheapest when option1 unavailable", () => {
+    render(
+      <SummaryCards
+        comparison={{
+          ...fixtureComparison,
+          diyOption1Label: "Cool Blob ZRS",
+          diyOption1Unavailable: true,
+        }}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const zrsCard = screen
+      .getByText("Cool Blob ZRS")
+      .closest('[data-slot="card"]');
+
+    expect(
+      within(zrsCard as HTMLElement).getByText("ZRS not available"),
+    ).toBeInTheDocument();
+
+    // diyOption2 ($4,500) should be cheapest, not the unavailable option1
+    expect(screen.getByText("Lowest total")).toBeInTheDocument();
+    const cheapestCard = screen
+      .getByText("S3 Infrequent Access")
+      .closest('[data-slot="card"]');
+    expect(cheapestCard).toHaveClass("bg-card-tint-success");
+  });
 });

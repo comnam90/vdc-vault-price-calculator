@@ -29,4 +29,6 @@ export interface ComparisonResult {
   diyOption2: CostBreakdown;
   diyOption1Label: string;
   diyOption2Label: string;
+  /** True when ZRS is not available in the selected Azure region */
+  diyOption1Unavailable?: true;
 }

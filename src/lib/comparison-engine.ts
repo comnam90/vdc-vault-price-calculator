@@ -3,6 +3,7 @@ import { calculateDiyCost } from "@/lib/diy-calculator";
 import type {
   CalculatorInputs,
   ComparisonResult,
+  CostBreakdown,
   VaultCostResult,
 } from "@/types/calculator";
 import type { Region } from "@/types/region";
@@ -12,6 +13,15 @@ const UNAVAILABLE: VaultCostResult = {
   total: null,
   perTbMonth: null,
   pricingTbd: false,
+};
+
+const ZERO_BREAKDOWN: CostBreakdown = {
+  storage: 0,
+  writeOps: 0,
+  readOps: 0,
+  dataRetrieval: 0,
+  internetEgress: 0,
+  total: 0,
 };
 
 /**
@@ -53,11 +63,10 @@ export function buildComparison(
       )
     : UNAVAILABLE;
 
-  const diyOption1 = calculateDiyCost(
-    capacityTiB,
-    termYears,
-    cloudPricing.option1,
-  );
+  const diyOption1 = cloudPricing.option1Unavailable
+    ? ZERO_BREAKDOWN
+    : calculateDiyCost(capacityTiB, termYears, cloudPricing.option1);
+
   const diyOption2 = calculateDiyCost(
     capacityTiB,
     termYears,
@@ -71,5 +80,6 @@ export function buildComparison(
     diyOption2,
     diyOption1Label: cloudPricing.option1Label,
     diyOption2Label: cloudPricing.option2Label,
+    ...(cloudPricing.option1Unavailable && { diyOption1Unavailable: true }),
   };
 }

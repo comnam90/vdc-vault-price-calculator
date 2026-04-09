@@ -35,8 +35,15 @@ export function ResultsPanel({
         <p className="text-muted-foreground font-mono text-[0.7rem] tracking-[0.28em] uppercase">
           Cost analysis
         </p>
-        <h2 className="dark:text-foreground text-2xl font-semibold tracking-[-0.04em] text-[color:var(--dark-mineral)]">
+        <h2 className="dark:text-foreground flex flex-wrap items-baseline gap-2 text-2xl font-semibold tracking-[-0.04em] text-[color:var(--dark-mineral)]">
           Comparison results
+          <abbr
+            title="United States Dollar"
+            aria-label="All prices in US dollars"
+            className="text-muted-foreground text-sm font-normal tracking-normal not-italic"
+          >
+            (USD)
+          </abbr>
         </h2>
       </div>
 

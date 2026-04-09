@@ -176,7 +176,7 @@ Common types in this repo: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`.
 - **`ci.yml`**: runs `npm install --yes`, `npm run lint`, and `npm run test:run` on pushes to `main` and all PRs
 - **`release.yml`**: runs Release Please on `main` and deploys to Cloudflare Pages when a release is created
 - **`publish.yml`**: manual Cloudflare Pages deployment workflow using `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
-- **Deploy target**: Cloudflare Pages project `vdc-vault-price-calculator`
+- **Deploy target**: Cloudflare Pages project `vdc-vault-tco-calculator`
 
 ## AGENT CAPABILITIES (MANDATORY PROTOCOLS)
 

@@ -123,4 +123,96 @@ describe("CalculatorForm", () => {
     const form = screen.getByRole("form", { name: /vault pricing inputs/i });
     expect(form.className).not.toMatch(/lg:grid-cols-\[/);
   });
+
+  it("renders the share button", () => {
+    vi.mocked(useRegions).mockReturnValue({
+      regions,
+      isLoading: false,
+      error: null,
+    });
+
+    render(<CalculatorForm onInputsChange={vi.fn()} />);
+
+    expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
+  });
+
+  describe("initialValues pre-population", () => {
+    it("pre-fills term and capacity from initialValues", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+
+      render(
+        <CalculatorForm
+          onInputsChange={vi.fn()}
+          initialValues={{ termYears: 3, capacityTiB: 42 }}
+        />,
+      );
+
+      expect(screen.getByRole("radio", { name: "3 Years" })).toBeChecked();
+      expect(screen.getByLabelText(/protected capacity/i)).toHaveValue(42);
+    });
+
+    it("auto-selects the region matching initialValues.regionId after regions load", async () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+
+      render(
+        <CalculatorForm
+          onInputsChange={vi.fn()}
+          initialValues={{ regionId: "aws-us-east-1" }}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole("combobox", { name: /select a region/i }),
+        ).toHaveTextContent(/us east.*virginia/i);
+      });
+    });
+
+    it("leaves the region selector empty for an unknown regionId", async () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+
+      render(
+        <CalculatorForm
+          onInputsChange={vi.fn()}
+          initialValues={{ regionId: "aws-unknown-region" }}
+        />,
+      );
+
+      // No match means selector stays in its placeholder state
+      expect(
+        screen.getByRole("combobox", { name: /select a region/i }),
+      ).not.toHaveTextContent(/virginia/i);
+    });
+
+    it("uses defaults for fields absent from initialValues", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+
+      render(
+        <CalculatorForm
+          onInputsChange={vi.fn()}
+          initialValues={{ termYears: 5 }}
+        />,
+      );
+
+      expect(screen.getByRole("radio", { name: "5 Years" })).toBeChecked();
+      // CapacityInput shows "" (null value) when capacityTiB is 0
+      expect(screen.getByLabelText(/protected capacity/i)).toHaveValue(null);
+    });
+  });
 });

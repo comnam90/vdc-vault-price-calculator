@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { CapacityInput } from "@/components/calculator/capacity-input";
 import { RegionSelector } from "@/components/calculator/region-selector";
+import { ShareButton } from "@/components/calculator/share-button";
 import { TermSelector } from "@/components/calculator/term-selector";
 import {
   Card,
@@ -16,13 +17,30 @@ import type { Region } from "@/types/region";
 
 interface CalculatorFormProps {
   onInputsChange: (inputs: CalculatorInputs | null) => void;
+  initialValues?: Partial<CalculatorInputs>;
 }
 
-export function CalculatorForm({ onInputsChange }: CalculatorFormProps) {
+export function CalculatorForm({
+  onInputsChange,
+  initialValues,
+}: CalculatorFormProps) {
   const { regions, isLoading } = useRegions();
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
-  const [termYears, setTermYears] = useState(1);
-  const [capacityTiB, setCapacityTiB] = useState(0);
+  const [termYears, setTermYears] = useState(initialValues?.termYears ?? 1);
+  const [capacityTiB, setCapacityTiB] = useState(
+    initialValues?.capacityTiB ?? 0,
+  );
+
+  const regionHydratedRef = useRef(false);
+  useEffect(() => {
+    if (regionHydratedRef.current || isLoading || !initialValues?.regionId)
+      return;
+    const match = regions.find((r) => r.id === initialValues.regionId) ?? null;
+    if (match) {
+      setSelectedRegion(match);
+      regionHydratedRef.current = true;
+    }
+  }, [isLoading, regions, initialValues?.regionId]);
 
   const completeInputs = useMemo<CalculatorInputs | null>(() => {
     if (!selectedRegion || capacityTiB < 1) {
@@ -43,9 +61,12 @@ export function CalculatorForm({ onInputsChange }: CalculatorFormProps) {
   return (
     <Card className="border-border/70 bg-background/90 overflow-hidden rounded-[1.75rem] shadow-[0_32px_100px_-56px_color-mix(in_oklab,var(--electric-azure)_75%,transparent)] backdrop-blur">
       <CardHeader className="border-border/70 gap-3 border-b bg-[image:var(--surface-gradient)] py-5">
-        <CardTitle className="text-xl tracking-[-0.03em]">
-          Calculation inputs
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xl tracking-[-0.03em]">
+            Calculation inputs
+          </CardTitle>
+          <ShareButton />
+        </div>
         <CardDescription>
           Select a provider region, commitment term, and protected capacity.
           Inputs update immediately—no submit flow.

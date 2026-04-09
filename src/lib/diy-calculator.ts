@@ -72,12 +72,18 @@ export function calculateEgressCost(
   return capacityTiB * TIB_TO_GB * ANNUAL_EGRESS_FACTOR * ratePerGb * termYears;
 }
 
+interface DiyCostOptions {
+  excludeEgress?: boolean;
+}
+
 /** Compute all DIY cost components and their total. */
 export function calculateDiyCost(
   capacityTiB: number,
   termYears: number,
   pricing: CloudStoragePricing,
+  options: DiyCostOptions = {},
 ): CostBreakdown {
+  const { excludeEgress = false } = options;
   const termMonths = termYears * MONTHS_PER_YEAR;
 
   const storage = calculateStorageCost(
@@ -102,11 +108,9 @@ export function calculateDiyCost(
     pricing.retrievalPerGb,
     termYears,
   );
-  const internetEgress = calculateEgressCost(
-    capacityTiB,
-    pricing.egressPerGb,
-    termYears,
-  );
+  const internetEgress = excludeEgress
+    ? 0
+    : calculateEgressCost(capacityTiB, pricing.egressPerGb, termYears);
 
   const total = storage + writeOps + readOps + dataRetrieval + internetEgress;
 

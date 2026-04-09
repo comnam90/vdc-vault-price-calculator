@@ -242,6 +242,65 @@ describe("buildComparison", () => {
     });
   });
 
+  describe("excludeEgress option", () => {
+    const baseInputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 10,
+    };
+
+    it("sets internetEgress to 0 on diyOption1 when excludeEgress is true", () => {
+      const result = buildComparison(
+        { ...baseInputs, excludeEgress: true },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(result.diyOption1.internetEgress).toBe(0);
+    });
+
+    it("sets internetEgress to 0 on diyOption2 when excludeEgress is true", () => {
+      const result = buildComparison(
+        { ...baseInputs, excludeEgress: true },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(result.diyOption2.internetEgress).toBe(0);
+    });
+
+    it("diyOption1 total is lower than with egress included", () => {
+      const excluded = buildComparison(
+        { ...baseInputs, excludeEgress: true },
+        coreRegion,
+        awsStandardPricing,
+      );
+      const included = buildComparison(
+        { ...baseInputs, excludeEgress: false },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(excluded.diyOption1.total).toBeLessThan(included.diyOption1.total);
+    });
+
+    it("does not affect vault totals when excludeEgress is true", () => {
+      const withExclusion = buildComparison(
+        { ...baseInputs, excludeEgress: true },
+        coreRegion,
+        awsStandardPricing,
+      );
+      const withoutExclusion = buildComparison(
+        { ...baseInputs, excludeEgress: false },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(withExclusion.vaultFoundation.total).toBe(
+        withoutExclusion.vaultFoundation.total,
+      );
+      expect(withExclusion.vaultAdvanced.total).toBe(
+        withoutExclusion.vaultAdvanced.total,
+      );
+    });
+  });
+
   describe("Advanced-only region", () => {
     const inputs: CalculatorInputs = {
       regionId: "aws-il-central-1",

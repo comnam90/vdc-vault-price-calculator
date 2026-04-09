@@ -117,3 +117,54 @@ describe("calculateDiyCost", () => {
     expect(result.storage).toBeCloseTo(8478.72, 4);
   });
 });
+
+describe("calculateDiyCost with excludeEgress option", () => {
+  const pricing: CloudStoragePricing = {
+    storagePerGbMonth: 0.023,
+    writeOpsCost: 0.005,
+    readOpsCost: 0.0004,
+    opsBatchSize: 1000,
+    retrievalPerGb: 0,
+    egressPerGb: 0.09,
+  };
+
+  it("returns internetEgress of 0 when excludeEgress is true", () => {
+    const result = calculateDiyCost(10, 3, pricing, { excludeEgress: true });
+    expect(result.internetEgress).toBe(0);
+  });
+
+  it("total excludes egress when excludeEgress is true", () => {
+    const withEgress = calculateDiyCost(10, 3, pricing);
+    const withoutEgress = calculateDiyCost(10, 3, pricing, {
+      excludeEgress: true,
+    });
+    expect(withoutEgress.total).toBeCloseTo(
+      withEgress.total - withEgress.internetEgress,
+      10,
+    );
+  });
+
+  it("total still equals sum of all five components when excludeEgress is true", () => {
+    const result = calculateDiyCost(10, 3, pricing, { excludeEgress: true });
+    const sum =
+      result.storage +
+      result.writeOps +
+      result.readOps +
+      result.dataRetrieval +
+      result.internetEgress;
+    expect(result.total).toBeCloseTo(sum, 10);
+  });
+
+  it("behaves identically to the default when excludeEgress is false", () => {
+    const withFlag = calculateDiyCost(10, 3, pricing, { excludeEgress: false });
+    const withoutFlag = calculateDiyCost(10, 3, pricing);
+    expect(withFlag.internetEgress).toBeCloseTo(withoutFlag.internetEgress, 10);
+    expect(withFlag.total).toBeCloseTo(withoutFlag.total, 10);
+  });
+
+  it("behaves identically to the default when options are omitted", () => {
+    const explicit = calculateDiyCost(10, 3, pricing, {});
+    const implicit = calculateDiyCost(10, 3, pricing);
+    expect(explicit.total).toBeCloseTo(implicit.total, 10);
+  });
+});

@@ -61,6 +61,7 @@ describe("CalculatorForm", () => {
         regionId: "aws-us-east-1",
         termYears: 1,
         capacityTiB: 8,
+        excludeEgress: false,
       });
     });
 
@@ -71,6 +72,7 @@ describe("CalculatorForm", () => {
         regionId: "aws-us-east-1",
         termYears: 3,
         capacityTiB: 8,
+        excludeEgress: false,
       });
     });
   });
@@ -99,6 +101,7 @@ describe("CalculatorForm", () => {
         regionId: "aws-us-east-1",
         termYears: 1,
         capacityTiB: 8,
+        excludeEgress: false,
       });
     });
 
@@ -122,6 +125,76 @@ describe("CalculatorForm", () => {
 
     const form = screen.getByRole("form", { name: /vault pricing inputs/i });
     expect(form.className).not.toMatch(/lg:grid-cols-\[/);
+  });
+
+  describe("EgressToggle integration", () => {
+    it("renders the egress toggle in the form", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(<CalculatorForm onInputsChange={vi.fn()} />);
+      expect(screen.getByRole("switch")).toBeInTheDocument();
+    });
+
+    it("toggle is off by default", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(<CalculatorForm onInputsChange={vi.fn()} />);
+      expect(screen.getByRole("switch")).toHaveAttribute(
+        "aria-checked",
+        "false",
+      );
+    });
+
+    it("includes excludeEgress: true in inputs when toggle is on", async () => {
+      const onInputsChange = vi.fn();
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(<CalculatorForm onInputsChange={onInputsChange} />);
+
+      fireEvent.click(
+        screen.getByRole("combobox", { name: /select a region/i }),
+      );
+      fireEvent.click(
+        screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
+      );
+      fireEvent.change(screen.getByLabelText(/protected capacity/i), {
+        target: { value: "8" },
+      });
+      fireEvent.click(screen.getByRole("switch"));
+
+      await waitFor(() => {
+        expect(onInputsChange).toHaveBeenLastCalledWith(
+          expect.objectContaining({ excludeEgress: true }),
+        );
+      });
+    });
+
+    it("pre-populates excludeEgress: true from initialValues", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(
+        <CalculatorForm
+          onInputsChange={vi.fn()}
+          initialValues={{ excludeEgress: true }}
+        />,
+      );
+      expect(screen.getByRole("switch")).toHaveAttribute(
+        "aria-checked",
+        "true",
+      );
+    });
   });
 
   describe("initialValues pre-population", () => {

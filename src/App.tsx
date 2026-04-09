@@ -78,6 +78,7 @@ function App() {
                 comparison={comparison}
                 capacityTiB={inputs.capacityTiB}
                 termYears={inputs.termYears}
+                excludeEgress={inputs.excludeEgress === true}
               />
             ) : null}
           </div>

@@ -29,6 +29,10 @@ export function parseUrlParams(search: string): Partial<CalculatorInputs> {
     }
   }
 
+  if (params.get("egress") === "0") {
+    result.excludeEgress = true;
+  }
+
   return result;
 }
 
@@ -37,5 +41,8 @@ export function serialiseUrlParams(inputs: CalculatorInputs): string {
   params.set("region", inputs.regionId);
   params.set("term", String(inputs.termYears));
   params.set("capacity", String(inputs.capacityTiB));
+  if (inputs.excludeEgress === true) {
+    params.set("egress", "0");
+  }
   return params.toString();
 }

@@ -22,14 +22,15 @@ class ResizeObserverMock {
   }
 
   observe(target: Element) {
+    const boxSize: ResizeObserverSize = { inlineSize: 960, blockSize: 320 };
     this.callback(
       [
         {
           target,
           contentRect: DEFAULT_RECT,
-          borderBoxSize: [],
-          contentBoxSize: [],
-          devicePixelContentBoxSize: [],
+          borderBoxSize: [boxSize],
+          contentBoxSize: [boxSize],
+          devicePixelContentBoxSize: [boxSize],
         } as ResizeObserverEntry,
       ],
       this as unknown as ResizeObserver,

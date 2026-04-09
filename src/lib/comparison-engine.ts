@@ -36,7 +36,8 @@ export function buildComparison(
   region: Region,
   cloudPricing: RegionCloudPricing,
 ): ComparisonResult {
-  const { capacityTiB, termYears } = inputs;
+  const { capacityTiB, termYears, excludeEgress } = inputs;
+  const egressOptions = { excludeEgress: excludeEgress === true };
 
   const foundationService = region.services.vdc_vault.find(
     (s) => s.edition === "Foundation",
@@ -67,12 +68,18 @@ export function buildComparison(
 
   const diyOption1 = cloudPricing.option1Unavailable
     ? ZERO_BREAKDOWN
-    : calculateDiyCost(capacityTiB, termYears, cloudPricing.option1);
+    : calculateDiyCost(
+        capacityTiB,
+        termYears,
+        cloudPricing.option1,
+        egressOptions,
+      );
 
   const diyOption2 = calculateDiyCost(
     capacityTiB,
     termYears,
     cloudPricing.option2,
+    egressOptions,
   );
 
   return {

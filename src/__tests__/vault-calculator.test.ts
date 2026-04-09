@@ -16,15 +16,43 @@ describe("calculateVaultCost", () => {
     expect(result.pricingTbd).toBe(false);
   });
 
-  it("returns null totals with pricingTbd true for Foundation Non-Core", () => {
+  it("returns null totals with pricingTbd true for Foundation Non-Core without provider", () => {
     const result = calculateVaultCost(10, 1, "Foundation", "Non-Core");
     expect(result.total).toBeNull();
     expect(result.perTbMonth).toBeNull();
     expect(result.pricingTbd).toBe(true);
   });
 
-  it("returns null totals with pricingTbd true for Advanced Non-Core", () => {
+  it("returns null totals with pricingTbd true for Advanced Non-Core without provider", () => {
     const result = calculateVaultCost(10, 1, "Advanced", "Non-Core");
+    expect(result.total).toBeNull();
+    expect(result.perTbMonth).toBeNull();
+    expect(result.pricingTbd).toBe(true);
+  });
+
+  it("returns correct total for AWS Foundation Non-Core at $19/TB", () => {
+    const result = calculateVaultCost(10, 1, "Foundation", "Non-Core", "AWS");
+    expect(result.total).toBe(2280); // 10 * 19 * 12
+    expect(result.perTbMonth).toBe(19);
+    expect(result.pricingTbd).toBe(false);
+  });
+
+  it("returns correct total for Azure Foundation Non-Core at $24/TB", () => {
+    const result = calculateVaultCost(10, 1, "Foundation", "Non-Core", "Azure");
+    expect(result.total).toBe(2880); // 10 * 24 * 12
+    expect(result.perTbMonth).toBe(24);
+    expect(result.pricingTbd).toBe(false);
+  });
+
+  it("returns correct total for Azure Advanced Non-Core at $40/TB", () => {
+    const result = calculateVaultCost(10, 1, "Advanced", "Non-Core", "Azure");
+    expect(result.total).toBe(4800); // 10 * 40 * 12
+    expect(result.perTbMonth).toBe(40);
+    expect(result.pricingTbd).toBe(false);
+  });
+
+  it("returns null totals with pricingTbd true for AWS Advanced Non-Core (TBD)", () => {
+    const result = calculateVaultCost(10, 1, "Advanced", "Non-Core", "AWS");
     expect(result.total).toBeNull();
     expect(result.perTbMonth).toBeNull();
     expect(result.pricingTbd).toBe(true);

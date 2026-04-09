@@ -31,6 +31,8 @@ export interface RegionCloudPricing {
 export interface VaultPricing {
   edition: VaultEdition;
   tier: VaultTier;
+  /** Cloud provider for provider-specific pricing (Non-Core). Absent means provider-agnostic. */
+  provider?: CloudProvider;
   /** USD per TB per month. 0 means pricing TBD. */
   pricePerTbMonth: number;
 }

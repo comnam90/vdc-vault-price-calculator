@@ -10,7 +10,6 @@ describe("type contracts", () => {
   });
 
   it("vault pricing covers all 4 edition/tier combos", () => {
-    expect(VAULT_PRICING).toHaveLength(4);
     const keys = VAULT_PRICING.map((p) => `${p.edition}-${p.tier}`);
     expect(keys).toContain("Foundation-Core");
     expect(keys).toContain("Advanced-Core");

@@ -1,6 +1,6 @@
 import { MONTHS_PER_YEAR } from "@/lib/constants";
 import { getVaultPrice } from "@/data/vault-pricing";
-import type { VaultEdition, VaultTier } from "@/types/region";
+import type { CloudProvider, VaultEdition, VaultTier } from "@/types/region";
 import type { VaultCostResult } from "@/types/calculator";
 
 /**
@@ -17,8 +17,9 @@ export function calculateVaultCost(
   termYears: number,
   edition: VaultEdition,
   tier: VaultTier,
+  provider?: CloudProvider,
 ): VaultCostResult {
-  const pricing = getVaultPrice(edition, tier);
+  const pricing = getVaultPrice(edition, tier, provider);
 
   if (!pricing) {
     return { total: null, perTbMonth: null, pricingTbd: false };

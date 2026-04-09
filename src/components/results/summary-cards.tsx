@@ -137,26 +137,31 @@ export function SummaryCards({
         const isCheapest =
           cheapestTotal !== null && card.total === cheapestTotal;
 
+        const isVault =
+          card.id === "vault-foundation" || card.id === "vault-advanced";
+        const isDiy = card.id === "diy-option-1" || card.id === "diy-option-2";
+
         return (
           <Card
             key={card.id}
             style={{ animationDelay: `${index * 80}ms` }}
             className={cn(
               "border-border/70 bg-background/90 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 rounded-[1.5rem] shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--electric-azure)_60%,transparent)] motion-safe:duration-500",
+              isVault &&
+                !isCheapest &&
+                "border-t-2 border-t-[color:var(--viridis)]/40",
+              isDiy &&
+                !isCheapest &&
+                "border-t-2 border-t-[color:var(--electric-azure)]/35",
               isCheapest &&
-                "bg-card-tint-success border-[color:var(--success)]/25 shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--success)_50%,transparent)]",
+                "bg-card-tint-success border-t-2 border-[color:var(--success)]/25 border-t-[color:var(--viridis)]/60 shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--success)_50%,transparent)]",
             )}
           >
             <CardHeader className="gap-3">
               <div className="flex items-start justify-between gap-3">
-                <div className="space-y-2">
-                  <CardDescription className="font-mono text-[0.68rem] tracking-[0.22em] uppercase">
-                    Comparison option
-                  </CardDescription>
-                  <CardTitle className="text-base leading-6 tracking-[-0.03em]">
-                    {card.title}
-                  </CardTitle>
-                </div>
+                <CardTitle className="text-base leading-6 tracking-[-0.03em]">
+                  {card.title}
+                </CardTitle>
                 {isCheapest ? (
                   <Badge className="rounded-full border border-[color:var(--success)]/20 bg-[color:var(--success-muted)] px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.16em] text-[color:var(--dark-mineral)] uppercase">
                     Lowest total
@@ -165,7 +170,7 @@ export function SummaryCards({
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="dark:text-foreground text-2xl font-semibold tracking-[-0.05em] text-balance text-[color:var(--dark-mineral)] [font-variant-numeric:tabular-nums]">
+              <p className="dark:text-foreground text-2xl font-semibold tracking-[-0.05em] text-[color:var(--dark-mineral)] [font-variant-numeric:tabular-nums]">
                 {formatTotalValue(
                   card.total,
                   card.pricingTbd,

@@ -79,7 +79,7 @@ Core flow is complete: region fetch -> calculator inputs -> comparison engine ->
 
 ## DATA SOURCES
 
-- **Region availability:** `https://vdcmap.bcthomas.com/regions?service=vdc_vault`
+- **Region availability:** `https://vdcmap.bcthomas.com/api/v1/regions?service=vdc_vault`
 - **Vault pricing:** static values in `src/data/vault-pricing.ts`
 - **DIY cloud pricing:** static dataset in `src/data/cloud-pricing.ts`
 

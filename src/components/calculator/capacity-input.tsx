@@ -42,7 +42,7 @@ export function CapacityInput({
           placeholder="Enter capacity"
           value={displayValue}
           onChange={handleChange}
-          className="border-border/70 bg-background/85 h-11 rounded-xl pr-14 shadow-[0_1px_0_color-mix(in_oklab,var(--dark-mineral)_8%,transparent)]"
+          className="border-border/70 bg-background/85 h-11 rounded-xl pr-14 shadow-[0_1px_0_color-mix(in_oklab,var(--dark-mineral)_8%,transparent)] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
         <span className="text-muted-foreground pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm font-medium">
           TiB

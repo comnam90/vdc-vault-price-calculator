@@ -1,4 +1,4 @@
-# VDC Vault Price Calculator
+# VDC Vault TCO Calculator
 
 An unofficial price comparison tool for [Veeam Data Cloud Vault](https://www.veeam.com/products/veeam-data-cloud/vault.html). Compare VDC Vault costs against DIY cloud storage across 60+ global regions.
 
@@ -8,12 +8,12 @@ An unofficial price comparison tool for [Veeam Data Cloud Vault](https://www.vee
 
 Select a cloud region, term length (1-5 years), and storage capacity (TiB) to see a 4-way cost comparison:
 
-| Comparison | Description |
-|---|---|
-| **VDC Vault Foundation** | Veeam Data Cloud Vault Foundation edition RRP |
-| **VDC Vault Advanced** | Veeam Data Cloud Vault Advanced edition RRP |
-| **DIY Cloud Option 1** | Azure Blob Hot / AWS S3 Standard (self-managed) |
-| **DIY Cloud Option 2** | Azure Blob Cool / AWS S3 Infrequent Access (self-managed) |
+| Comparison               | Description                                               |
+| ------------------------ | --------------------------------------------------------- |
+| **VDC Vault Foundation** | Veeam Data Cloud Vault Foundation edition RRP             |
+| **VDC Vault Advanced**   | Veeam Data Cloud Vault Advanced edition RRP               |
+| **DIY Cloud Option 1**   | Azure Blob Hot / AWS S3 Standard (self-managed)           |
+| **DIY Cloud Option 2**   | Azure Blob Cool / AWS S3 Infrequent Access (self-managed) |
 
 DIY costs are broken down into: Storage, Write Operations, Read Operations, Data Retrieval, and Internet Egress.
 

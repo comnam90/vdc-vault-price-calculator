@@ -17,7 +17,7 @@ describe("SiteHeader", () => {
     expect(header).not.toBeNull();
 
     expect(
-      within(header as HTMLElement).getByText("VDC Vault Price Calculator"),
+      within(header as HTMLElement).getByText("VDC Vault TCO Calculator"),
     ).toBeInTheDocument();
     expect(
       within(header as HTMLElement).getByText("Unofficial"),
@@ -29,7 +29,7 @@ describe("SiteHeader", () => {
 
     expect(repositoryLink).toHaveAttribute(
       "href",
-      "https://github.com/comnam90/vdc-vault-price-calculator",
+      "https://github.com/comnam90/vdc-vault-tco-calculator",
     );
     expect(repositoryLink).toHaveAttribute(
       "rel",

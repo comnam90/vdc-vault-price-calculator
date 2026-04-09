@@ -57,7 +57,7 @@ describe("App", () => {
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /vdc vault price calculator/i }),
+      screen.getByRole("heading", { name: /vdc vault tco calculator/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("form", { name: /vault pricing inputs/i }),

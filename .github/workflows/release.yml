@@ -39,5 +39,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name=vdc-vault-price-calculator --branch=main
+          command: pages deploy ./dist --project-name=vdc-vault-tco-calculator --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

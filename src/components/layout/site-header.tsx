@@ -31,12 +31,13 @@ export function SiteHeader() {
               ))}
             </div>
             <div className="space-y-2">
-              <h1 className="dark:text-foreground max-w-2xl text-3xl font-semibold tracking-[-0.04em] text-balance text-[color:var(--dark-mineral)] sm:text-4xl">
+              <h1 className="font-heading dark:text-foreground max-w-2xl text-3xl font-bold tracking-[-0.04em] text-balance text-[color:var(--dark-mineral)] sm:text-4xl">
                 VDC Vault TCO Calculator
               </h1>
               <p className="text-muted-foreground max-w-2xl text-sm leading-6 sm:text-base">
-                Compare regional VDC Vault economics with the restraint and
-                signal of a refined operator desk.
+                See the full cost of VDC Vault Foundation and Advanced versus
+                building your own cloud storage — broken down by region, term,
+                and protected capacity.
               </p>
             </div>
           </div>

@@ -51,6 +51,7 @@ export function buildComparison(
         termYears,
         foundationService.edition,
         foundationService.tier,
+        region.provider,
       )
     : UNAVAILABLE;
 
@@ -60,6 +61,7 @@ export function buildComparison(
         termYears,
         advancedService.edition,
         advancedService.tier,
+        region.provider,
       )
     : UNAVAILABLE;
 

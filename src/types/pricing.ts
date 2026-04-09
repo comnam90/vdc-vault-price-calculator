@@ -18,12 +18,14 @@ export interface CloudStoragePricing {
 export interface RegionCloudPricing {
   regionId: string;
   provider: CloudProvider;
-  /** Azure Hot or AWS S3 Standard */
+  /** Azure Cool ZRS or AWS S3 Standard */
   option1: CloudStoragePricing;
-  /** Azure Cool or AWS S3 Infrequent Access */
+  /** Azure Cool LRS or AWS S3 Infrequent Access */
   option2: CloudStoragePricing;
   option1Label: string;
   option2Label: string;
+  /** True when ZRS redundancy is not available in this Azure region */
+  option1Unavailable?: true;
 }
 
 export interface VaultPricing {

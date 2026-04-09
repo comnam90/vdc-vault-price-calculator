@@ -121,6 +121,55 @@ describe("buildComparison", () => {
     });
   });
 
+  describe("Azure region with ZRS unavailable", () => {
+    const azureUnavailablePricing: RegionCloudPricing = {
+      ...awsStandardPricing,
+      regionId: "azure-us-west",
+      provider: "Azure",
+      option1Label: "Cool Blob ZRS",
+      option2Label: "Cool Blob LRS",
+      option1Unavailable: true,
+    };
+
+    const inputs: CalculatorInputs = {
+      regionId: "azure-us-west",
+      termYears: 3,
+      capacityTiB: 10,
+    };
+
+    it("sets diyOption1Unavailable to true", () => {
+      const result = buildComparison(
+        inputs,
+        coreRegion,
+        azureUnavailablePricing,
+      );
+      expect(result.diyOption1Unavailable).toBe(true);
+    });
+
+    it("returns zero diyOption1 total when unavailable", () => {
+      const result = buildComparison(
+        inputs,
+        coreRegion,
+        azureUnavailablePricing,
+      );
+      expect(result.diyOption1.total).toBe(0);
+    });
+
+    it("still computes diyOption2 normally when option1 unavailable", () => {
+      const result = buildComparison(
+        inputs,
+        coreRegion,
+        azureUnavailablePricing,
+      );
+      expect(result.diyOption2.total).toBeGreaterThan(0);
+    });
+
+    it("does not set diyOption1Unavailable for normal pricing", () => {
+      const result = buildComparison(inputs, coreRegion, awsStandardPricing);
+      expect(result.diyOption1Unavailable).toBeUndefined();
+    });
+  });
+
   describe("Advanced-only region", () => {
     const inputs: CalculatorInputs = {
       regionId: "aws-il-central-1",

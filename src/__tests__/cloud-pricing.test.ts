@@ -28,8 +28,9 @@ describe("cloud pricing data integrity", () => {
     }
   });
 
-  it("option1 storage rate >= option2 storage rate (hot/standard costs more)", () => {
+  it("option1 storage rate >= option2 storage rate (ZRS/standard costs more)", () => {
     for (const [, pricing] of entries) {
+      if (pricing.option1Unavailable) continue;
       expect(pricing.option1.storagePerGbMonth).toBeGreaterThanOrEqual(
         pricing.option2.storagePerGbMonth,
       );
@@ -95,13 +96,19 @@ describe("cloud pricing data integrity", () => {
     expect(CLOUD_PRICING["azure-west-europe"].option1.egressPerGb).toBe(0.087);
   });
 
-  it("spot-checks Azure storage prices match published list prices", () => {
-    // Source: https://azure.microsoft.com/en-us/pricing/details/storage/blobs/ (Hot LRS, first tier)
+  it("spot-checks Azure Cool ZRS storage prices match Azure Retail API values", () => {
+    // Source: https://prices.azure.com/api/retail/prices (Cool ZRS, General Block Blob v2)
     expect(CLOUD_PRICING["azure-us-east"].option1.storagePerGbMonth).toBe(
-      0.0208,
+      0.019,
     );
     expect(CLOUD_PRICING["azure-west-europe"].option1.storagePerGbMonth).toBe(
-      0.0196,
+      0.0131,
+    );
+    expect(CLOUD_PRICING["azure-us-east2"].option1.storagePerGbMonth).toBe(
+      0.0125,
+    );
+    expect(CLOUD_PRICING["azure-brazil-south"].option1.storagePerGbMonth).toBe(
+      0.0221,
     );
   });
 
@@ -115,10 +122,50 @@ describe("cloud pricing data integrity", () => {
     }
   });
 
-  it("option1 has no retrieval fee and option2 has a retrieval fee", () => {
+  it("AWS S3 Standard (option1) has no retrieval fee", () => {
     for (const [, pricing] of entries) {
-      expect(pricing.option1.retrievalPerGb).toBe(0);
+      if (pricing.provider === "AWS") {
+        expect(pricing.option1.retrievalPerGb).toBe(0);
+      }
+    }
+  });
+
+  it("option2 always has a retrieval fee", () => {
+    for (const [, pricing] of entries) {
       expect(pricing.option2.retrievalPerGb).toBeGreaterThan(0);
+    }
+  });
+
+  it("Azure regions use Cool Blob ZRS / Cool Blob LRS labels", () => {
+    for (const [, pricing] of entries) {
+      if (pricing.provider === "Azure") {
+        expect(pricing.option1Label).toBe("Cool Blob ZRS");
+        expect(pricing.option2Label).toBe("Cool Blob LRS");
+      }
+    }
+  });
+
+  it("ZRS-unavailable Azure regions are flagged and ZRS-available ones are not", () => {
+    const unavailableIds = [
+      "azure-us-north-central",
+      "azure-us-west",
+      "azure-canada-east",
+      "azure-australia-southeast",
+      "azure-south-india",
+      "azure-south-africa-west",
+    ];
+
+    for (const id of unavailableIds) {
+      expect(CLOUD_PRICING[id].option1Unavailable).toBe(true);
+    }
+
+    const availableAzureIds = Object.keys(CLOUD_PRICING).filter(
+      (id) =>
+        CLOUD_PRICING[id].provider === "Azure" && !unavailableIds.includes(id),
+    );
+
+    for (const id of availableAzureIds) {
+      expect(CLOUD_PRICING[id].option1Unavailable).toBeUndefined();
     }
   });
 });

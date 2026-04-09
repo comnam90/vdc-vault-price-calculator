@@ -23,6 +23,7 @@ interface SummaryCardItem {
   total: number | null;
   rate: number | null;
   pricingTbd: boolean;
+  unavailable?: boolean;
 }
 
 function deriveDiyRate(
@@ -37,7 +38,15 @@ function deriveDiyRate(
   return total / (capacityTiB * termYears * MONTHS_PER_YEAR);
 }
 
-function formatTotalValue(total: number | null, pricingTbd: boolean): string {
+function formatTotalValue(
+  total: number | null,
+  pricingTbd: boolean,
+  unavailable?: boolean,
+): string {
+  if (unavailable) {
+    return "ZRS not available";
+  }
+
   if (pricingTbd) {
     return "Pricing TBD";
   }
@@ -49,7 +58,15 @@ function formatTotalValue(total: number | null, pricingTbd: boolean): string {
   return formatUSD(total);
 }
 
-function formatRateValue(rate: number | null, pricingTbd: boolean): string {
+function formatRateValue(
+  rate: number | null,
+  pricingTbd: boolean,
+  unavailable?: boolean,
+): string {
+  if (unavailable) {
+    return "—";
+  }
+
   if (pricingTbd) {
     return "TBD";
   }
@@ -84,9 +101,14 @@ export function SummaryCards({
     {
       id: "diy-option-1",
       title: comparison.diyOption1Label,
-      total: comparison.diyOption1.total,
-      rate: deriveDiyRate(comparison.diyOption1.total, capacityTiB, termYears),
+      total: comparison.diyOption1Unavailable
+        ? null
+        : comparison.diyOption1.total,
+      rate: comparison.diyOption1Unavailable
+        ? null
+        : deriveDiyRate(comparison.diyOption1.total, capacityTiB, termYears),
       pricingTbd: false,
+      unavailable: comparison.diyOption1Unavailable,
     },
     {
       id: "diy-option-2",
@@ -144,14 +166,22 @@ export function SummaryCards({
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="dark:text-foreground text-2xl font-semibold tracking-[-0.05em] text-balance text-[color:var(--dark-mineral)] [font-variant-numeric:tabular-nums]">
-                {formatTotalValue(card.total, card.pricingTbd)}
+                {formatTotalValue(
+                  card.total,
+                  card.pricingTbd,
+                  card.unavailable,
+                )}
               </p>
               <div className="space-y-1">
                 <p className="text-muted-foreground font-mono text-[0.68rem] tracking-[0.2em] uppercase">
                   Effective rate
                 </p>
                 <p className="text-sm font-medium">
-                  {formatRateValue(card.rate, card.pricingTbd)}
+                  {formatRateValue(
+                    card.rate,
+                    card.pricingTbd,
+                    card.unavailable,
+                  )}
                 </p>
               </div>
             </CardContent>

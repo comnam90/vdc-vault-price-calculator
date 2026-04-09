@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -7,12 +7,22 @@ import { ResultsPanel } from "@/components/results/results-panel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CLOUD_PRICING } from "@/data/cloud-pricing";
 import { useRegions } from "@/hooks/use-regions";
+import { useUrlState } from "@/hooks/use-url-state";
 import { buildComparison } from "@/lib/comparison-engine";
 import type { CalculatorInputs } from "@/types/calculator";
 
 function App() {
   const [inputs, setInputs] = useState<CalculatorInputs | null>(null);
   const { regions, isLoading, error } = useRegions();
+  const { urlDerivedInputs, urlKey, syncToUrl } = useUrlState();
+
+  const handleInputsChange = useCallback(
+    (newInputs: CalculatorInputs | null) => {
+      setInputs(newInputs);
+      syncToUrl(newInputs);
+    },
+    [syncToUrl],
+  );
 
   const selectedRegion = useMemo(() => {
     if (inputs === null) {
@@ -56,7 +66,11 @@ function App() {
             </Alert>
           ) : null}
 
-          <CalculatorForm onInputsChange={setInputs} />
+          <CalculatorForm
+            key={urlKey}
+            initialValues={urlDerivedInputs}
+            onInputsChange={handleInputsChange}
+          />
 
           <div aria-live="polite">
             {comparison !== null && inputs !== null ? (

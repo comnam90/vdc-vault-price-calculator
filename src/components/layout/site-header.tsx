@@ -1,5 +1,6 @@
 import { Github, ShieldAlert } from "lucide-react";
 
+import { ShareButton } from "@/components/calculator/share-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -43,21 +44,24 @@ export function SiteHeader() {
             </div>
           </div>
 
-          <Button
-            asChild
-            variant="outline"
-            className="bg-background/80 w-full justify-center rounded-full border-[color:var(--electric-azure)]/35 text-[color:var(--electric-azure)] shadow-[0_0_0_1px_color-mix(in_oklab,var(--electric-azure)_16%,transparent)] hover:bg-[color:var(--info-muted)] sm:w-auto"
-          >
-            <a
-              href="https://github.com/comnam90/vdc-vault-price-calculator"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub repository"
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <ShareButton />
+            <Button
+              asChild
+              variant="outline"
+              className="bg-background/80 w-full justify-center rounded-full border-[color:var(--electric-azure)]/35 text-[color:var(--electric-azure)] shadow-[0_0_0_1px_color-mix(in_oklab,var(--electric-azure)_16%,transparent)] hover:bg-[color:var(--info-muted)] sm:w-auto"
             >
-              <Github className="size-4" />
-              GitHub repository
-            </a>
-          </Button>
+              <a
+                href="https://github.com/comnam90/vdc-vault-price-calculator"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub repository"
+              >
+                <Github className="size-4" />
+                GitHub repository
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </header>

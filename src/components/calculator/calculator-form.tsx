@@ -16,13 +16,45 @@ import type { Region } from "@/types/region";
 
 interface CalculatorFormProps {
   onInputsChange: (inputs: CalculatorInputs | null) => void;
+  initialValues?: Partial<CalculatorInputs>;
 }
 
-export function CalculatorForm({ onInputsChange }: CalculatorFormProps) {
+export function CalculatorForm({
+  onInputsChange,
+  initialValues,
+}: CalculatorFormProps) {
   const { regions, isLoading } = useRegions();
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
-  const [termYears, setTermYears] = useState(1);
-  const [capacityTiB, setCapacityTiB] = useState(0);
+
+  // Explicit user selection — null means "not yet chosen by the user"
+  const [userSelectedRegion, setUserSelectedRegion] = useState<Region | null>(
+    null,
+  );
+  const [userHasSelected, setUserHasSelected] = useState(false);
+
+  const [termYears, setTermYears] = useState(initialValues?.termYears ?? 1);
+  const [capacityTiB, setCapacityTiB] = useState(
+    initialValues?.capacityTiB ?? 0,
+  );
+
+  // Before the user makes an explicit choice, derive the region from initialValues.
+  // After user interaction, userHasSelected takes precedence.
+  const initialRegionId = initialValues?.regionId;
+  const selectedRegion = useMemo<Region | null>(() => {
+    if (userHasSelected) return userSelectedRegion;
+    if (!initialRegionId || isLoading) return null;
+    return regions.find((r) => r.id === initialRegionId) ?? null;
+  }, [
+    userHasSelected,
+    userSelectedRegion,
+    initialRegionId,
+    isLoading,
+    regions,
+  ]);
+
+  const handleRegionChange = (region: Region | null) => {
+    setUserHasSelected(true);
+    setUserSelectedRegion(region);
+  };
 
   const completeInputs = useMemo<CalculatorInputs | null>(() => {
     if (!selectedRegion || capacityTiB < 1) {
@@ -61,7 +93,7 @@ export function CalculatorForm({ onInputsChange }: CalculatorFormProps) {
               regions={regions}
               isLoading={isLoading}
               selectedRegion={selectedRegion}
-              onRegionChange={setSelectedRegion}
+              onRegionChange={handleRegionChange}
             />
           </div>
           <TermSelector value={termYears} onTermChange={setTermYears} />

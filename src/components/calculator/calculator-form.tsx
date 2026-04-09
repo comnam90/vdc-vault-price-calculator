@@ -79,8 +79,8 @@ export function CalculatorForm({
           Calculation inputs
         </CardTitle>
         <CardDescription>
-          Select a provider region, commitment term, and protected capacity.
-          Inputs update immediately—no submit flow.
+          Select a region, commitment term, and protected capacity to see a live
+          cost comparison.
         </CardDescription>
       </CardHeader>
       <CardContent className="py-6">

@@ -85,6 +85,28 @@ describe("parseUrlParams", () => {
     const result = parseUrlParams("?region=aws-us-east-1&foo=bar&term=2");
     expect(result).toEqual({ regionId: "aws-us-east-1", termYears: 2 });
   });
+
+  it("parses egress=0 as excludeEgress: true", () => {
+    const result = parseUrlParams(
+      "?region=aws-us-east-1&term=3&capacity=50&egress=0",
+    );
+    expect(result.excludeEgress).toBe(true);
+  });
+
+  it("omits excludeEgress when egress param is absent", () => {
+    const result = parseUrlParams("?region=aws-us-east-1&term=3&capacity=50");
+    expect(result).not.toHaveProperty("excludeEgress");
+  });
+
+  it("omits excludeEgress when egress=1 (egress included)", () => {
+    const result = parseUrlParams("?egress=1");
+    expect(result).not.toHaveProperty("excludeEgress");
+  });
+
+  it("ignores invalid egress param values", () => {
+    const result = parseUrlParams("?egress=true");
+    expect(result).not.toHaveProperty("excludeEgress");
+  });
 });
 
 describe("serialiseUrlParams", () => {
@@ -118,5 +140,45 @@ describe("serialiseUrlParams", () => {
     };
     const result = parseUrlParams("?" + serialiseUrlParams(inputs));
     expect(result).toEqual(inputs);
+  });
+
+  it("includes egress=0 when excludeEgress is true", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+      excludeEgress: true,
+    };
+    expect(serialiseUrlParams(inputs)).toContain("egress=0");
+  });
+
+  it("omits egress param when excludeEgress is false", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+      excludeEgress: false,
+    };
+    expect(serialiseUrlParams(inputs)).not.toContain("egress");
+  });
+
+  it("omits egress param when excludeEgress is absent", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+    };
+    expect(serialiseUrlParams(inputs)).not.toContain("egress");
+  });
+
+  it("round-trips excludeEgress: true through parseUrlParams", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-eu-west-1",
+      termYears: 5,
+      capacityTiB: 250,
+      excludeEgress: true,
+    };
+    const result = parseUrlParams("?" + serialiseUrlParams(inputs));
+    expect(result.excludeEgress).toBe(true);
   });
 });

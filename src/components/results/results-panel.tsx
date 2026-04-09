@@ -13,12 +13,14 @@ interface ResultsPanelProps {
   comparison: ComparisonResult | null;
   capacityTiB: number;
   termYears: number;
+  excludeEgress?: boolean;
 }
 
 export function ResultsPanel({
   comparison,
   capacityTiB,
   termYears,
+  excludeEgress,
 }: ResultsPanelProps) {
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -71,7 +73,10 @@ export function ResultsPanel({
         </TabsContent>
 
         <TabsContent value="breakdown" className="space-y-4">
-          <CostBreakdownTable comparison={comparison} />
+          <CostBreakdownTable
+            comparison={comparison}
+            excludeEgress={excludeEgress}
+          />
           <Assumptions />
         </TabsContent>
       </Tabs>

@@ -182,6 +182,7 @@ describe("App", () => {
       regionId: "aws-us-east-1",
       termYears: 1,
       capacityTiB: 8,
+      excludeEgress: false,
     });
   }, 10_000);
 });

@@ -2,6 +2,7 @@ export interface CalculatorInputs {
   regionId: string;
   termYears: number;
   capacityTiB: number;
+  excludeEgress?: boolean;
 }
 
 export interface CostBreakdown {

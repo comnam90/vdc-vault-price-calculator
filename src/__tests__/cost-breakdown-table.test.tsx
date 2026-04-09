@@ -69,6 +69,36 @@ describe("CostBreakdownTable", () => {
     expect(naInFooter.length).toBeGreaterThanOrEqual(1);
   });
 
+  it("shows 'Internet Egress (excluded)' when excludeEgress is true", () => {
+    render(
+      <CostBreakdownTable
+        comparison={{
+          ...fixtureComparison,
+          diyOption1: { ...fixtureComparison.diyOption1, internetEgress: 0 },
+          diyOption2: { ...fixtureComparison.diyOption2, internetEgress: 0 },
+        }}
+        excludeEgress={true}
+      />,
+    );
+    expect(screen.getByText("Internet Egress (excluded)")).toBeInTheDocument();
+    expect(screen.queryByText("Internet Egress")).not.toBeInTheDocument();
+  });
+
+  it("shows 'Internet Egress' (no suffix) when excludeEgress is false", () => {
+    render(
+      <CostBreakdownTable
+        comparison={fixtureComparison}
+        excludeEgress={false}
+      />,
+    );
+    expect(screen.getByText("Internet Egress")).toBeInTheDocument();
+  });
+
+  it("shows 'Internet Egress' when excludeEgress is omitted", () => {
+    render(<CostBreakdownTable comparison={fixtureComparison} />);
+    expect(screen.getByText("Internet Egress")).toBeInTheDocument();
+  });
+
   it("shows N/A and TBD in vault totals when editions are unavailable", () => {
     const { container } = render(
       <CostBreakdownTable

@@ -26,6 +26,7 @@ import type { ComparisonResult, VaultCostResult } from "@/types/calculator";
 
 interface CostBreakdownTableProps {
   comparison: ComparisonResult;
+  excludeEgress?: boolean;
 }
 
 interface BreakdownRow {
@@ -44,7 +45,10 @@ function formatVaultTotal(result: VaultCostResult): string {
   return formatUSD(result.total);
 }
 
-export function CostBreakdownTable({ comparison }: CostBreakdownTableProps) {
+export function CostBreakdownTable({
+  comparison,
+  excludeEgress,
+}: CostBreakdownTableProps) {
   const fmt1 = (val: number) =>
     comparison.diyOption1Unavailable ? "N/A" : formatUSD(val);
 
@@ -78,7 +82,9 @@ export function CostBreakdownTable({ comparison }: CostBreakdownTableProps) {
       diyOption2: formatUSD(comparison.diyOption2.dataRetrieval),
     },
     {
-      category: "Internet Egress",
+      category: excludeEgress
+        ? "Internet Egress (excluded)"
+        : "Internet Egress",
       foundation: "--",
       advanced: "--",
       diyOption1: fmt1(comparison.diyOption1.internetEgress),

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { CapacityInput } from "@/components/calculator/capacity-input";
+import { EgressToggle } from "@/components/calculator/egress-toggle";
 import { RegionSelector } from "@/components/calculator/region-selector";
 import { TermSelector } from "@/components/calculator/term-selector";
 import {
@@ -35,6 +36,9 @@ export function CalculatorForm({
   const [capacityTiB, setCapacityTiB] = useState(
     initialValues?.capacityTiB ?? 0,
   );
+  const [excludeEgress, setExcludeEgress] = useState(
+    initialValues?.excludeEgress ?? false,
+  );
 
   // Before the user makes an explicit choice, derive the region from initialValues.
   // After user interaction, userHasSelected takes precedence.
@@ -65,8 +69,9 @@ export function CalculatorForm({
       regionId: selectedRegion.id,
       termYears,
       capacityTiB,
+      excludeEgress,
     };
-  }, [capacityTiB, selectedRegion, termYears]);
+  }, [capacityTiB, excludeEgress, selectedRegion, termYears]);
 
   useEffect(() => {
     onInputsChange(completeInputs);
@@ -101,6 +106,12 @@ export function CalculatorForm({
             value={capacityTiB}
             onCapacityChange={setCapacityTiB}
           />
+          <div className="lg:col-span-2">
+            <EgressToggle
+              checked={excludeEgress}
+              onCheckedChange={setExcludeEgress}
+            />
+          </div>
         </form>
       </CardContent>
     </Card>

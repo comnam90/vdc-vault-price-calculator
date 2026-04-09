@@ -60,6 +60,20 @@ describe("ResultsPanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows a USD currency indicator next to the results heading", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const usdLabel = screen.getByText("(USD)");
+    expect(usdLabel).toBeInTheDocument();
+    expect(usdLabel.closest("h2")).toBeInTheDocument();
+  });
+
   it("shows the non-core pricing banner when comparison data includes TBD vault totals", () => {
     render(
       <ResultsPanel

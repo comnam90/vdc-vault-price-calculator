@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.1.1...v1.2.0) (2026-04-10)
+
+
+### Features
+
+* **calculator:** dynamic restore percentage slider ([#37](https://github.com/comnam90/vdc-vault-tco-calculator/issues/37)) ([bf2d14e](https://github.com/comnam90/vdc-vault-tco-calculator/commit/bf2d14e6504c28f220114fa84194c359321c73be))
+
 ## [1.1.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.1.0...v1.1.1) (2026-04-10)
 
 

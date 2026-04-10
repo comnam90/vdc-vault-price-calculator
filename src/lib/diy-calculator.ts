@@ -35,45 +35,49 @@ export function calculateWriteOpsCost(
 
 /**
  * Read ops cost.
- * Assumes ANNUAL_READ_FACTOR of stored data is read back per year.
+ * Assumes readFactor of stored data is read back per year (defaults to ANNUAL_READ_FACTOR).
  */
 export function calculateReadOpsCost(
   capacityTiB: number,
   opsCost: number,
   opsBatchSize: number,
   termYears: number,
+  readFactor: number = ANNUAL_READ_FACTOR,
 ): number {
-  const opsPerYear =
-    (capacityTiB * TIB_TO_MB * ANNUAL_READ_FACTOR) / OPERATION_SIZE_MB;
+  const opsPerYear = (capacityTiB * TIB_TO_MB * readFactor) / OPERATION_SIZE_MB;
   return opsPerYear * (opsCost / opsBatchSize) * termYears;
 }
 
 /**
  * Data retrieval cost.
- * Assumes ANNUAL_READ_FACTOR of stored data is retrieved per year.
+ * Assumes readFactor of stored data is retrieved per year (defaults to ANNUAL_READ_FACTOR).
  */
 export function calculateRetrievalCost(
   capacityTiB: number,
   ratePerGb: number,
   termYears: number,
+  readFactor: number = ANNUAL_READ_FACTOR,
 ): number {
-  return capacityTiB * TIB_TO_GB * ANNUAL_READ_FACTOR * ratePerGb * termYears;
+  return capacityTiB * TIB_TO_GB * readFactor * ratePerGb * termYears;
 }
 
 /**
  * Internet egress cost.
- * Assumes ANNUAL_EGRESS_FACTOR of stored data is egressed per year.
+ * Assumes egressFactor of stored data is egressed per year (defaults to ANNUAL_EGRESS_FACTOR).
  */
 export function calculateEgressCost(
   capacityTiB: number,
   ratePerGb: number,
   termYears: number,
+  egressFactor: number = ANNUAL_EGRESS_FACTOR,
 ): number {
-  return capacityTiB * TIB_TO_GB * ANNUAL_EGRESS_FACTOR * ratePerGb * termYears;
+  return capacityTiB * TIB_TO_GB * egressFactor * ratePerGb * termYears;
 }
 
 interface DiyCostOptions {
   excludeEgress?: boolean;
+  /** Annual restore percentage (0–100). Defaults to 20. Drives read ops, retrieval, and egress. */
+  restorePercentage?: number;
 }
 
 /** Compute all DIY cost components and their total. */
@@ -83,7 +87,8 @@ export function calculateDiyCost(
   pricing: CloudStoragePricing,
   options: DiyCostOptions = {},
 ): CostBreakdown {
-  const { excludeEgress = false } = options;
+  const { excludeEgress = false, restorePercentage = 20 } = options;
+  const restoreFactor = restorePercentage / 100;
   const termMonths = termYears * MONTHS_PER_YEAR;
 
   const storage = calculateStorageCost(
@@ -102,17 +107,75 @@ export function calculateDiyCost(
     pricing.readOpsCost,
     pricing.opsBatchSize,
     termYears,
+    restoreFactor,
   );
   const dataRetrieval = calculateRetrievalCost(
     capacityTiB,
     pricing.retrievalPerGb,
     termYears,
+    restoreFactor,
   );
   const internetEgress = excludeEgress
     ? 0
-    : calculateEgressCost(capacityTiB, pricing.egressPerGb, termYears);
+    : calculateEgressCost(
+        capacityTiB,
+        pricing.egressPerGb,
+        termYears,
+        restoreFactor,
+      );
 
   const total = storage + writeOps + readOps + dataRetrieval + internetEgress;
 
   return { storage, writeOps, readOps, dataRetrieval, internetEgress, total };
+}
+
+/**
+ * Calculate the overage cost for Vault Foundation when the restore percentage
+ * exceeds the 20% included in the flat fee.
+ *
+ * Only the incremental fraction above 20% is charged, using option2 cloud
+ * pricing (S3 IA for AWS, Blob LRS for Azure).
+ *
+ * Returns 0 when restorePercentage ≤ 20.
+ */
+export function calculateVaultFoundationOverage(
+  capacityTiB: number,
+  termYears: number,
+  restorePercentage: number,
+  overagePricing: CloudStoragePricing,
+  excludeEgress: boolean,
+): number {
+  const INCLUDED_RESTORE_FRACTION = 0.2;
+  const incrementalFactor = Math.max(
+    0,
+    restorePercentage / 100 - INCLUDED_RESTORE_FRACTION,
+  );
+
+  if (incrementalFactor === 0) {
+    return 0;
+  }
+
+  const readOps = calculateReadOpsCost(
+    capacityTiB,
+    overagePricing.readOpsCost,
+    overagePricing.opsBatchSize,
+    termYears,
+    incrementalFactor,
+  );
+  const dataRetrieval = calculateRetrievalCost(
+    capacityTiB,
+    overagePricing.retrievalPerGb,
+    termYears,
+    incrementalFactor,
+  );
+  const internetEgress = excludeEgress
+    ? 0
+    : calculateEgressCost(
+        capacityTiB,
+        overagePricing.egressPerGb,
+        termYears,
+        incrementalFactor,
+      );
+
+  return readOps + dataRetrieval + internetEgress;
 }

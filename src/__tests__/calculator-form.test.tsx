@@ -114,6 +114,42 @@ describe("CalculatorForm", () => {
     });
   });
 
+  it("pressing Enter in the capacity input does not clear inputs", async () => {
+    const onInputsChange = vi.fn();
+    vi.mocked(useRegions).mockReturnValue({
+      regions,
+      isLoading: false,
+      error: null,
+    });
+
+    render(<CalculatorForm onInputsChange={onInputsChange} />);
+
+    fireEvent.click(screen.getByRole("combobox", { name: /select a region/i }));
+    fireEvent.click(
+      screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
+    );
+    const capacityInput = screen.getByLabelText(/protected capacity/i);
+    fireEvent.change(capacityInput, { target: { value: "8" } });
+
+    await waitFor(() => {
+      expect(onInputsChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ capacityTiB: 8 }),
+      );
+    });
+
+    // Simulate Enter in the capacity input
+    fireEvent.keyDown(capacityInput, { key: "Enter", code: "Enter" });
+    fireEvent.submit(capacityInput.closest("form")!);
+
+    // Inputs must remain populated — no reset
+    await waitFor(() => {
+      expect(onInputsChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ capacityTiB: 8 }),
+      );
+    });
+    expect(capacityInput).toHaveValue(8);
+  });
+
   it("avoids the rigid custom lg grid that causes laptop-width overlap", () => {
     vi.mocked(useRegions).mockReturnValue({
       regions,

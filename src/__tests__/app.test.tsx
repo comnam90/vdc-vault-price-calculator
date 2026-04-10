@@ -162,6 +162,44 @@ describe("App", () => {
     ).toBeInTheDocument();
   }, 10_000);
 
+  it("shows a missing cloud pricing alert when the selected region has no pricing data", async () => {
+    const unknownRegion: Region = {
+      id: "aws-unknown-region-99",
+      name: "Unknown Region",
+      provider: "AWS",
+      coords: [0, 0],
+      aliases: [],
+      services: {
+        vdc_vault: [
+          { edition: "Foundation", tier: "Core" },
+          { edition: "Advanced", tier: "Core" },
+        ],
+      },
+    };
+
+    vi.mocked(useRegions).mockReturnValue({
+      regions: [unknownRegion],
+      isLoading: false,
+      error: null,
+    });
+
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("combobox", { name: /select a region/i }));
+    fireEvent.click(screen.getByRole("option", { name: /unknown region/i }));
+    fireEvent.change(screen.getByLabelText(/required capacity/i), {
+      target: { value: "8" },
+    });
+
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    expect(
+      screen.getByText(/cloud pricing unavailable for unknown region/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("region", { name: /comparison results/i }),
+    ).not.toBeInTheDocument();
+  }, 10_000);
+
   it("calls syncToUrl when the form fires onInputsChange", async () => {
     const syncToUrl = vi.fn();
     vi.mocked(useUrlState).mockReturnValue({

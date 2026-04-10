@@ -22,9 +22,7 @@ describe("ComparisonChart", () => {
     );
     expect(screen.getAllByText("VDC Vault Advanced").length).toBeGreaterThan(0);
     expect(screen.getAllByText("S3 Standard").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("S3 Infrequent Access").length).toBeGreaterThan(
-      0,
-    );
+    expect(screen.getAllByText(/S3 Infrequent/i).length).toBeGreaterThan(0);
 
     expect(container.querySelectorAll(".recharts-bar-rectangle")).toHaveLength(
       12,
@@ -52,9 +50,7 @@ describe("ComparisonChart", () => {
 
     // Legend always renders all series names; verify by bar count instead
     expect(screen.getAllByText("S3 Standard").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("S3 Infrequent Access").length).toBeGreaterThan(
-      0,
-    );
+    expect(screen.getAllByText(/S3 Infrequent/i).length).toBeGreaterThan(0);
     expect(container.querySelectorAll(".recharts-bar-rectangle")).toHaveLength(
       10,
     );

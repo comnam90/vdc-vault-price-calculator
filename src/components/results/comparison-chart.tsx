@@ -181,6 +181,48 @@ function ChartTooltip({
   );
 }
 
+function WrappedXAxisTick({
+  x = 0,
+  y = 0,
+  payload,
+}: {
+  x?: number;
+  y?: number;
+  payload?: { value: string };
+}) {
+  const words = (payload?.value ?? "").split(" ");
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length > 14 && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) lines.push(current);
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      {lines.map((line, i) => (
+        <text
+          key={line}
+          x={0}
+          y={0}
+          dy={i * 14 + 10}
+          textAnchor="middle"
+          fill="var(--color-muted-foreground)"
+          fontSize={12}
+        >
+          {line}
+        </text>
+      ))}
+    </g>
+  );
+}
+
 export function ComparisonChart({ comparison }: ComparisonChartProps) {
   const data = buildChartData(comparison);
 
@@ -221,7 +263,7 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                 tickLine={false}
                 height={56}
                 interval={0}
-                tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
+                tick={<WrappedXAxisTick />}
               />
               <YAxis
                 axisLine={false}

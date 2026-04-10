@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.0...v1.2.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* **chart:** wrap x-axis labels to prevent mobile overlap ([#39](https://github.com/comnam90/vdc-vault-tco-calculator/issues/39)) ([c0a7228](https://github.com/comnam90/vdc-vault-tco-calculator/commit/c0a7228f4835cc80f30e7a6266b4c2e952d53fa9))
+
 ## [1.2.0](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.1.1...v1.2.0) (2026-04-10)
 
 

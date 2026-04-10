@@ -92,6 +92,7 @@ export function CalculatorForm({
         <form
           aria-label="Vault pricing inputs"
           className="grid gap-5 lg:grid-cols-2 lg:items-start"
+          onSubmit={(e) => e.preventDefault()}
         >
           <div className="lg:col-span-2">
             <RegionSelector

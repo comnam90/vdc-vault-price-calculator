@@ -99,6 +99,18 @@ describe("CostBreakdownTable", () => {
     expect(screen.getByText("Internet Egress")).toBeInTheDocument();
   });
 
+  it("does not cause a render loop when comparison prop changes (term change regression)", () => {
+    const { rerender } = render(
+      <CostBreakdownTable comparison={fixtureComparison} />,
+    );
+    const updatedComparison = {
+      ...fixtureComparison,
+      vaultFoundation: { ...fixtureComparison.vaultFoundation, total: 9999 },
+    };
+    rerender(<CostBreakdownTable comparison={updatedComparison} />);
+    expect(screen.getByRole("table")).toBeInTheDocument();
+  });
+
   it("shows N/A and TBD in vault totals when editions are unavailable", () => {
     const { container } = render(
       <CostBreakdownTable

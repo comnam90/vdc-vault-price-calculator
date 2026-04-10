@@ -109,6 +109,7 @@ describe("buildComparison", () => {
       regionId: "aws-us-east-1",
       termYears: 3,
       capacityTiB: 10,
+      restorePercentage: 20,
     };
 
     it("returns Foundation total of 5040", () => {
@@ -141,6 +142,7 @@ describe("buildComparison", () => {
       regionId: "aws-ap-east-1",
       termYears: 3,
       capacityTiB: 10,
+      restorePercentage: 20,
     };
 
     it("returns Foundation total of 6840 (AWS $19/TB)", () => {
@@ -168,6 +170,7 @@ describe("buildComparison", () => {
       regionId: "azure-eastasia",
       termYears: 3,
       capacityTiB: 10,
+      restorePercentage: 20,
     };
 
     it("returns Foundation total of 8640 (Azure $24/TB)", () => {
@@ -207,6 +210,7 @@ describe("buildComparison", () => {
       regionId: "azure-us-west",
       termYears: 3,
       capacityTiB: 10,
+      restorePercentage: 20,
     };
 
     it("sets diyOption1Unavailable to true", () => {
@@ -247,6 +251,7 @@ describe("buildComparison", () => {
       regionId: "aws-us-east-1",
       termYears: 3,
       capacityTiB: 10,
+      restorePercentage: 20,
     };
 
     it("sets internetEgress to 0 on diyOption1 when excludeEgress is true", () => {
@@ -306,6 +311,7 @@ describe("buildComparison", () => {
       regionId: "aws-il-central-1",
       termYears: 1,
       capacityTiB: 10,
+      restorePercentage: 20,
     };
 
     it("returns null for Foundation (not pricingTbd)", () => {
@@ -325,6 +331,135 @@ describe("buildComparison", () => {
         awsStandardPricing,
       );
       expect(result.vaultAdvanced.total).toBe(2880);
+    });
+  });
+
+  describe("restorePercentage at 20 (default) — no overage", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 10,
+      restorePercentage: 20,
+    };
+
+    it("vaultFoundation.overage is undefined", () => {
+      const result = buildComparison(inputs, coreRegion, awsStandardPricing);
+      expect(result.vaultFoundation.overage).toBeUndefined();
+    });
+
+    it("vaultFoundation.total equals base flat price (5040)", () => {
+      const result = buildComparison(inputs, coreRegion, awsStandardPricing);
+      expect(result.vaultFoundation.total).toBe(5040);
+    });
+  });
+
+  describe("restorePercentage above 20 — Foundation overage applied", () => {
+    const baseInputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 10,
+      restorePercentage: 20,
+    };
+
+    it("vaultFoundation.total exceeds base price when restorePercentage is 50", () => {
+      const at50 = buildComparison(
+        { ...baseInputs, restorePercentage: 50 },
+        coreRegion,
+        awsStandardPricing,
+      );
+      const at20 = buildComparison(baseInputs, coreRegion, awsStandardPricing);
+      expect(at50.vaultFoundation.total).toBeGreaterThan(
+        at20.vaultFoundation.total!,
+      );
+    });
+
+    it("vaultFoundation.overage is defined and positive at 50%", () => {
+      const result = buildComparison(
+        { ...baseInputs, restorePercentage: 50 },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(result.vaultFoundation.overage).toBeDefined();
+      expect(result.vaultFoundation.overage!).toBeGreaterThan(0);
+    });
+
+    it("vaultAdvanced.total is unaffected by restorePercentage (no overage model)", () => {
+      const at20 = buildComparison(baseInputs, coreRegion, awsStandardPricing);
+      const at50 = buildComparison(
+        { ...baseInputs, restorePercentage: 50 },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(at50.vaultAdvanced.total).toBe(at20.vaultAdvanced.total);
+    });
+
+    it("Foundation total = base + overage", () => {
+      const result = buildComparison(
+        { ...baseInputs, restorePercentage: 50 },
+        coreRegion,
+        awsStandardPricing,
+      );
+      const base = 5040; // 10 * $14/TB * 36 months
+      expect(result.vaultFoundation.total).toBeCloseTo(
+        base + result.vaultFoundation.overage!,
+        4,
+      );
+    });
+  });
+
+  describe("excludeEgress suppresses overage egress", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 10,
+      restorePercentage: 50,
+    };
+
+    it("Foundation total is lower with excludeEgress when restorePercentage > 20", () => {
+      const withEgress = buildComparison(
+        { ...inputs, excludeEgress: false },
+        coreRegion,
+        awsStandardPricing,
+      );
+      const withoutEgress = buildComparison(
+        { ...inputs, excludeEgress: true },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(withoutEgress.vaultFoundation.total).toBeLessThan(
+        withEgress.vaultFoundation.total!,
+      );
+    });
+  });
+
+  describe("restorePercentage affects DIY read costs", () => {
+    const baseInputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 10,
+      restorePercentage: 20,
+    };
+
+    it("diyOption1.readOps differs between 20% and 50%", () => {
+      const at20 = buildComparison(baseInputs, coreRegion, awsStandardPricing);
+      const at50 = buildComparison(
+        { ...baseInputs, restorePercentage: 50 },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(at50.diyOption1.readOps).toBeGreaterThan(at20.diyOption1.readOps);
+    });
+
+    it("diyOption2.dataRetrieval differs between 20% and 50%", () => {
+      const at20 = buildComparison(baseInputs, coreRegion, awsStandardPricing);
+      const at50 = buildComparison(
+        { ...baseInputs, restorePercentage: 50 },
+        coreRegion,
+        awsStandardPricing,
+      );
+      expect(at50.diyOption2.dataRetrieval).toBeGreaterThan(
+        at20.diyOption2.dataRetrieval,
+      );
     });
   });
 });

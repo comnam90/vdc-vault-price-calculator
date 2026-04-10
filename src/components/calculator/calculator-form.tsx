@@ -84,7 +84,7 @@ export function CalculatorForm({
           Calculation inputs
         </CardTitle>
         <CardDescription>
-          Select a region, commitment term, and protected capacity to see a live
+          Select a region, commitment term, and required capacity to see a live
           cost comparison.
         </CardDescription>
       </CardHeader>

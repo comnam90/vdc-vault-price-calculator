@@ -52,7 +52,7 @@ describe("CalculatorForm", () => {
     fireEvent.click(
       screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
     );
-    fireEvent.change(screen.getByLabelText(/protected capacity/i), {
+    fireEvent.change(screen.getByLabelText(/required capacity/i), {
       target: { value: "8" },
     });
 
@@ -91,7 +91,7 @@ describe("CalculatorForm", () => {
     fireEvent.click(
       screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
     );
-    const capacityInput = screen.getByLabelText(/protected capacity/i);
+    const capacityInput = screen.getByLabelText(/required capacity/i);
     fireEvent.change(capacityInput, {
       target: { value: "8" },
     });
@@ -128,7 +128,7 @@ describe("CalculatorForm", () => {
     fireEvent.click(
       screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
     );
-    const capacityInput = screen.getByLabelText(/protected capacity/i);
+    const capacityInput = screen.getByLabelText(/required capacity/i);
     fireEvent.change(capacityInput, { target: { value: "8" } });
 
     await waitFor(() => {
@@ -202,7 +202,7 @@ describe("CalculatorForm", () => {
       fireEvent.click(
         screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
       );
-      fireEvent.change(screen.getByLabelText(/protected capacity/i), {
+      fireEvent.change(screen.getByLabelText(/required capacity/i), {
         target: { value: "8" },
       });
       fireEvent.click(screen.getByRole("switch"));
@@ -249,7 +249,7 @@ describe("CalculatorForm", () => {
       );
 
       expect(screen.getByRole("radio", { name: "3 Years" })).toBeChecked();
-      expect(screen.getByLabelText(/protected capacity/i)).toHaveValue(42);
+      expect(screen.getByLabelText(/required capacity/i)).toHaveValue(42);
     });
 
     it("auto-selects the region matching initialValues.regionId after regions load", async () => {
@@ -309,7 +309,7 @@ describe("CalculatorForm", () => {
 
       expect(screen.getByRole("radio", { name: "5 Years" })).toBeChecked();
       // CapacityInput shows "" (null value) when capacityTiB is 0
-      expect(screen.getByLabelText(/protected capacity/i)).toHaveValue(null);
+      expect(screen.getByLabelText(/required capacity/i)).toHaveValue(null);
     });
   });
 });

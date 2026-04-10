@@ -31,7 +31,7 @@ export function CapacityInput({
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor="capacity-tib">Protected capacity</Label>
+      <Label htmlFor="capacity-tib">Required capacity</Label>
       <div className="relative">
         <Input
           id="capacity-tib"

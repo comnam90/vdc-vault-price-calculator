@@ -6,7 +6,7 @@ describe("CapacityInput", () => {
   it("renders an associated label, TiB suffix, and numeric constraints", () => {
     render(<CapacityInput onCapacityChange={vi.fn()} value={0} />);
 
-    const input = screen.getByLabelText(/protected capacity/i);
+    const input = screen.getByLabelText(/required capacity/i);
     expect(input).toHaveAttribute("min", "1");
     expect(input).toHaveAttribute("step", "1");
     expect(screen.getByText("TiB")).toBeInTheDocument();
@@ -16,7 +16,7 @@ describe("CapacityInput", () => {
     const onCapacityChange = vi.fn();
     render(<CapacityInput onCapacityChange={onCapacityChange} value={0} />);
 
-    const input = screen.getByLabelText(/protected capacity/i);
+    const input = screen.getByLabelText(/required capacity/i);
     fireEvent.change(input, { target: { value: "12" } });
     fireEvent.change(input, { target: { value: "abc" } });
 

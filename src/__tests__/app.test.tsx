@@ -90,7 +90,7 @@ describe("App", () => {
       screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
     );
     fireEvent.click(screen.getByRole("radio", { name: /3 years/i }));
-    fireEvent.change(screen.getByLabelText(/protected capacity/i), {
+    fireEvent.change(screen.getByLabelText(/required capacity/i), {
       target: { value: "8" },
     });
 
@@ -180,7 +180,7 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
     );
-    fireEvent.change(screen.getByLabelText(/protected capacity/i), {
+    fireEvent.change(screen.getByLabelText(/required capacity/i), {
       target: { value: "8" },
     });
 

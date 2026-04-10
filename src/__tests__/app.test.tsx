@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/hooks/use-regions", () => ({
   useRegions: vi.fn(),
@@ -38,6 +38,14 @@ const defaultUrlState = {
 };
 
 describe("App", () => {
+  beforeAll(async () => {
+    // Pre-load the lazy ResultsPanel module so React.lazy resolves it as an
+    // immediate microtask (synchronously flushable within act()) rather than
+    // waiting for an async module load that may not complete within a single
+    // act() flush when the full test suite runs under load.
+    await import("@/components/results/results-panel");
+  });
+
   beforeEach(() => {
     vi.mocked(useRegions).mockReset();
     vi.mocked(useUrlState).mockReturnValue({

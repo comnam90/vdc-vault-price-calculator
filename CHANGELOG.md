@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.1.0...v1.1.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* **calculator:** rename "Protected capacity" to "Required capacity" ([#35](https://github.com/comnam90/vdc-vault-tco-calculator/issues/35)) ([fa4ba23](https://github.com/comnam90/vdc-vault-tco-calculator/commit/fa4ba23253bbdf1173d7b67882cdf579c1e9efdf))
+
 ## [1.1.0](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.3...v1.1.0) (2026-04-10)
 
 

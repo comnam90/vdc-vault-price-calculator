@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 
@@ -12,10 +14,18 @@ export function RestorePercentageSlider({
   capacityTiB,
   onValueChange,
 }: RestorePercentageSliderProps) {
+  // draft tracks the live thumb position for display; the parent is only notified on commit
+  const [draft, setDraft] = useState(value);
+
+  // Sync draft if parent value changes externally (e.g., URL-derived initial value)
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
   const tibDisplay =
     capacityTiB > 0
-      ? `${((value / 100) * capacityTiB).toFixed(1)} TiB (${value}%)`
-      : `${value}%`;
+      ? `${((draft / 100) * capacityTiB).toFixed(1)} TiB (${draft}%)`
+      : `${draft}%`;
 
   return (
     <div className="border-border/70 grid gap-3 rounded-2xl border bg-[color:var(--card-tint-neutral)]/70 p-4">
@@ -36,12 +46,13 @@ export function RestorePercentageSlider({
         min={0}
         max={100}
         step={1}
-        value={[value]}
-        onValueChange={([next]) => onValueChange(next)}
+        value={[draft]}
+        onValueChange={([next]) => setDraft(next)}
+        onValueCommit={([committed]) => onValueChange(committed)}
         aria-label="Annual restore percentage"
-        aria-describedby={value > 20 ? "restore-overage-note" : undefined}
+        aria-describedby={draft > 20 ? "restore-overage-note" : undefined}
       />
-      {value > 20 && (
+      {draft > 20 && (
         <p
           id="restore-overage-note"
           className="text-muted-foreground text-sm leading-snug"

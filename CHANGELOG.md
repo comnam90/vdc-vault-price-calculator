@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.1...v1.2.2) (2026-04-10)
+
+
+### Bug Fixes
+
+* **content:** replace "price comparison" with "TCO comparison" ([#41](https://github.com/comnam90/vdc-vault-tco-calculator/issues/41)) ([cd528f4](https://github.com/comnam90/vdc-vault-tco-calculator/commit/cd528f45efdee1e8b4011d3d9489e047a377936a))
+
 ## [1.2.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.0...v1.2.1) (2026-04-10)
 
 

@@ -8,6 +8,7 @@ const INPUTS: CalculatorInputs = {
   regionId: "aws-us-east-1",
   termYears: 3,
   capacityTiB: 50,
+  restorePercentage: 20,
 };
 
 function setLocationSearch(search: string) {

@@ -84,6 +84,7 @@ function App() {
                   capacityTiB={inputs.capacityTiB}
                   termYears={inputs.termYears}
                   excludeEgress={inputs.excludeEgress === true}
+                  restorePercentage={inputs.restorePercentage}
                 />
               </Suspense>
             ) : null}

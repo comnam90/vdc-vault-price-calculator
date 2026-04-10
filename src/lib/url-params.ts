@@ -3,6 +3,9 @@ import type { CalculatorInputs } from "@/types/calculator";
 const TERM_MIN = 1;
 const TERM_MAX = 5;
 const CAPACITY_MIN = 1;
+const RESTORE_MIN = 0;
+const RESTORE_MAX = 100;
+const DEFAULT_RESTORE_PERCENTAGE = 20;
 
 export function parseUrlParams(search: string): Partial<CalculatorInputs> {
   const params = new URLSearchParams(search);
@@ -33,6 +36,14 @@ export function parseUrlParams(search: string): Partial<CalculatorInputs> {
     result.excludeEgress = true;
   }
 
+  const restoreRaw = params.get("restore");
+  if (restoreRaw !== null) {
+    const restore = parseInt(restoreRaw, 10);
+    if (!isNaN(restore) && restore >= RESTORE_MIN && restore <= RESTORE_MAX) {
+      result.restorePercentage = restore;
+    }
+  }
+
   return result;
 }
 
@@ -43,6 +54,9 @@ export function serialiseUrlParams(inputs: CalculatorInputs): string {
   params.set("capacity", String(inputs.capacityTiB));
   if (inputs.excludeEgress === true) {
     params.set("egress", "0");
+  }
+  if (inputs.restorePercentage !== DEFAULT_RESTORE_PERCENTAGE) {
+    params.set("restore", String(inputs.restorePercentage));
   }
   return params.toString();
 }

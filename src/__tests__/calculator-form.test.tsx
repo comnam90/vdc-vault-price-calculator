@@ -62,6 +62,7 @@ describe("CalculatorForm", () => {
         termYears: 1,
         capacityTiB: 8,
         excludeEgress: false,
+        restorePercentage: 20,
       });
     });
 
@@ -73,6 +74,7 @@ describe("CalculatorForm", () => {
         termYears: 3,
         capacityTiB: 8,
         excludeEgress: false,
+        restorePercentage: 20,
       });
     });
   });
@@ -102,6 +104,7 @@ describe("CalculatorForm", () => {
         termYears: 1,
         capacityTiB: 8,
         excludeEgress: false,
+        restorePercentage: 20,
       });
     });
 
@@ -310,6 +313,82 @@ describe("CalculatorForm", () => {
       expect(screen.getByRole("radio", { name: "5 Years" })).toBeChecked();
       // CapacityInput shows "" (null value) when capacityTiB is 0
       expect(screen.getByLabelText(/required capacity/i)).toHaveValue(null);
+    });
+  });
+
+  describe("RestorePercentageSlider integration", () => {
+    it("renders the restore percentage slider in the form", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(<CalculatorForm onInputsChange={vi.fn()} />);
+      expect(
+        screen.getByRole("slider", { name: /annual restore percentage/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("slider defaults to 20 (percent)", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(<CalculatorForm onInputsChange={vi.fn()} />);
+      expect(
+        screen.getByRole("slider", { name: /annual restore percentage/i }),
+      ).toHaveAttribute("aria-valuenow", "20");
+    });
+
+    it("pre-populates restorePercentage from initialValues", () => {
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(
+        <CalculatorForm
+          onInputsChange={vi.fn()}
+          initialValues={{ restorePercentage: 50 }}
+        />,
+      );
+      expect(
+        screen.getByRole("slider", { name: /annual restore percentage/i }),
+      ).toHaveAttribute("aria-valuenow", "50");
+    });
+
+    it("includes restorePercentage in onInputsChange when slider moves", async () => {
+      const onInputsChange = vi.fn();
+      vi.mocked(useRegions).mockReturnValue({
+        regions,
+        isLoading: false,
+        error: null,
+      });
+      render(<CalculatorForm onInputsChange={onInputsChange} />);
+
+      // Fill in required inputs first
+      fireEvent.click(
+        screen.getByRole("combobox", { name: /select a region/i }),
+      );
+      fireEvent.click(
+        screen.getByRole("option", { name: /us east \(n\. virginia\)/i }),
+      );
+      fireEvent.change(screen.getByLabelText(/required capacity/i), {
+        target: { value: "10" },
+      });
+
+      // Advance slider
+      const slider = screen.getByRole("slider", {
+        name: /annual restore percentage/i,
+      });
+      fireEvent.keyDown(slider, { key: "ArrowRight" });
+
+      await waitFor(() => {
+        expect(onInputsChange).toHaveBeenLastCalledWith(
+          expect.objectContaining({ restorePercentage: 21 }),
+        );
+      });
     });
   });
 });

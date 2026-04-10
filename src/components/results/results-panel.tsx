@@ -15,6 +15,7 @@ interface ResultsPanelProps {
   capacityTiB: number;
   termYears: number;
   excludeEgress?: boolean;
+  restorePercentage: number;
 }
 
 export function ResultsPanel({
@@ -22,6 +23,7 @@ export function ResultsPanel({
   capacityTiB,
   termYears,
   excludeEgress,
+  restorePercentage,
 }: ResultsPanelProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const showTrend = termYears > 1;
@@ -88,7 +90,7 @@ export function ResultsPanel({
             comparison={comparison}
             excludeEgress={excludeEgress}
           />
-          <Assumptions />
+          <Assumptions restorePercentage={restorePercentage} />
         </TabsContent>
 
         {showTrend && (

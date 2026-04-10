@@ -1,5 +1,8 @@
 import { calculateVaultCost } from "@/lib/vault-calculator";
-import { calculateDiyCost } from "@/lib/diy-calculator";
+import {
+  calculateDiyCost,
+  calculateVaultFoundationOverage,
+} from "@/lib/diy-calculator";
 import type {
   CalculatorInputs,
   ComparisonResult,
@@ -36,8 +39,11 @@ export function buildComparison(
   region: Region,
   cloudPricing: RegionCloudPricing,
 ): ComparisonResult {
-  const { capacityTiB, termYears, excludeEgress } = inputs;
-  const egressOptions = { excludeEgress: excludeEgress === true };
+  const { capacityTiB, termYears, excludeEgress, restorePercentage } = inputs;
+  const egressOptions = {
+    excludeEgress: excludeEgress === true,
+    restorePercentage,
+  };
 
   const foundationService = region.services.vdc_vault.find(
     (s) => s.edition === "Foundation",
@@ -46,7 +52,7 @@ export function buildComparison(
     (s) => s.edition === "Advanced",
   );
 
-  const vaultFoundation = foundationService
+  const vaultFoundationBase = foundationService
     ? calculateVaultCost(
         capacityTiB,
         termYears,
@@ -55,6 +61,29 @@ export function buildComparison(
         region.provider,
       )
     : UNAVAILABLE;
+
+  const foundationOverage =
+    foundationService && vaultFoundationBase.total !== null
+      ? calculateVaultFoundationOverage(
+          capacityTiB,
+          termYears,
+          restorePercentage,
+          cloudPricing.option2,
+          excludeEgress === true,
+        )
+      : undefined;
+
+  const vaultFoundation: VaultCostResult = {
+    ...vaultFoundationBase,
+    total:
+      vaultFoundationBase.total !== null && foundationOverage !== undefined
+        ? vaultFoundationBase.total + foundationOverage
+        : vaultFoundationBase.total,
+    overage:
+      foundationOverage !== undefined && foundationOverage > 0
+        ? foundationOverage
+        : undefined,
+  };
 
   const vaultAdvanced = advancedService
     ? calculateVaultCost(

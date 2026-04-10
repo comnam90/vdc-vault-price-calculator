@@ -115,6 +115,7 @@ describe("serialiseUrlParams", () => {
       regionId: "aws-us-east-1",
       termYears: 3,
       capacityTiB: 50,
+      restorePercentage: 20,
     };
     expect(serialiseUrlParams(inputs)).toBe(
       "region=aws-us-east-1&term=3&capacity=50",
@@ -126,20 +127,25 @@ describe("serialiseUrlParams", () => {
       regionId: "azure-eastus2",
       termYears: 1,
       capacityTiB: 1,
+      restorePercentage: 20,
     };
     expect(serialiseUrlParams(inputs)).toBe(
       "region=azure-eastus2&term=1&capacity=1",
     );
   });
 
-  it("round-trips through parseUrlParams", () => {
+  it("round-trips non-default restorePercentage through parseUrlParams", () => {
     const inputs: CalculatorInputs = {
       regionId: "aws-eu-west-1",
       termYears: 5,
       capacityTiB: 250,
+      restorePercentage: 50,
     };
     const result = parseUrlParams("?" + serialiseUrlParams(inputs));
-    expect(result).toEqual(inputs);
+    expect(result.restorePercentage).toBe(50);
+    expect(result.regionId).toBe("aws-eu-west-1");
+    expect(result.termYears).toBe(5);
+    expect(result.capacityTiB).toBe(250);
   });
 
   it("includes egress=0 when excludeEgress is true", () => {
@@ -148,6 +154,7 @@ describe("serialiseUrlParams", () => {
       termYears: 3,
       capacityTiB: 50,
       excludeEgress: true,
+      restorePercentage: 20,
     };
     expect(serialiseUrlParams(inputs)).toContain("egress=0");
   });
@@ -158,6 +165,7 @@ describe("serialiseUrlParams", () => {
       termYears: 3,
       capacityTiB: 50,
       excludeEgress: false,
+      restorePercentage: 20,
     };
     expect(serialiseUrlParams(inputs)).not.toContain("egress");
   });
@@ -167,6 +175,7 @@ describe("serialiseUrlParams", () => {
       regionId: "aws-us-east-1",
       termYears: 3,
       capacityTiB: 50,
+      restorePercentage: 20,
     };
     expect(serialiseUrlParams(inputs)).not.toContain("egress");
   });
@@ -177,8 +186,87 @@ describe("serialiseUrlParams", () => {
       termYears: 5,
       capacityTiB: 250,
       excludeEgress: true,
+      restorePercentage: 20,
     };
     const result = parseUrlParams("?" + serialiseUrlParams(inputs));
     expect(result.excludeEgress).toBe(true);
+  });
+
+  it("omits restore param when restorePercentage is 20 (default)", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+      restorePercentage: 20,
+    };
+    expect(serialiseUrlParams(inputs)).not.toContain("restore");
+  });
+
+  it("includes restore=50 when restorePercentage is 50", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+      restorePercentage: 50,
+    };
+    expect(serialiseUrlParams(inputs)).toContain("restore=50");
+  });
+
+  it("includes restore=0 when restorePercentage is 0", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+      restorePercentage: 0,
+    };
+    expect(serialiseUrlParams(inputs)).toContain("restore=0");
+  });
+});
+
+describe("parseUrlParams restore param", () => {
+  it("parses restore=50 as restorePercentage: 50", () => {
+    const result = parseUrlParams("?restore=50");
+    expect(result.restorePercentage).toBe(50);
+  });
+
+  it("parses restore=0 as restorePercentage: 0", () => {
+    const result = parseUrlParams("?restore=0");
+    expect(result.restorePercentage).toBe(0);
+  });
+
+  it("parses restore=100 as restorePercentage: 100", () => {
+    const result = parseUrlParams("?restore=100");
+    expect(result.restorePercentage).toBe(100);
+  });
+
+  it("omits restorePercentage when restore param is absent", () => {
+    const result = parseUrlParams("?region=aws-us-east-1");
+    expect(result).not.toHaveProperty("restorePercentage");
+  });
+
+  it("ignores restore=101 (above maximum)", () => {
+    const result = parseUrlParams("?restore=101");
+    expect(result).not.toHaveProperty("restorePercentage");
+  });
+
+  it("ignores restore=-1 (below minimum)", () => {
+    const result = parseUrlParams("?restore=-1");
+    expect(result).not.toHaveProperty("restorePercentage");
+  });
+
+  it("ignores restore=abc (non-numeric)", () => {
+    const result = parseUrlParams("?restore=abc");
+    expect(result).not.toHaveProperty("restorePercentage");
+  });
+
+  it("round-trips restorePercentage=75 through serialiseUrlParams", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 3,
+      capacityTiB: 50,
+      restorePercentage: 75,
+    };
+    const result = parseUrlParams("?" + serialiseUrlParams(inputs));
+    expect(result.restorePercentage).toBe(75);
   });
 });

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CapacityInput } from "@/components/calculator/capacity-input";
 import { EgressToggle } from "@/components/calculator/egress-toggle";
 import { RegionSelector } from "@/components/calculator/region-selector";
+import { RestorePercentageSlider } from "@/components/calculator/restore-percentage-slider";
 import { TermSelector } from "@/components/calculator/term-selector";
 import {
   Card,
@@ -39,6 +40,9 @@ export function CalculatorForm({
   const [excludeEgress, setExcludeEgress] = useState(
     initialValues?.excludeEgress ?? false,
   );
+  const [restorePercentage, setRestorePercentage] = useState(
+    initialValues?.restorePercentage ?? 20,
+  );
 
   // Before the user makes an explicit choice, derive the region from initialValues.
   // After user interaction, userHasSelected takes precedence.
@@ -70,8 +74,15 @@ export function CalculatorForm({
       termYears,
       capacityTiB,
       excludeEgress,
+      restorePercentage,
     };
-  }, [capacityTiB, excludeEgress, selectedRegion, termYears]);
+  }, [
+    capacityTiB,
+    excludeEgress,
+    restorePercentage,
+    selectedRegion,
+    termYears,
+  ]);
 
   useEffect(() => {
     onInputsChange(completeInputs);
@@ -107,6 +118,13 @@ export function CalculatorForm({
             value={capacityTiB}
             onCapacityChange={setCapacityTiB}
           />
+          <div className="lg:col-span-2">
+            <RestorePercentageSlider
+              value={restorePercentage}
+              capacityTiB={capacityTiB}
+              onValueChange={setRestorePercentage}
+            />
+          </div>
           <div className="lg:col-span-2">
             <EgressToggle
               checked={excludeEgress}

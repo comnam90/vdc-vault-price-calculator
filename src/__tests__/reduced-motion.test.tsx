@@ -38,6 +38,7 @@ describe("reduced motion", () => {
           comparison={fixtureComparison}
           capacityTiB={FIXTURE_CAPACITY_TIB}
           termYears={FIXTURE_TERM_YEARS}
+          restorePercentage={20}
         />
         <RegionSelector
           regions={[]}

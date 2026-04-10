@@ -6,7 +6,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-export function Assumptions() {
+interface AssumptionsProps {
+  restorePercentage: number;
+}
+
+export function Assumptions({ restorePercentage }: AssumptionsProps) {
   return (
     <Collapsible className="border-border/70 bg-background/90 rounded-[1.5rem] border shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--electric-azure)_55%,transparent)]">
       <CollapsibleTrigger className="group flex w-full items-center justify-between gap-4 px-6 py-5 text-left">
@@ -27,12 +31,9 @@ export function Assumptions() {
             1 MB operation size is applied to every write and read transaction.
           </li>
           <li>
-            20% annual read-back is assumed for data restored from archive
-            storage.
-          </li>
-          <li>
-            20% annual egress is assumed for internet transfer out of the
-            platform.
+            {restorePercentage}% annual restore is assumed for data read back
+            and egressed from the platform (configurable via the restore
+            slider).
           </li>
           <li>
             AWS storage rates use the published 50 TB–500 TB price tier and

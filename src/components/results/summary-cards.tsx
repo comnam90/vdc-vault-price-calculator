@@ -77,12 +77,21 @@ export function SummaryCards({
   capacityTiB,
   termYears,
 }: SummaryCardsProps) {
+  const foundationTotal = comparison.vaultFoundation.total;
+  const foundationOverage = comparison.vaultFoundation.overage;
+  const foundationRate =
+    foundationOverage !== undefined &&
+    foundationOverage > 0 &&
+    foundationTotal !== null
+      ? deriveDiyRate(foundationTotal, capacityTiB, termYears)
+      : comparison.vaultFoundation.perTbMonth;
+
   const cards: SummaryCardItem[] = [
     {
       id: "vault-foundation",
       title: "VDC Vault Foundation",
-      total: comparison.vaultFoundation.total,
-      rate: comparison.vaultFoundation.perTbMonth,
+      total: foundationTotal,
+      rate: foundationRate,
       pricingTbd: comparison.vaultFoundation.pricingTbd,
     },
     {

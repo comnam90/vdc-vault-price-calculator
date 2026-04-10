@@ -78,6 +78,55 @@ describe("SummaryCards", () => {
     ).toBeInTheDocument();
   });
 
+  it("uses derived effective rate for Foundation when overage is present", () => {
+    // total = 5040 + 1260 overage = 6300
+    // derived rate = 6300 / (10 TiB * 3 years * 12 months) = $17.50/TB/mo
+    render(
+      <SummaryCards
+        comparison={{
+          ...fixtureComparison,
+          vaultFoundation: {
+            ...fixtureComparison.vaultFoundation,
+            total: 6300,
+            overage: 1260,
+          },
+        }}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const foundationCard = screen
+      .getByText("VDC Vault Foundation")
+      .closest('[data-slot="card"]');
+
+    // Should show derived rate, not the fixed $14/TB/mo
+    expect(
+      within(foundationCard as HTMLElement).getByText("$17.5/TB/mo"),
+    ).toBeInTheDocument();
+    expect(
+      within(foundationCard as HTMLElement).queryByText("$14/TB/mo"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("uses perTbMonth for Foundation rate when no overage", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const foundationCard = screen
+      .getByText("VDC Vault Foundation")
+      .closest('[data-slot="card"]');
+
+    expect(
+      within(foundationCard as HTMLElement).getByText("$14/TB/mo"),
+    ).toBeInTheDocument();
+  });
+
   it("shows ZRS not available text and excludes it from cheapest when option1 unavailable", () => {
     render(
       <SummaryCards

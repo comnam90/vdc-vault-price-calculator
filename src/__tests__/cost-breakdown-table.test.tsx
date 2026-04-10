@@ -135,4 +135,54 @@ describe("CostBreakdownTable", () => {
     expect(within(footer as HTMLElement).getByText("N/A")).toBeInTheDocument();
     expect(within(footer as HTMLElement).getByText("TBD")).toBeInTheDocument();
   });
+
+  it("does not show an overage row when vaultFoundation.overage is undefined", () => {
+    render(<CostBreakdownTable comparison={fixtureComparison} />);
+    expect(screen.queryByText(/restore overage/i)).not.toBeInTheDocument();
+  });
+
+  it("does not show an overage row when vaultFoundation.overage is 0", () => {
+    render(
+      <CostBreakdownTable
+        comparison={{
+          ...fixtureComparison,
+          vaultFoundation: { ...fixtureComparison.vaultFoundation, overage: 0 },
+        }}
+      />,
+    );
+    expect(screen.queryByText(/restore overage/i)).not.toBeInTheDocument();
+  });
+
+  it("shows 'Restore Overage (> 20%)' row when vaultFoundation.overage > 0", () => {
+    render(
+      <CostBreakdownTable
+        comparison={{
+          ...fixtureComparison,
+          vaultFoundation: {
+            ...fixtureComparison.vaultFoundation,
+            overage: 317.5,
+          },
+        }}
+      />,
+    );
+    expect(screen.getByText("Restore Overage (> 20%)")).toBeInTheDocument();
+    expect(screen.getByText("$317.50")).toBeInTheDocument();
+  });
+
+  it("overage row shows '--' for Advanced and DIY columns", () => {
+    render(
+      <CostBreakdownTable
+        comparison={{
+          ...fixtureComparison,
+          vaultFoundation: {
+            ...fixtureComparison.vaultFoundation,
+            overage: 317.5,
+          },
+        }}
+      />,
+    );
+    // With overage row: 4 existing dash rows + 3 new dashes in overage row (Advanced + 2 DIY)
+    // Original 8 dashes + 3 = 11 total
+    expect(screen.getAllByText("--").length).toBeGreaterThan(8);
+  });
 });

@@ -191,6 +191,7 @@ describe("App", () => {
       termYears: 1,
       capacityTiB: 8,
       excludeEgress: false,
+      restorePercentage: 20,
     });
   }, 10_000);
 });

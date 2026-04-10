@@ -36,6 +36,7 @@ describe("ResultsPanel", () => {
         comparison={null}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
       />,
     );
 
@@ -48,6 +49,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
       />,
     );
 
@@ -72,6 +74,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
       />,
     );
 
@@ -86,6 +89,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={3}
+        restorePercentage={20}
       />,
     );
 
@@ -98,6 +102,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={1}
+        restorePercentage={20}
       />,
     );
 
@@ -112,6 +117,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={3}
+        restorePercentage={20}
       />,
     );
 
@@ -128,6 +134,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={3}
+        restorePercentage={20}
       />,
     );
 
@@ -141,6 +148,7 @@ describe("ResultsPanel", () => {
         comparison={fixtureComparison}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={1}
+        restorePercentage={20}
       />,
     );
 
@@ -164,11 +172,33 @@ describe("ResultsPanel", () => {
         }}
         capacityTiB={FIXTURE_CAPACITY_TIB}
         termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
       />,
     );
 
     expect(
       screen.getByText(/non-core pricing has not yet been announced/i),
     ).toBeInTheDocument();
+  });
+
+  it("threads restorePercentage to Assumptions", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={50}
+      />,
+    );
+
+    const breakdownTab = screen.getByRole("tab", { name: "Breakdown" });
+    fireEvent.mouseDown(breakdownTab);
+    fireEvent.click(breakdownTab);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /calculation assumptions/i }),
+    );
+
+    expect(screen.getByText(/50% annual restore/i)).toBeInTheDocument();
   });
 });

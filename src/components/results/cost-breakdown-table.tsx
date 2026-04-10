@@ -46,7 +46,7 @@ export function CostBreakdownTable({
     const fmt1 = (val: number) =>
       comparison.diyOption1Unavailable ? "N/A" : formatUSD(val);
 
-    return [
+    const rows: BreakdownRow[] = [
       {
         category: "Storage",
         foundation: formatVaultTotal(comparison.vaultFoundation),
@@ -85,6 +85,19 @@ export function CostBreakdownTable({
         diyOption2: formatUSD(comparison.diyOption2.internetEgress),
       },
     ];
+
+    const overage = comparison.vaultFoundation.overage;
+    if (overage !== undefined && overage > 0) {
+      rows.splice(4, 0, {
+        category: "Restore Overage (> 20%)",
+        foundation: formatUSD(overage),
+        advanced: "--",
+        diyOption1: "--",
+        diyOption2: "--",
+      });
+    }
+
+    return rows;
   }, [comparison, excludeEgress]);
 
   return (

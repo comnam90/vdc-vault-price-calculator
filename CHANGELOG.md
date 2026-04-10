@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.2...v1.2.3) (2026-04-10)
+
+
+### Bug Fixes
+
+* **app:** surface missing cloud pricing instead of silent blank ([#43](https://github.com/comnam90/vdc-vault-tco-calculator/issues/43)) ([125d37e](https://github.com/comnam90/vdc-vault-tco-calculator/commit/125d37efe63b646e12577128f6bce5d314661603))
+
 ## [1.2.2](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.1...v1.2.2) (2026-04-10)
 
 

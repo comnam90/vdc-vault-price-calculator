@@ -4,6 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMemo } from "react";
 
 import {
   Card,
@@ -38,6 +39,7 @@ interface BreakdownRow {
 }
 
 const columnHelper = createColumnHelper<BreakdownRow>();
+const coreRowModel = getCoreRowModel();
 
 function formatVaultTotal(result: VaultCostResult): string {
   if (result.pricingTbd) return "TBD";
@@ -49,79 +51,84 @@ export function CostBreakdownTable({
   comparison,
   excludeEgress,
 }: CostBreakdownTableProps) {
-  const fmt1 = (val: number) =>
-    comparison.diyOption1Unavailable ? "N/A" : formatUSD(val);
+  const data = useMemo<BreakdownRow[]>(() => {
+    const fmt1 = (val: number) =>
+      comparison.diyOption1Unavailable ? "N/A" : formatUSD(val);
 
-  const data: BreakdownRow[] = [
-    {
-      category: "Storage",
-      foundation: formatVaultTotal(comparison.vaultFoundation),
-      advanced: formatVaultTotal(comparison.vaultAdvanced),
-      diyOption1: fmt1(comparison.diyOption1.storage),
-      diyOption2: formatUSD(comparison.diyOption2.storage),
-    },
-    {
-      category: "Write Operations",
-      foundation: "--",
-      advanced: "--",
-      diyOption1: fmt1(comparison.diyOption1.writeOps),
-      diyOption2: formatUSD(comparison.diyOption2.writeOps),
-    },
-    {
-      category: "Read Operations",
-      foundation: "--",
-      advanced: "--",
-      diyOption1: fmt1(comparison.diyOption1.readOps),
-      diyOption2: formatUSD(comparison.diyOption2.readOps),
-    },
-    {
-      category: "Data Retrieval",
-      foundation: "--",
-      advanced: "--",
-      diyOption1: fmt1(comparison.diyOption1.dataRetrieval),
-      diyOption2: formatUSD(comparison.diyOption2.dataRetrieval),
-    },
-    {
-      category: excludeEgress
-        ? "Internet Egress (excluded)"
-        : "Internet Egress",
-      foundation: "--",
-      advanced: "--",
-      diyOption1: fmt1(comparison.diyOption1.internetEgress),
-      diyOption2: formatUSD(comparison.diyOption2.internetEgress),
-    },
-  ];
+    return [
+      {
+        category: "Storage",
+        foundation: formatVaultTotal(comparison.vaultFoundation),
+        advanced: formatVaultTotal(comparison.vaultAdvanced),
+        diyOption1: fmt1(comparison.diyOption1.storage),
+        diyOption2: formatUSD(comparison.diyOption2.storage),
+      },
+      {
+        category: "Write Operations",
+        foundation: "--",
+        advanced: "--",
+        diyOption1: fmt1(comparison.diyOption1.writeOps),
+        diyOption2: formatUSD(comparison.diyOption2.writeOps),
+      },
+      {
+        category: "Read Operations",
+        foundation: "--",
+        advanced: "--",
+        diyOption1: fmt1(comparison.diyOption1.readOps),
+        diyOption2: formatUSD(comparison.diyOption2.readOps),
+      },
+      {
+        category: "Data Retrieval",
+        foundation: "--",
+        advanced: "--",
+        diyOption1: fmt1(comparison.diyOption1.dataRetrieval),
+        diyOption2: formatUSD(comparison.diyOption2.dataRetrieval),
+      },
+      {
+        category: excludeEgress
+          ? "Internet Egress (excluded)"
+          : "Internet Egress",
+        foundation: "--",
+        advanced: "--",
+        diyOption1: fmt1(comparison.diyOption1.internetEgress),
+        diyOption2: formatUSD(comparison.diyOption2.internetEgress),
+      },
+    ];
+  }, [comparison, excludeEgress]);
 
-  const columns = [
-    columnHelper.accessor("category", {
-      header: "Category",
-      footer: "Total",
-    }),
-    columnHelper.accessor("foundation", {
-      header: "VDC Foundation",
-      footer: formatVaultTotal(comparison.vaultFoundation),
-    }),
-    columnHelper.accessor("advanced", {
-      header: "VDC Advanced",
-      footer: formatVaultTotal(comparison.vaultAdvanced),
-    }),
-    columnHelper.accessor("diyOption1", {
-      header: comparison.diyOption1Label,
-      footer: comparison.diyOption1Unavailable
-        ? "N/A"
-        : formatUSD(comparison.diyOption1.total),
-    }),
-    columnHelper.accessor("diyOption2", {
-      header: comparison.diyOption2Label,
-      footer: formatUSD(comparison.diyOption2.total),
-    }),
-  ];
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("category", {
+        header: "Category",
+        footer: "Total",
+      }),
+      columnHelper.accessor("foundation", {
+        header: "VDC Foundation",
+        footer: formatVaultTotal(comparison.vaultFoundation),
+      }),
+      columnHelper.accessor("advanced", {
+        header: "VDC Advanced",
+        footer: formatVaultTotal(comparison.vaultAdvanced),
+      }),
+      columnHelper.accessor("diyOption1", {
+        header: comparison.diyOption1Label,
+        footer: comparison.diyOption1Unavailable
+          ? "N/A"
+          : formatUSD(comparison.diyOption1.total),
+      }),
+      columnHelper.accessor("diyOption2", {
+        header: comparison.diyOption2Label,
+        footer: formatUSD(comparison.diyOption2.total),
+      }),
+    ],
+    [comparison],
+  );
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    getCoreRowModel: coreRowModel,
   });
 
   return (

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.1...v1.0.2) (2026-04-10)
+
+
+### Bug Fixes
+
+* **calculator:** prevent Enter key from submitting form and clearing inputs ([#27](https://github.com/comnam90/vdc-vault-tco-calculator/issues/27)) ([2af3190](https://github.com/comnam90/vdc-vault-tco-calculator/commit/2af3190a3eae45104ed0e8aa1f228f0b773a0dbc)), closes [#25](https://github.com/comnam90/vdc-vault-tco-calculator/issues/25)
+
 ## [1.0.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.0...v1.0.1) (2026-04-10)
 
 

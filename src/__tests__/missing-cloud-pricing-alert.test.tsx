@@ -52,9 +52,9 @@ describe("MissingCloudPricingAlert", () => {
     expect(href).toContain(
       "github.com/comnam90/vdc-vault-tco-calculator/issues/new",
     );
-    expect(href).toContain("aws-ap-southeast-99");
-    expect(href).toContain(
-      encodeURIComponent("Asia Pacific (Fictional)").replace(/%20/g, "+"),
-    );
+    // Decode the URL for readable assertions (URLSearchParams uses + for spaces)
+    const decodedHref = decodeURIComponent(href.replace(/\+/g, " "));
+    expect(decodedHref).toContain("aws-ap-southeast-99");
+    expect(decodedHref).toContain("Asia Pacific (Fictional)");
   });
 });

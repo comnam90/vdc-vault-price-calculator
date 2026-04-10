@@ -3,6 +3,7 @@ import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { MissingCloudPricingAlert } from "@/components/results/missing-cloud-pricing-alert";
 
 const ResultsPanel = lazy(async () => {
   const m = await import("@/components/results/results-panel");
@@ -50,6 +51,11 @@ function App() {
     return buildComparison(inputs, selectedRegion, pricing);
   }, [inputs, selectedRegion]);
 
+  const cloudPricingMissing = useMemo(() => {
+    if (!selectedRegion) return false;
+    return CLOUD_PRICING[selectedRegion.id] === undefined;
+  }, [selectedRegion]);
+
   return (
     <div className="bg-background text-foreground flex min-h-screen flex-col">
       <SiteHeader />
@@ -77,7 +83,9 @@ function App() {
           />
 
           <div aria-live="polite">
-            {comparison !== null && inputs !== null ? (
+            {cloudPricingMissing && selectedRegion ? (
+              <MissingCloudPricingAlert region={selectedRegion} />
+            ) : comparison !== null && inputs !== null ? (
               <Suspense fallback={null}>
                 <ResultsPanel
                   comparison={comparison}

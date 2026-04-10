@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.2...v1.0.3) (2026-04-10)
+
+
+### Bug Fixes
+
+* **results:** memoize table data and columns to prevent render loop on term change ([#30](https://github.com/comnam90/vdc-vault-tco-calculator/issues/30)) ([4911ccb](https://github.com/comnam90/vdc-vault-tco-calculator/commit/4911ccb9c6ad07230673cd1da6b438d8322508bb)), closes [#29](https://github.com/comnam90/vdc-vault-tco-calculator/issues/29)
+
 ## [1.0.2](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.1...v1.0.2) (2026-04-10)
 
 

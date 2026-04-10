@@ -1,6 +1,6 @@
 # VDC Vault TCO Calculator
 
-An unofficial price comparison tool for [Veeam Data Cloud Vault](https://www.veeam.com/products/veeam-data-cloud/vault.html). Compare VDC Vault costs against DIY cloud storage across 60+ global regions.
+An unofficial TCO comparison tool for [Veeam Data Cloud Vault](https://www.veeam.com/products/veeam-data-cloud/vault.html). Compare VDC Vault costs against DIY cloud storage across 60+ global regions.
 
 > **Disclaimer:** This is an unofficial, community-maintained tool. It is not affiliated with, endorsed by, or supported by Veeam Software. All pricing is approximate and based on publicly available list prices. Always verify with your Veeam representative or cloud provider for accurate quotes.
 

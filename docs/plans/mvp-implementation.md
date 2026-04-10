@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build an unofficial price comparison SPA that lets users compare Veeam Data Cloud Vault (Foundation/Advanced) costs against DIY cloud storage (Azure Blob Hot/Cool or AWS S3 Standard/IA) across 60+ global regions.
+**Goal:** Build an unofficial TCO comparison SPA that lets users compare Veeam Data Cloud Vault (Foundation/Advanced) costs against DIY cloud storage (Azure Blob Hot/Cool or AWS S3 Standard/IA) across 60+ global regions.
 
 **Architecture:** Single-page React app with no backend. Regions fetched from the public VDC Services Map API (`vdcmap.bcthomas.com`). Cloud storage pricing stored as static JSON. All calculation logic isolated in pure functions for testability. State managed via `useState`/`useMemo` in App.tsx — no state library needed.
 
@@ -107,6 +107,7 @@ vdc-vault-price-calculator/
 ### Task 0.1: Scaffold Vite Project
 
 **Files:**
+
 - Create: `package.json`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `index.html`, `src/main.tsx`, `src/App.tsx`, `src/index.css`, `src/vite-env.d.ts`
 
 - [ ] **Step 1: Scaffold Vite React-TS template**
@@ -159,6 +160,7 @@ git commit -m "chore: scaffold vite react-ts project with dependencies"
 ### Task 0.2: Configure TypeScript, ESLint, Prettier, Commitlint
 
 **Files:**
+
 - Modify: `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `eslint.config.js`
 - Create: `.prettierrc`, `commitlint.config.js`
 
@@ -291,12 +293,11 @@ export default { extends: ["@commitlint/config-conventional"] };
 - [ ] **Step 7: Add lint-staged config to package.json**
 
 Add to `package.json`:
+
 ```json
 {
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,md}": [
-      "prettier --write"
-    ]
+    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,md}": ["prettier --write"]
   }
 }
 ```
@@ -304,6 +305,7 @@ Add to `package.json`:
 - [ ] **Step 8: Add scripts to package.json**
 
 Ensure these scripts exist:
+
 ```json
 {
   "scripts": {
@@ -339,6 +341,7 @@ git commit -m "chore: configure typescript, eslint, prettier, and commitlint"
 ### Task 0.3: Configure Vite, Tailwind, and Vitest
 
 **Files:**
+
 - Modify: `vite.config.ts`, `src/index.css`, `src/main.tsx`, `index.html`
 - Create: `src/lib/utils.ts`, `src/__tests__/setup.ts`
 
@@ -392,7 +395,10 @@ export default defineConfig({
       href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
     />
     <title>VDC Vault Price Calculator</title>
-    <meta name="description" content="Unofficial Veeam Data Cloud Vault price comparison tool. Compare VDC Vault costs against DIY cloud storage across 60+ regions." />
+    <meta
+      name="description"
+      content="Unofficial Veeam Data Cloud Vault TCO comparison tool. Compare VDC Vault costs against DIY cloud storage across 60+ regions."
+    />
   </head>
   <body>
     <div id="root"></div>
@@ -404,6 +410,7 @@ export default defineConfig({
 - [ ] **Step 3: Replace src/index.css**
 
 Copy the full `index.css` from `vdc-vault-readiness` (Veeam brand palette, motion tokens, @theme inline block, @layer base). Remove the project-specific keyframes (`attention-pulse`, `success-ring`, `drag-pulse`, `shake`, `celebrate-in`) — those are specific to the readiness app. Keep:
+
 - Tailwind imports (`@import "tailwindcss"`, `@import "tw-animate-css"`)
 - `:root` CSS variables (radius, motion tokens, Veeam palette, semantic tokens, chart colors)
 - Dark mode overrides (`@media (prefers-color-scheme: dark)`)
@@ -430,7 +437,7 @@ createRoot(document.getElementById("root")!).render(
 ```tsx
 function App() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="bg-background text-foreground min-h-screen">
       <h1 className="p-8 text-2xl font-semibold">VDC Vault Price Calculator</h1>
     </div>
   );
@@ -450,7 +457,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-- [ ] **Step 7: Create src/__tests__/setup.ts**
+- [ ] **Step 7: Create src/**tests**/setup.ts**
 
 ```ts
 import "@testing-library/jest-dom";
@@ -476,6 +483,7 @@ git commit -m "chore: configure vite, tailwind v4, vitest, and veeam theme"
 ### Task 0.4: Set Up Husky, shadcn/ui, and CI Workflows
 
 **Files:**
+
 - Create: `.husky/pre-commit`, `.husky/commit-msg`, `components.json`, `.github/workflows/ci.yml`, `.github/workflows/release.yml`, `.github/workflows/publish.yml`
 
 - [ ] **Step 1: Initialize Husky**
@@ -686,6 +694,7 @@ git commit -m "chore: add husky hooks, shadcn/ui, and ci/cd workflows"
 ### Task 0.5: Smoke Test
 
 **Files:**
+
 - Create: `src/__tests__/smoke.test.ts`
 
 - [ ] **Step 1: Write the smoke test**
@@ -737,6 +746,7 @@ git push
 ### Task 1.1: Define Core Types
 
 **Files:**
+
 - Create: `src/types/region.ts`, `src/types/pricing.ts`, `src/types/calculator.ts`
 
 - [ ] **Step 1: Create src/types/region.ts**
@@ -859,6 +869,7 @@ git commit -m "feat(types): define region, pricing, and calculator types"
 ### Task 1.2: Add Constants
 
 **Files:**
+
 - Create: `src/lib/constants.ts`
 
 - [ ] **Step 1: Create src/lib/constants.ts**
@@ -897,6 +908,7 @@ git commit -m "feat(lib): add calculator constants"
 ### Task 1.3: Add Vault Pricing Data
 
 **Files:**
+
 - Create: `src/data/vault-pricing.ts`
 
 - [ ] **Step 1: Create src/data/vault-pricing.ts**
@@ -940,6 +952,7 @@ git commit -m "feat(data): add vault pricing table"
 ### Task 1.4: Add Cloud Pricing Data
 
 **Files:**
+
 - Create: `src/data/cloud-pricing.ts`
 
 This is the largest static data file. It maps each VDC API region ID to its corresponding Azure/AWS storage pricing. The region IDs from the VDC API (`aws-us-east-1`, `azure-us-east`, etc.) are used directly as keys.
@@ -951,18 +964,21 @@ Create the file with a `Record<string, RegionCloudPricing>` export. For each of 
 **Key pricing baselines (USD, as of early 2026):**
 
 AWS regions (S3):
+
 - `opsBatchSize`: 1000
 - Standard: storage ~$0.023/GB/mo, PUT $0.005/1K, GET $0.0004/1K, retrieval $0, egress $0.09/GB
 - IA: storage ~$0.0125/GB/mo, PUT $0.01/1K, GET $0.001/1K, retrieval $0.01/GB, egress $0.09/GB
 - Regional variations: AP/SA/ME regions ~10-25% higher
 
 Azure regions (Blob LRS):
+
 - `opsBatchSize`: 10000
 - Hot: storage ~$0.0208/GB/mo, write $0.055/10K, read $0.0044/10K, retrieval $0, egress $0.087/GB
 - Cool: storage ~$0.0115/GB/mo, write $0.10/10K, read $0.01/10K, retrieval $0.01/GB, egress $0.087/GB
 - Regional variations: non-US regions vary 10-30%
 
 Structure each entry as:
+
 ```ts
 "aws-us-east-1": {
   regionId: "aws-us-east-1",
@@ -989,6 +1005,7 @@ Structure each entry as:
 ```
 
 For Azure regions use:
+
 ```ts
 "azure-us-east": {
   regionId: "azure-us-east",
@@ -1017,6 +1034,7 @@ For Azure regions use:
 Include all 62 regions from the VDC API. Research the correct regional pricing for each — major regions have distinct pricing. When exact regional pricing is unclear, use the closest available published rate.
 
 Add a file-level comment:
+
 ```ts
 /**
  * Static cloud storage pricing data keyed by VDC API region ID.
@@ -1040,9 +1058,10 @@ git commit -m "feat(data): add static cloud storage pricing for all regions"
 ### Task 1.5: Type Contract and Data Integrity Tests
 
 **Files:**
+
 - Create: `src/__tests__/types.test.ts`, `src/__tests__/cloud-pricing.test.ts`
 
-- [ ] **Step 1: Write src/__tests__/types.test.ts**
+- [ ] **Step 1: Write src/**tests**/types.test.ts**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -1089,7 +1108,7 @@ describe("type contracts", () => {
 npm run test:run -- src/__tests__/types.test.ts
 ```
 
-- [ ] **Step 3: Write src/__tests__/cloud-pricing.test.ts**
+- [ ] **Step 3: Write src/**tests**/cloud-pricing.test.ts**
 
 ```ts
 import { describe, it, expect } from "vitest";
@@ -1173,6 +1192,7 @@ git push
 ### Task 2.1: Vault Cost Calculator
 
 **Files:**
+
 - Create: `src/__tests__/vault-calculator.test.ts`, `src/lib/vault-calculator.ts`
 
 - [ ] **Step 1: Write the failing test**
@@ -1227,7 +1247,6 @@ describe("calculateVaultCost", () => {
     expect(result.total).toBe(144000);
   });
 });
-
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -1301,6 +1320,7 @@ git commit -m "feat(calc): implement vault cost calculator with tests"
 ### Task 2.2: DIY Cloud Cost Calculator
 
 **Files:**
+
 - Create: `src/__tests__/diy-calculator.test.ts`, `src/lib/diy-calculator.ts`
 
 - [ ] **Step 1: Write the failing tests**
@@ -1495,9 +1515,7 @@ export function calculateEgressCost(
   ratePerGb: number,
   termYears: number,
 ): number {
-  return (
-    capacityTiB * TIB_TO_GB * ANNUAL_EGRESS_FACTOR * ratePerGb * termYears
-  );
+  return capacityTiB * TIB_TO_GB * ANNUAL_EGRESS_FACTOR * ratePerGb * termYears;
 }
 
 /**
@@ -1569,6 +1587,7 @@ git commit -m "feat(calc): implement DIY cloud cost calculator with tests"
 ### Task 2.3: Comparison Engine
 
 **Files:**
+
 - Create: `src/__tests__/comparison-engine.test.ts`, `src/lib/comparison-engine.ts`
 
 - [ ] **Step 1: Write the failing tests**
@@ -1704,14 +1723,18 @@ npm run test:run -- src/__tests__/comparison-engine.test.ts
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
-import type { CalculatorInputs, ComparisonResult, VaultCostResult } from "@/types/calculator";
+import type {
+  CalculatorInputs,
+  ComparisonResult,
+  VaultCostResult,
+} from "@/types/calculator";
 import type { Region } from "@/types/region";
 import type { RegionCloudPricing } from "@/types/pricing";
 import { calculateVaultCost } from "./vault-calculator";
 import { calculateDiyCost } from "./diy-calculator";
 
 /**
- * Build a 4-way price comparison for the given inputs.
+ * Build a 4-way TCO comparison for the given inputs.
  */
 export function buildComparison(
   inputs: CalculatorInputs,
@@ -1784,13 +1807,18 @@ git commit -m "feat(calc): implement 4-way comparison engine with tests"
 ### Task 2.4: Formatting Utilities
 
 **Files:**
+
 - Create: `src/__tests__/format-utils.test.ts`, `src/lib/format-utils.ts`
 
 - [ ] **Step 1: Write the failing tests**
 
 ```ts
 import { describe, it, expect } from "vitest";
-import { formatUSD, formatUSDCompact, formatPerTbMonth } from "@/lib/format-utils";
+import {
+  formatUSD,
+  formatUSDCompact,
+  formatPerTbMonth,
+} from "@/lib/format-utils";
 
 describe("formatUSD", () => {
   it("formats whole numbers", () => {
@@ -1894,6 +1922,7 @@ git push
 ### Task 3.1: API Client
 
 **Files:**
+
 - Create: `src/__tests__/api-client.test.ts`, `src/lib/api-client.ts`
 
 - [ ] **Step 1: Write the failing tests**
@@ -2024,6 +2053,7 @@ git commit -m "feat(api): implement region fetching with caching and tests"
 ### Task 3.2: useRegions Hook
 
 **Files:**
+
 - Create: `src/__tests__/use-regions.test.tsx`, `src/hooks/use-regions.ts`
 
 - [ ] **Step 1: Write the failing tests**
@@ -2163,6 +2193,7 @@ git push
 ### Task 4.1: Site Header & Footer
 
 **Files:**
+
 - Create: `src/components/layout/site-header.tsx`, `src/components/layout/site-footer.tsx`
 - Create: `src/__tests__/site-header.test.tsx`, `src/__tests__/site-footer.test.tsx`
 
@@ -2198,11 +2229,13 @@ git commit -m "feat(ui): add site header and footer with disclaimer"
 ### Task 4.2: Region Selector
 
 **Files:**
+
 - Create: `src/components/calculator/region-selector.tsx`, `src/__tests__/region-selector.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders a combobox/select with placeholder text
 - Shows loading skeleton while `isLoading` is true
 - Groups options by provider (AWS, Azure) with group headings
@@ -2214,6 +2247,7 @@ Test:
 - [ ] **Step 3: Implement region-selector**
 
 Use shadcn `Popover` + `Command` pattern (Combobox) for searchable dropdown:
+
 - Group by provider with `CommandGroup` headings
 - Show provider badge (AWS/Azure) next to region name
 - Search filters by region name and aliases
@@ -2232,11 +2266,13 @@ git commit -m "feat(ui): add searchable region selector with provider grouping"
 ### Task 4.3: Term Selector
 
 **Files:**
+
 - Create: `src/components/calculator/term-selector.tsx`, `src/__tests__/term-selector.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders 5 options labeled "1 Year" through "5 Years"
 - Default selection is 1 year
 - Calls `onTermChange(years)` when selection changes
@@ -2261,11 +2297,13 @@ git commit -m "feat(ui): add term length selector"
 ### Task 4.4: Capacity Input
 
 **Files:**
+
 - Create: `src/components/calculator/capacity-input.tsx`, `src/__tests__/capacity-input.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders a number input with "TiB" suffix label
 - Has associated `<label>` element
 - Calls `onCapacityChange(value)` on input change
@@ -2290,11 +2328,13 @@ git commit -m "feat(ui): add capacity input with validation"
 ### Task 4.5: Calculator Form
 
 **Files:**
+
 - Create: `src/components/calculator/calculator-form.tsx`, `src/__tests__/calculator-form.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders all 3 input components
 - Passes region list from `useRegions()` to RegionSelector
 - Shows loading state when regions are loading
@@ -2318,11 +2358,13 @@ git commit -m "feat(ui): compose calculator form"
 ### Task 4.6: Summary Cards
 
 **Files:**
+
 - Create: `src/components/results/summary-cards.tsx`, `src/__tests__/summary-cards.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders 4 cards with labels: "VDC Vault Foundation", "VDC Vault Advanced", `diyOption1Label`, `diyOption2Label`
 - Shows formatted dollar total on each card
 - Shows per-TB/month rate
@@ -2347,11 +2389,13 @@ git commit -m "feat(ui): add summary comparison cards"
 ### Task 4.7: Stacked Bar Comparison Chart
 
 **Files:**
+
 - Create: `src/components/results/comparison-chart.tsx`, `src/__tests__/comparison-chart.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders a Recharts `BarChart` (check for `role="img"` or chart container)
 - Has 4 bars (or fewer if some Vault options are null/TBD)
 - DIY bars are stacked with 5 segments (Storage, Write Ops, Read Ops, Retrieval, Egress)
@@ -2363,6 +2407,7 @@ Test:
 - [ ] **Step 3: Implement comparison-chart**
 
 Use Recharts:
+
 - `ResponsiveContainer` for fluid width
 - `BarChart` with `Bar` elements
 - DIY bars use `stackId="diy1"` / `stackId="diy2"` with 5 `Bar` segments each
@@ -2383,11 +2428,13 @@ git commit -m "feat(ui): add stacked bar comparison chart"
 ### Task 4.8: Cost Breakdown Table
 
 **Files:**
+
 - Create: `src/components/results/cost-breakdown-table.tsx`, `src/__tests__/cost-breakdown-table.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Renders a table with column headers: Category, VDC Foundation, VDC Advanced, DIY Option 1, DIY Option 2
 - Has rows: Storage, Write Operations, Read Operations, Data Retrieval, Internet Egress, **Total**
 - Vault columns show "--" for individual line items (only total is meaningful)
@@ -2412,12 +2459,14 @@ git commit -m "feat(ui): add cost breakdown table"
 ### Task 4.9: Assumptions Panel & Non-Core Banner
 
 **Files:**
+
 - Create: `src/components/results/assumptions.tsx`, `src/components/results/non-core-banner.tsx`
 - Create: `src/__tests__/assumptions.test.tsx`, `src/__tests__/non-core-banner.test.tsx`
 
 - [ ] **Step 1: Write assumptions test**
 
 Test:
+
 - Renders a collapsible section (shadcn `Collapsible` or `details`/`summary`)
 - Lists: "1 MB operation size", "20% annual read-back", "20% annual egress", pricing disclaimer
 
@@ -2427,6 +2476,7 @@ Test:
 - [ ] **Step 5: Write non-core-banner test**
 
 Test:
+
 - Hidden when `pricingTbd` is false for both Vault results
 - Shows alert when either Vault result has `pricingTbd: true`
 - Contains explanatory text about Non-Core pricing not yet announced
@@ -2448,11 +2498,13 @@ git commit -m "feat(ui): add assumptions panel and non-core banner"
 ### Task 4.10: Results Panel
 
 **Files:**
+
 - Create: `src/components/results/results-panel.tsx`, `src/__tests__/results-panel.test.tsx`
 
 - [ ] **Step 1: Write tests**
 
 Test:
+
 - Not rendered when `comparison` is null
 - Renders SummaryCards, ComparisonChart, CostBreakdownTable when comparison data present
 - Shows NonCoreBanner when applicable
@@ -2472,12 +2524,14 @@ git commit -m "feat(ui): compose results panel with tabs"
 ### Task 4.11: Wire App.tsx
 
 **Files:**
+
 - Modify: `src/App.tsx`
 - Create: `src/__tests__/app.test.tsx`
 
 - [ ] **Step 1: Write app tests**
 
 Test:
+
 - Renders header, form, and footer on initial load
 - Does not render results panel initially
 - Shows results when region, term, and capacity are all set
@@ -2488,6 +2542,7 @@ Test:
 - [ ] **Step 3: Implement App.tsx**
 
 State management:
+
 ```tsx
 const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
 const [termYears, setTermYears] = useState(1);
@@ -2535,6 +2590,7 @@ git push
 ### Task 5.1: Motion Tokens & Reduced Motion
 
 **Files:**
+
 - Modify: `src/index.css` (if needed — tokens already exist from Phase 0)
 - Create: `src/__tests__/reduced-motion.test.tsx`
 
@@ -2559,6 +2615,7 @@ git commit -m "feat(a11y): add motion tokens and reduced-motion support"
 ### Task 5.2: Accessibility Audit
 
 **Files:**
+
 - Modify: various components as needed
 
 - [ ] **Step 1: Verify all form inputs have associated labels**
@@ -2592,6 +2649,7 @@ git commit -m "feat(a11y): add aria labels, live regions, and focus management"
 ### Task 5.3: Responsive Layout Refinement
 
 **Files:**
+
 - Modify: various components
 
 - [ ] **Step 1: Test at 320px width**
@@ -2625,11 +2683,13 @@ git push
 ### Task 6.1: CLAUDE.md
 
 **Files:**
+
 - Create: `CLAUDE.md`
 
 - [ ] **Step 1: Write CLAUDE.md**
 
 Follow the exact format from `vdc-vault-readiness/CLAUDE.md`. Include:
+
 - Overview (what the app does, tech stack)
 - Structure (file tree)
 - Where to Look table
@@ -2695,6 +2755,7 @@ git push
 - [ ] **Step 1: Set GitHub repo secrets**
 
 The user needs to manually add these secrets to the repo:
+
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 
@@ -2703,6 +2764,7 @@ These are the same values used for `vdc-vault-readiness`.
 - [ ] **Step 2: Trigger manual deploy**
 
 Once secrets are set:
+
 ```bash
 gh workflow run publish.yml
 ```

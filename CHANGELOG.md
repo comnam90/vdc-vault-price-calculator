@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.0...v1.0.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* **ci:** correct Cloudflare Pages project name to vdc-vault-price-calculator ([#23](https://github.com/comnam90/vdc-vault-tco-calculator/issues/23)) ([e4439cb](https://github.com/comnam90/vdc-vault-tco-calculator/commit/e4439cb6bbf538f5bb609597bcb71622a53d4a6a))
+
 ## 1.0.0 (2026-04-09)
 
 

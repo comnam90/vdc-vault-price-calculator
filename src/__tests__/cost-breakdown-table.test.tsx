@@ -169,6 +169,43 @@ describe("CostBreakdownTable", () => {
     expect(screen.getByText("$317.50")).toBeInTheDocument();
   });
 
+  it("storage row shows base cost (total minus overage) when overage is present", () => {
+    // total = 5040 base + 317.5 overage = 5357.5
+    // Storage row should show $5,040.00 (base only); footer Total shows $5,357.50
+    const { container } = render(
+      <CostBreakdownTable
+        comparison={{
+          ...fixtureComparison,
+          vaultFoundation: {
+            ...fixtureComparison.vaultFoundation,
+            total: 5357.5,
+            overage: 317.5,
+          },
+        }}
+      />,
+    );
+
+    const footer = container.querySelector("tfoot");
+    const tbody = container.querySelector("tbody");
+
+    // Storage row in tbody shows base cost
+    const storageRow = Array.from(
+      (tbody as HTMLElement).querySelectorAll("tr"),
+    ).find((row) => row.textContent?.includes("Storage"));
+    expect(storageRow).toBeTruthy();
+    expect(
+      within(storageRow as HTMLElement).getByText("$5,040.00"),
+    ).toBeInTheDocument();
+    expect(
+      within(storageRow as HTMLElement).queryByText("$5,357.50"),
+    ).not.toBeInTheDocument();
+
+    // Footer shows full total including overage
+    expect(
+      within(footer as HTMLElement).getByText("$5,357.50"),
+    ).toBeInTheDocument();
+  });
+
   it("overage row shows '--' for Advanced and DIY columns", () => {
     render(
       <CostBreakdownTable

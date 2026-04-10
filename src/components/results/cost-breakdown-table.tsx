@@ -38,6 +38,16 @@ function formatVaultTotal(result: VaultCostResult): string {
   return formatUSD(result.total);
 }
 
+function formatVaultStorageCost(result: VaultCostResult): string {
+  if (result.pricingTbd) return "TBD";
+  if (result.total === null) return "N/A";
+  const base =
+    result.overage !== undefined && result.overage > 0
+      ? result.total - result.overage
+      : result.total;
+  return formatUSD(base);
+}
+
 export function CostBreakdownTable({
   comparison,
   excludeEgress,
@@ -49,7 +59,7 @@ export function CostBreakdownTable({
     const rows: BreakdownRow[] = [
       {
         category: "Storage",
-        foundation: formatVaultTotal(comparison.vaultFoundation),
+        foundation: formatVaultStorageCost(comparison.vaultFoundation),
         advanced: formatVaultTotal(comparison.vaultAdvanced),
         diyOption1: fmt1(comparison.diyOption1.storage),
         diyOption2: formatUSD(comparison.diyOption2.storage),

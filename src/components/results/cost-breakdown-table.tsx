@@ -1,9 +1,3 @@
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 import { useMemo } from "react";
 
 import {
@@ -37,9 +31,6 @@ interface BreakdownRow {
   diyOption1: string;
   diyOption2: string;
 }
-
-const columnHelper = createColumnHelper<BreakdownRow>();
-const coreRowModel = getCoreRowModel();
 
 function formatVaultTotal(result: VaultCostResult): string {
   if (result.pricingTbd) return "TBD";
@@ -96,41 +87,6 @@ export function CostBreakdownTable({
     ];
   }, [comparison, excludeEgress]);
 
-  const columns = useMemo(
-    () => [
-      columnHelper.accessor("category", {
-        header: "Category",
-        footer: "Total",
-      }),
-      columnHelper.accessor("foundation", {
-        header: "VDC Foundation",
-        footer: formatVaultTotal(comparison.vaultFoundation),
-      }),
-      columnHelper.accessor("advanced", {
-        header: "VDC Advanced",
-        footer: formatVaultTotal(comparison.vaultAdvanced),
-      }),
-      columnHelper.accessor("diyOption1", {
-        header: comparison.diyOption1Label,
-        footer: comparison.diyOption1Unavailable
-          ? "N/A"
-          : formatUSD(comparison.diyOption1.total),
-      }),
-      columnHelper.accessor("diyOption2", {
-        header: comparison.diyOption2Label,
-        footer: formatUSD(comparison.diyOption2.total),
-      }),
-    ],
-    [comparison],
-  );
-
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: coreRowModel,
-  });
-
   return (
     <Card className="border-border/70 bg-background/90 rounded-[1.75rem] shadow-[0_32px_100px_-56px_color-mix(in_oklab,var(--electric-azure)_75%,transparent)]">
       <CardHeader className="gap-3 border-b border-[color:var(--dark-mineral)]/12 bg-[image:var(--surface-gradient)] py-5">
@@ -145,47 +101,41 @@ export function CostBreakdownTable({
       <CardContent className="pt-6">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableHead>Category</TableHead>
+              <TableHead>VDC Foundation</TableHead>
+              <TableHead>VDC Advanced</TableHead>
+              <TableHead>{comparison.diyOption1Label}</TableHead>
+              <TableHead>{comparison.diyOption2Label}</TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {data.map((row) => (
+              <TableRow key={row.category}>
+                <TableCell>{row.category}</TableCell>
+                <TableCell>{row.foundation}</TableCell>
+                <TableCell>{row.advanced}</TableCell>
+                <TableCell>{row.diyOption1}</TableCell>
+                <TableCell>{row.diyOption2}</TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
-            {table.getFooterGroups().map((footerGroup) => (
-              <TableRow key={footerGroup.id}>
-                {footerGroup.headers.map((header) => (
-                  <TableCell key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext(),
-                        )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell>Total</TableCell>
+              <TableCell>
+                {formatVaultTotal(comparison.vaultFoundation)}
+              </TableCell>
+              <TableCell>
+                {formatVaultTotal(comparison.vaultAdvanced)}
+              </TableCell>
+              <TableCell>
+                {comparison.diyOption1Unavailable
+                  ? "N/A"
+                  : formatUSD(comparison.diyOption1.total)}
+              </TableCell>
+              <TableCell>{formatUSD(comparison.diyOption2.total)}</TableCell>
+            </TableRow>
           </TableFooter>
         </Table>
       </CardContent>

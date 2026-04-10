@@ -211,10 +211,10 @@ function WrappedXAxisTick({
           key={line}
           x={0}
           y={0}
-          dy={i * 14 + 10}
+          dy={i * 13 + 10}
           textAnchor="middle"
           fill="var(--color-muted-foreground)"
-          fontSize={12}
+          fontSize={11}
         >
           {line}
         </text>

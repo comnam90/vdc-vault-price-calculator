@@ -37,7 +37,7 @@ export function SiteHeader() {
               <p className="text-muted-foreground max-w-2xl text-sm leading-6 sm:text-base">
                 See the full cost of VDC Vault Foundation and Advanced versus
                 building your own cloud storage — broken down by region, term,
-                and protected capacity.
+                and required capacity.
               </p>
             </div>
           </div>

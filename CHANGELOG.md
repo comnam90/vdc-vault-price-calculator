@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.3...v1.1.0) (2026-04-10)
+
+
+### Features
+
+* **results:** add multi-year cost trend line chart ([#32](https://github.com/comnam90/vdc-vault-tco-calculator/issues/32)) ([cafe52e](https://github.com/comnam90/vdc-vault-tco-calculator/commit/cafe52ef3c3bac8a4a5a9da0da438ecb6f1fcc73))
+
 ## [1.0.3](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.0.2...v1.0.3) (2026-04-10)
 
 

@@ -7,6 +7,12 @@ import {
 } from "@/__tests__/fixtures/comparison-result";
 import { ResultsPanel } from "@/components/results/results-panel";
 
+vi.mock("@/components/results/cost-trend-chart", () => ({
+  CostTrendChart: () => (
+    <div data-testid="cost-trend-chart">Cost trend chart</div>
+  ),
+}));
+
 vi.mock("@/components/results/summary-cards", () => ({
   SummaryCards: () => <div data-testid="summary-cards">Summary cards</div>,
 }));
@@ -72,6 +78,77 @@ describe("ResultsPanel", () => {
     const usdLabel = screen.getByText("(USD)");
     expect(usdLabel).toBeInTheDocument();
     expect(usdLabel.closest("h2")).toBeInTheDocument();
+  });
+
+  it("shows the Over time tab when termYears > 1", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={3}
+      />,
+    );
+
+    expect(screen.getByRole("tab", { name: /over time/i })).toBeInTheDocument();
+  });
+
+  it("does not show the Over time tab when termYears is 1", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={1}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("tab", { name: /over time/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders the trend chart when the Over time tab is active", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={3}
+      />,
+    );
+
+    const trendTab = screen.getByRole("tab", { name: /over time/i });
+    fireEvent.mouseDown(trendTab);
+    fireEvent.click(trendTab);
+
+    expect(screen.getByTestId("cost-trend-chart")).toBeInTheDocument();
+  });
+
+  it("resets to overview when termYears drops to 1 while on the trend tab", () => {
+    const { rerender } = render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={3}
+      />,
+    );
+
+    const trendTab = screen.getByRole("tab", { name: /over time/i });
+    fireEvent.mouseDown(trendTab);
+    fireEvent.click(trendTab);
+    expect(screen.getByTestId("cost-trend-chart")).toBeInTheDocument();
+
+    rerender(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={1}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("tab", { name: /over time/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId("summary-cards")).toBeInTheDocument();
+    expect(screen.getByTestId("comparison-chart")).toBeInTheDocument();
   });
 
   it("shows the non-core pricing banner when comparison data includes TBD vault totals", () => {

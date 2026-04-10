@@ -1,9 +1,13 @@
-import { useCallback, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { ResultsPanel } from "@/components/results/results-panel";
+
+const ResultsPanel = lazy(async () => {
+  const m = await import("@/components/results/results-panel");
+  return { default: m.ResultsPanel };
+});
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CLOUD_PRICING } from "@/data/cloud-pricing";
 import { useRegions } from "@/hooks/use-regions";
@@ -74,12 +78,14 @@ function App() {
 
           <div aria-live="polite">
             {comparison !== null && inputs !== null ? (
-              <ResultsPanel
-                comparison={comparison}
-                capacityTiB={inputs.capacityTiB}
-                termYears={inputs.termYears}
-                excludeEgress={inputs.excludeEgress === true}
-              />
+              <Suspense fallback={null}>
+                <ResultsPanel
+                  comparison={comparison}
+                  capacityTiB={inputs.capacityTiB}
+                  termYears={inputs.termYears}
+                  excludeEgress={inputs.excludeEgress === true}
+                />
+              </Suspense>
             ) : null}
           </div>
         </div>

@@ -200,6 +200,32 @@ describe("App", () => {
     ).not.toBeInTheDocument();
   }, 10_000);
 
+  it("uses a flex-row split-pane layout container at lg breakpoint", () => {
+    vi.mocked(useRegions).mockReturnValue({
+      regions,
+      isLoading: false,
+      error: null,
+    });
+
+    render(<App />);
+
+    const main = screen.getByRole("main");
+    expect(main.firstElementChild?.className).toMatch(/lg:flex-row/);
+  });
+
+  it("places CalculatorForm in a sticky sidebar for the lg split-pane", () => {
+    vi.mocked(useRegions).mockReturnValue({
+      regions,
+      isLoading: false,
+      error: null,
+    });
+
+    render(<App />);
+
+    const form = screen.getByRole("form", { name: /vault pricing inputs/i });
+    expect(form.closest('[class*="lg:sticky"]')).not.toBeNull();
+  });
+
   it("calls syncToUrl when the form fires onInputsChange", async () => {
     const syncToUrl = vi.fn();
     vi.mocked(useUrlState).mockReturnValue({

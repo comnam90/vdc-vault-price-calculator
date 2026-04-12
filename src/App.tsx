@@ -60,42 +60,48 @@ function App() {
     <div className="bg-background text-foreground flex min-h-screen flex-col">
       <SiteHeader />
       <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
-          {isLoading ? (
-            <p role="status" className="text-muted-foreground text-sm">
-              Loading available regions…
-            </p>
-          ) : null}
-
-          {error ? (
-            <Alert variant="destructive">
-              <AlertTitle>Unable to load regions</AlertTitle>
-              <AlertDescription>
-                {error}. Refresh the page and try again.
-              </AlertDescription>
-            </Alert>
-          ) : null}
-
-          <CalculatorForm
-            key={urlKey}
-            initialValues={urlDerivedInputs}
-            onInputsChange={handleInputsChange}
-          />
-
-          <div aria-live="polite">
-            {cloudPricingMissing && selectedRegion ? (
-              <MissingCloudPricingAlert region={selectedRegion} />
-            ) : comparison !== null && inputs !== null ? (
-              <Suspense fallback={null}>
-                <ResultsPanel
-                  comparison={comparison}
-                  capacityTiB={inputs.capacityTiB}
-                  termYears={inputs.termYears}
-                  excludeEgress={inputs.excludeEgress === true}
-                  restorePercentage={inputs.restorePercentage}
-                />
-              </Suspense>
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+          {/* Left pane — sticky inputs sidebar */}
+          <div className="flex shrink-0 flex-col gap-4 lg:sticky lg:top-8 lg:w-[28%]">
+            {isLoading ? (
+              <p role="status" className="text-muted-foreground text-sm">
+                Loading available regions…
+              </p>
             ) : null}
+
+            {error ? (
+              <Alert variant="destructive">
+                <AlertTitle>Unable to load regions</AlertTitle>
+                <AlertDescription>
+                  {error}. Refresh the page and try again.
+                </AlertDescription>
+              </Alert>
+            ) : null}
+
+            <CalculatorForm
+              key={urlKey}
+              initialValues={urlDerivedInputs}
+              onInputsChange={handleInputsChange}
+            />
+          </div>
+
+          {/* Right pane — scrollable results */}
+          <div className="min-w-0 flex-1">
+            <div aria-live="polite">
+              {cloudPricingMissing && selectedRegion ? (
+                <MissingCloudPricingAlert region={selectedRegion} />
+              ) : comparison !== null && inputs !== null ? (
+                <Suspense fallback={null}>
+                  <ResultsPanel
+                    comparison={comparison}
+                    capacityTiB={inputs.capacityTiB}
+                    termYears={inputs.termYears}
+                    excludeEgress={inputs.excludeEgress === true}
+                    restorePercentage={inputs.restorePercentage}
+                  />
+                </Suspense>
+              ) : null}
+            </div>
           </div>
         </div>
       </main>

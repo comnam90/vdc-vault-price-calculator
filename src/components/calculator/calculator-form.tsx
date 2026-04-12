@@ -102,35 +102,29 @@ export function CalculatorForm({
       <CardContent className="py-6">
         <form
           aria-label="Vault pricing inputs"
-          className="grid gap-5 lg:grid-cols-2 lg:items-start"
+          className="grid gap-5"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div className="lg:col-span-2">
-            <RegionSelector
-              regions={regions}
-              isLoading={isLoading}
-              selectedRegion={selectedRegion}
-              onRegionChange={handleRegionChange}
-            />
-          </div>
+          <RegionSelector
+            regions={regions}
+            isLoading={isLoading}
+            selectedRegion={selectedRegion}
+            onRegionChange={handleRegionChange}
+          />
           <TermSelector value={termYears} onTermChange={setTermYears} />
           <CapacityInput
             value={capacityTiB}
             onCapacityChange={setCapacityTiB}
           />
-          <div className="lg:col-span-2">
-            <RestorePercentageSlider
-              value={restorePercentage}
-              capacityTiB={capacityTiB}
-              onValueChange={setRestorePercentage}
-            />
-          </div>
-          <div className="lg:col-span-2">
-            <EgressToggle
-              checked={excludeEgress}
-              onCheckedChange={setExcludeEgress}
-            />
-          </div>
+          <RestorePercentageSlider
+            value={restorePercentage}
+            capacityTiB={capacityTiB}
+            onValueChange={setRestorePercentage}
+          />
+          <EgressToggle
+            checked={excludeEgress}
+            onCheckedChange={setExcludeEgress}
+          />
         </form>
       </CardContent>
     </Card>

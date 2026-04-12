@@ -163,7 +163,7 @@ describe("CalculatorForm", () => {
     render(<CalculatorForm onInputsChange={vi.fn()} />);
 
     const form = screen.getByRole("form", { name: /vault pricing inputs/i });
-    expect(form.className).not.toMatch(/lg:grid-cols-\[/);
+    expect(form.className).not.toMatch(/lg:grid-cols-/);
   });
 
   describe("EgressToggle integration", () => {

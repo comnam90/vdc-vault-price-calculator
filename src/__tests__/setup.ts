@@ -1,5 +1,22 @@
 import "@testing-library/jest-dom";
 
+// Provide a minimal matchMedia stub for jsdom, which does not implement it.
+// Tests that need to control OS-preference behaviour should override this
+// per-test with vi.stubGlobal("matchMedia", ...).
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: (query: string): MediaQueryList => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});
+
 const DEFAULT_RECT = {
   x: 0,
   y: 0,

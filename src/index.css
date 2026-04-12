@@ -129,7 +129,7 @@
 
     /* Extended Semantic — Dark Mode */
     --success-muted: oklch(0.22 0.08 155);
-    --warning-foreground: oklch(0.15 0 0);
+    --warning-foreground: oklch(0.92 0.1 55);
     --warning-muted: oklch(0.22 0.08 55);
     --info-muted: oklch(0.22 0.08 265);
 
@@ -285,7 +285,7 @@
 
   /* Extended Semantic — Dark Mode */
   --success-muted: oklch(0.22 0.08 155);
-  --warning-foreground: oklch(0.15 0 0);
+  --warning-foreground: oklch(0.92 0.1 55);
   --warning-muted: oklch(0.22 0.08 55);
   --info-muted: oklch(0.22 0.08 265);
 

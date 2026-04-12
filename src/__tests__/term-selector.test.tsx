@@ -18,6 +18,14 @@ describe("TermSelector", () => {
     expect(screen.getByRole("radio", { name: "5 Years" })).toBeInTheDocument();
   });
 
+  it("term buttons have no forced minimum width that causes the last button to expand full-width when wrapping", () => {
+    render(<TermSelector onTermChange={vi.fn()} />);
+
+    for (const button of screen.getAllByRole("radio")) {
+      expect(button.className).not.toMatch(/min-w-\[calc\(50%/);
+    }
+  });
+
   it("allows term buttons to wrap at all viewport sizes (no forced md:flex-nowrap)", () => {
     render(<TermSelector onTermChange={vi.fn()} />);
 

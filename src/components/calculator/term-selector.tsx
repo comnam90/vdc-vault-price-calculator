@@ -73,7 +73,7 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
               onClick={() => onTermChange(years)}
               onKeyDown={(event) => handleArrowNavigation(event, years)}
               className={cn(
-                "min-w-[calc(50%-0.25rem)] flex-1 rounded-xl border px-3 py-2 text-sm font-medium transition-colors md:min-w-0",
+                "flex-1 rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
                 isSelected
                   ? "bg-background text-foreground border-[color:var(--viridis)]/30 shadow-[0_10px_30px_-18px_var(--viridis)]"
                   : "text-muted-foreground hover:bg-background/70 hover:text-foreground border-transparent bg-transparent",

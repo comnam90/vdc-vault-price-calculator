@@ -127,6 +127,19 @@ describe("SummaryCards", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders Lowest total badge outside the card header so title rows align across all cards", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const badge = screen.getByText("Lowest total");
+    expect(badge.closest('[data-slot="card-header"]')).toBeNull();
+  });
+
   it("renders the Lowest total badge on its own line, not inline with the card title", () => {
     render(
       <SummaryCards

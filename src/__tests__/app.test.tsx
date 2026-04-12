@@ -209,8 +209,8 @@ describe("App", () => {
 
     render(<App />);
 
-    const main = screen.getByRole("main");
-    expect(main.firstElementChild?.className).toMatch(/lg:flex-row/);
+    const form = screen.getByRole("form", { name: /vault pricing inputs/i });
+    expect(form.closest('[class*="lg:flex-row"]')).not.toBeNull();
   });
 
   it("places CalculatorForm in a sticky sidebar for the lg split-pane", () => {

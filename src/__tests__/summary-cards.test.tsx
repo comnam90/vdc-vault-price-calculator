@@ -127,6 +127,23 @@ describe("SummaryCards", () => {
     ).toBeInTheDocument();
   });
 
+  it("uses xl (not lg) breakpoint for 4-column layout to avoid overflow inside the split-pane right pane", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const grid = screen
+      .getByText("VDC Vault Foundation")
+      .closest('[data-slot="card"]')?.parentElement;
+
+    expect(grid?.className).not.toMatch(/lg:grid-cols-4/);
+    expect(grid?.className).toMatch(/xl:grid-cols-4/);
+  });
+
   it("shows ZRS not available text and excludes it from cheapest when option1 unavailable", () => {
     render(
       <SummaryCards

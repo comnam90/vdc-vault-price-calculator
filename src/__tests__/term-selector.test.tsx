@@ -18,6 +18,15 @@ describe("TermSelector", () => {
     expect(screen.getByRole("radio", { name: "5 Years" })).toBeInTheDocument();
   });
 
+  it("allows term buttons to wrap at all viewport sizes (no forced md:flex-nowrap)", () => {
+    render(<TermSelector onTermChange={vi.fn()} />);
+
+    const radiogroup = screen.getByRole("radiogroup", {
+      name: /commitment term/i,
+    });
+    expect(radiogroup.className).not.toMatch(/md:flex-nowrap/);
+  });
+
   it("supports keyboard navigation with arrow keys and reports changes", () => {
     const onTermChange = vi.fn();
     render(<TermSelector onTermChange={onTermChange} />);

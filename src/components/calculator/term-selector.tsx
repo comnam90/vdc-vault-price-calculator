@@ -57,7 +57,7 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
       <div
         role="radiogroup"
         aria-labelledby={TERM_LABEL_ID}
-        className="border-border/70 flex flex-wrap gap-2 rounded-2xl border bg-[color:var(--card-tint-neutral)]/70 p-2 md:flex-nowrap"
+        className="border-border/70 flex flex-wrap gap-2 rounded-2xl border bg-[color:var(--card-tint-neutral)]/70 p-2"
       >
         {TERM_OPTIONS.map((years) => {
           const isSelected = years === selectedValue;

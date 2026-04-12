@@ -127,6 +127,19 @@ describe("SummaryCards", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders the Lowest total badge on its own line, not inline with the card title", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const badge = screen.getByText("Lowest total");
+    expect(badge.closest('[class*="justify-between"]')).toBeNull();
+  });
+
   it("uses xl (not lg) breakpoint for 4-column layout to avoid overflow inside the split-pane right pane", () => {
     render(
       <SummaryCards

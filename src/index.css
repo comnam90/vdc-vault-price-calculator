@@ -129,7 +129,7 @@
 
     /* Extended Semantic — Dark Mode */
     --success-muted: oklch(0.22 0.08 155);
-    --warning-foreground: oklch(0.15 0 0);
+    --warning-foreground: oklch(0.92 0.1 55);
     --warning-muted: oklch(0.22 0.08 55);
     --info-muted: oklch(0.22 0.08 265);
 
@@ -245,14 +245,24 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  /* Veeam 2025 Brand Palette — Dark Mode */
+  --viridis: oklch(0.8 0.24 155);
+  --fog: oklch(0.2 0 0);
+  --dark-mineral: oklch(0.92 0 0);
+  --french-grey: oklch(0.6 0.01 280);
+  --ignis: oklch(0.68 0.24 25);
+  --suma: oklch(0.78 0.21 55);
+  --electric-azure: oklch(0.6 0.28 265);
+
+  /* Overrides for dark backgrounds */
+  --background: oklch(0.15 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.2 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.2 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.15 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -260,15 +270,34 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.72 0.18 155);
-  --chart-1: oklch(0.60 0.08 235);
+  --surface-gradient: linear-gradient(
+    180deg,
+    oklch(0.18 0.01 155 / 50%) 0%,
+    oklch(0.15 0 0) 60%
+  );
+  --card-tint-success: oklch(0.19 0.03 155);
+  --card-tint-destructive: oklch(0.19 0.03 25);
+  --card-tint-neutral: oklch(0.19 0.005 280);
+
+  /* Extended Semantic — Dark Mode */
+  --success-muted: oklch(0.22 0.08 155);
+  --warning-foreground: oklch(0.92 0.1 55);
+  --warning-muted: oklch(0.22 0.08 55);
+  --info-muted: oklch(0.22 0.08 265);
+
+  /* Chart Colors — Dark Mode */
+  --chart-1: oklch(0.6 0.08 235);
   --chart-2: oklch(0.65 0.22 255);
   --chart-3: oklch(0.72 0.22 155);
   --chart-4: oklch(0.78 0.21 55);
   --chart-5: oklch(0.68 0.24 25);
-  --sidebar: oklch(0.205 0 0);
+
+  /* Sidebar — Dark Mode */
+  --sidebar: oklch(0.2 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);

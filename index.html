@@ -27,6 +27,19 @@
       name="twitter:description"
       content="Unofficial Veeam Data Cloud Vault TCO comparison tool. Compare VDC Vault costs against DIY cloud storage across 60+ regions."
     />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          if (stored === "dark" || (stored !== "light" && prefersDark)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

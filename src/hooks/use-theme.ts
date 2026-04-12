@@ -5,9 +5,13 @@ export type Theme = "dark" | "light" | "system";
 const STORAGE_KEY = "theme";
 
 function getInitialTheme(): Theme {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === "dark" || stored === "light" || stored === "system")
-    return stored;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "dark" || stored === "light" || stored === "system")
+      return stored;
+  } catch {
+    // localStorage unavailable (e.g. private browsing restrictions)
+  }
   return "system";
 }
 
@@ -16,7 +20,6 @@ export function useTheme() {
 
   useEffect(() => {
     const root = document.documentElement;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
 
     function applyResolved(dark: boolean) {
       if (dark) {
@@ -26,9 +29,14 @@ export function useTheme() {
       }
     }
 
-    localStorage.setItem(STORAGE_KEY, theme);
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      // localStorage unavailable
+    }
 
     if (theme === "system") {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
       applyResolved(mq.matches);
       const handler = (e: MediaQueryListEvent) => applyResolved(e.matches);
       mq.addEventListener("change", handler);

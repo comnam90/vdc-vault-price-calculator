@@ -3,6 +3,12 @@ import { Github, Monitor, Moon, ShieldAlert, Sun } from "lucide-react";
 import { ShareButton } from "@/components/calculator/share-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useTheme } from "@/hooks/use-theme";
 
 const PROVIDERS = ["AWS", "Azure"] as const;
@@ -19,6 +25,12 @@ const THEME_LABEL = {
   light: "Follow system theme",
 } as const;
 
+const THEME_TOOLTIP = {
+  system: "System theme",
+  dark: "Dark mode",
+  light: "Light mode",
+} as const;
+
 export function SiteHeader() {
   const { theme, toggleTheme } = useTheme();
 
@@ -26,15 +38,22 @@ export function SiteHeader() {
     <header className="border-border/70 border-b bg-[image:var(--surface-gradient)]">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
         <div className="flex items-center justify-end gap-2 border-b border-[color:var(--dark-mineral)]/15 pb-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            aria-label={THEME_LABEL[theme]}
-            className="text-muted-foreground hover:text-foreground rounded-full"
-          >
-            {THEME_ICON[theme]}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleTheme}
+                  aria-label={THEME_LABEL[theme]}
+                  className="text-muted-foreground hover:text-foreground rounded-full"
+                >
+                  {THEME_ICON[theme]}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{THEME_TOOLTIP[theme]}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Badge className="rounded-md border border-[color:var(--warning)]/40 bg-[color:var(--warning-muted)] px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.2em] text-[color:var(--warning-foreground)] uppercase">
             <ShieldAlert className="size-3" />
             Unofficial

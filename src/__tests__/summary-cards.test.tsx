@@ -127,6 +127,49 @@ describe("SummaryCards", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders Lowest total badge outside the card header so title rows align across all cards", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const badge = screen.getByText("Lowest total");
+    expect(badge.closest('[data-slot="card-header"]')).toBeNull();
+  });
+
+  it("renders the Lowest total badge on its own line, not inline with the card title", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const badge = screen.getByText("Lowest total");
+    expect(badge.closest('[class*="justify-between"]')).toBeNull();
+  });
+
+  it("uses xl (not lg) breakpoint for 4-column layout to avoid overflow inside the split-pane right pane", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const grid = screen
+      .getByText("VDC Vault Foundation")
+      .closest('[data-slot="card"]')?.parentElement;
+
+    expect(grid?.className).not.toMatch(/lg:grid-cols-4/);
+    expect(grid?.className).toMatch(/xl:grid-cols-4/);
+  });
+
   it("shows ZRS not available text and excludes it from cheapest when option1 unavailable", () => {
     render(
       <SummaryCards

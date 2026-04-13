@@ -135,7 +135,7 @@ export function SummaryCards({
   }, null);
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {cards.map((card, index) => {
         const isCheapest =
           cheapestTotal !== null && card.total === cheapestTotal;
@@ -160,17 +160,10 @@ export function SummaryCards({
                 "bg-card-tint-success border-t-2 border-[color:var(--success)]/25 border-t-[color:var(--viridis)]/60 shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--success)_50%,transparent)]",
             )}
           >
-            <CardHeader className="gap-3">
-              <div className="flex items-start justify-between gap-3">
-                <CardTitle className="text-base leading-6 tracking-[-0.03em]">
-                  {card.title}
-                </CardTitle>
-                {isCheapest ? (
-                  <Badge className="rounded-full border border-[color:var(--success)]/20 bg-[color:var(--success-muted)] px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.16em] text-[color:var(--dark-mineral)] uppercase">
-                    Lowest total
-                  </Badge>
-                ) : null}
-              </div>
+            <CardHeader>
+              <CardTitle className="text-base leading-6 tracking-[-0.03em]">
+                {card.title}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="dark:text-foreground text-2xl font-semibold tracking-[-0.05em] text-[color:var(--dark-mineral)] [font-variant-numeric:tabular-nums]">
@@ -192,6 +185,11 @@ export function SummaryCards({
                   )}
                 </p>
               </div>
+              {isCheapest ? (
+                <Badge className="self-start rounded-full border border-[color:var(--success)]/20 bg-[color:var(--success-muted)] px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.16em] text-[color:var(--dark-mineral)] uppercase">
+                  Lowest total
+                </Badge>
+              ) : null}
             </CardContent>
           </Card>
         );

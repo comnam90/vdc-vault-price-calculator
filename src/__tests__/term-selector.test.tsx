@@ -63,11 +63,18 @@ describe("TermSelector", () => {
 
   it("renders number and label in separate spans for explicit two-line layout", () => {
     render(<TermSelector onTermChange={vi.fn()} />);
+
     const oneYearButton = screen.getByRole("radio", { name: "1 Year" });
-    const spans = oneYearButton.querySelectorAll("span");
-    expect(spans).toHaveLength(2);
-    expect(spans[0]).toHaveTextContent("1");
-    expect(spans[1]).toHaveTextContent("Year");
+    const singularSpans = oneYearButton.querySelectorAll("span");
+    expect(singularSpans).toHaveLength(2);
+    expect(singularSpans[0]).toHaveTextContent("1");
+    expect(singularSpans[1]).toHaveTextContent("Year");
+
+    const threeYearsButton = screen.getByRole("radio", { name: "3 Years" });
+    const pluralSpans = threeYearsButton.querySelectorAll("span");
+    expect(pluralSpans).toHaveLength(2);
+    expect(pluralSpans[0]).toHaveTextContent("3");
+    expect(pluralSpans[1]).toHaveTextContent("Years");
   });
 
   it("supports keyboard navigation with arrow keys and reports changes", () => {

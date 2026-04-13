@@ -50,7 +50,7 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
   };
 
   return (
-    <fieldset className="grid gap-2">
+    <fieldset className="grid gap-3">
       <legend id={TERM_LABEL_ID} className="text-sm leading-none font-medium">
         Commitment term
       </legend>

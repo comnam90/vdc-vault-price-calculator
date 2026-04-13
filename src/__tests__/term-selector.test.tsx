@@ -18,6 +18,13 @@ describe("TermSelector", () => {
     expect(screen.getByRole("radio", { name: "5 Years" })).toBeInTheDocument();
   });
 
+  it("uses gap-3 on the fieldset so the legend-to-radiogroup spacing matches other form field labels", () => {
+    const { container } = render(<TermSelector onTermChange={vi.fn()} />);
+
+    const fieldset = container.querySelector("fieldset");
+    expect(fieldset?.className).toMatch(/gap-3/);
+  });
+
   it("term buttons have no forced minimum width that causes the last button to expand full-width when wrapping", () => {
     render(<TermSelector onTermChange={vi.fn()} />);
 

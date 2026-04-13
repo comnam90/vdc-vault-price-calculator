@@ -61,6 +61,7 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
       >
         {TERM_OPTIONS.map((years) => {
           const isSelected = years === selectedValue;
+          const label = years === 1 ? "Year" : "Years";
 
           return (
             <button
@@ -72,14 +73,16 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
               tabIndex={isSelected ? 0 : -1}
               onClick={() => onTermChange(years)}
               onKeyDown={(event) => handleArrowNavigation(event, years)}
+              aria-label={`${years} ${label}`}
               className={cn(
-                "rounded-xl border px-3 py-2 text-center text-sm font-medium transition-colors",
+                "flex flex-col items-center justify-center rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
                 isSelected
                   ? "bg-background text-foreground border-[color:var(--viridis)]/30 shadow-[0_10px_30px_-18px_var(--viridis)]"
                   : "text-muted-foreground hover:bg-background/70 hover:text-foreground border-transparent bg-transparent",
               )}
             >
-              {years} {years === 1 ? "Year" : "Years"}
+              <span>{years}</span>
+              <span>{label}</span>
             </button>
           );
         })}

@@ -244,6 +244,7 @@ function WrappedXAxisTick({
 
 export function ComparisonChart({ comparison }: ComparisonChartProps) {
   const data = buildChartData(comparison);
+  const hasFoundationOverage = data.some((d) => d.vaultFoundationOverage > 0);
 
   return (
     <Card className="border-border/50 bg-background/90 overflow-hidden rounded-[1.75rem] pt-0">
@@ -304,7 +305,7 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                 stackId="cost"
                 fill="var(--success)"
                 legendType="none"
-                radius={[6, 6, 0, 0]}
+                radius={hasFoundationOverage ? [0, 0, 0, 0] : [6, 6, 0, 0]}
               />
               <Bar
                 dataKey="vaultFoundationOverage"

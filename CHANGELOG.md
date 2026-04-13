@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.3...v1.3.0) (2026-04-13)
+
+
+### Features
+
+* **chart:** show Foundation restore overage breakdown in comparison chart ([#63](https://github.com/comnam90/vdc-vault-tco-calculator/issues/63)) ([401fbd3](https://github.com/comnam90/vdc-vault-tco-calculator/commit/401fbd3f0cdd3c980ae3fb572a8977b64ebcaf4e))
+* **chart:** show per-item percentage of total in comparison chart tooltip ([#59](https://github.com/comnam90/vdc-vault-tco-calculator/issues/59)) ([65047b8](https://github.com/comnam90/vdc-vault-tco-calculator/commit/65047b85f9b2d0eefd316e0da771504a1b4dfaaa))
+* **layout:** split-pane dashboard at lg breakpoint ([#53](https://github.com/comnam90/vdc-vault-tco-calculator/issues/53)) ([e9bc35f](https://github.com/comnam90/vdc-vault-tco-calculator/commit/e9bc35f2d2bedea6975fb57e075c0995a8e4dfaf))
+* **ui:** add dark/light mode toggle to site header ([#51](https://github.com/comnam90/vdc-vault-tco-calculator/issues/51)) ([fcaba07](https://github.com/comnam90/vdc-vault-tco-calculator/commit/fcaba07f5aa5bf0dce1c64692acf1b5733c2d080))
+* **ui:** apply font-mono to dollar figures in summary cards and breakdown table ([#54](https://github.com/comnam90/vdc-vault-tco-calculator/issues/54)) ([3cfab04](https://github.com/comnam90/vdc-vault-tco-calculator/commit/3cfab04d4a0fe30c5d8498ea355ef2010a263fac)), closes [#47](https://github.com/comnam90/vdc-vault-tco-calculator/issues/47)
+* **ui:** replace diffuse card shadows with sharp 1px borders ([#55](https://github.com/comnam90/vdc-vault-tco-calculator/issues/55)) ([46d1e88](https://github.com/comnam90/vdc-vault-tco-calculator/commit/46d1e88b599ba80aaa308d2ef970eeba1adb998d))
+
+
+### Bug Fixes
+
+* **ui:** centre term selector button text with explicit two-line layout ([#61](https://github.com/comnam90/vdc-vault-tco-calculator/issues/61)) ([521a9ac](https://github.com/comnam90/vdc-vault-tco-calculator/commit/521a9acfd791a6abe4f5b583a93cfbd46fc55a94))
+* **ui:** remove white gap above gradient card headers ([#57](https://github.com/comnam90/vdc-vault-tco-calculator/issues/57)) ([1826f37](https://github.com/comnam90/vdc-vault-tco-calculator/commit/1826f3747a7e6a82c4715d43b3c8a798e81f5fe7))
+
 ## [1.2.3](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.2...v1.2.3) (2026-04-10)
 
 

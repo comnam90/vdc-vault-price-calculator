@@ -51,6 +51,25 @@ describe("TermSelector", () => {
     expect(radiogroup.className).not.toMatch(/md:flex-nowrap/);
   });
 
+  it("uses flex column layout on term buttons to ensure consistent vertical centering", () => {
+    render(<TermSelector onTermChange={vi.fn()} />);
+    for (const button of screen.getAllByRole("radio")) {
+      expect(button.className).toMatch(/flex/);
+      expect(button.className).toMatch(/flex-col/);
+      expect(button.className).toMatch(/items-center/);
+      expect(button.className).toMatch(/justify-center/);
+    }
+  });
+
+  it("renders number and label in separate spans for explicit two-line layout", () => {
+    render(<TermSelector onTermChange={vi.fn()} />);
+    const oneYearButton = screen.getByRole("radio", { name: "1 Year" });
+    const spans = oneYearButton.querySelectorAll("span");
+    expect(spans).toHaveLength(2);
+    expect(spans[0]).toHaveTextContent("1");
+    expect(spans[1]).toHaveTextContent("Year");
+  });
+
   it("supports keyboard navigation with arrow keys and reports changes", () => {
     const onTermChange = vi.fn();
     render(<TermSelector onTermChange={onTermChange} />);

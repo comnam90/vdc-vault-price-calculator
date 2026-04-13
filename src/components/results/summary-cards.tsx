@@ -149,7 +149,7 @@ export function SummaryCards({
             key={card.id}
             style={{ animationDelay: `${index * 80}ms` }}
             className={cn(
-              "border-border/70 bg-background/90 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 rounded-[1.5rem] shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--electric-azure)_60%,transparent)] motion-safe:duration-500",
+              "border-border/50 bg-background/90 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 rounded-[1.5rem] motion-safe:duration-500",
               isVault &&
                 !isCheapest &&
                 "border-t-2 border-t-[color:var(--viridis)]/40",
@@ -157,7 +157,7 @@ export function SummaryCards({
                 !isCheapest &&
                 "border-t-2 border-t-[color:var(--electric-azure)]/35",
               isCheapest &&
-                "bg-card-tint-success border-t-2 border-[color:var(--success)]/25 border-t-[color:var(--viridis)]/60 shadow-[0_24px_72px_-48px_color-mix(in_oklab,var(--success)_50%,transparent)]",
+                "bg-card-tint-success border-t-2 border-[color:var(--success)]/25 border-t-[color:var(--viridis)]/60",
             )}
           >
             <CardHeader>

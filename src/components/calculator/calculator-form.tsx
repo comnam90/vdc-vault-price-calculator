@@ -89,7 +89,7 @@ export function CalculatorForm({
   }, [completeInputs, onInputsChange]);
 
   return (
-    <Card className="border-border/70 bg-background/90 overflow-hidden rounded-[1.75rem] shadow-[0_32px_100px_-56px_color-mix(in_oklab,var(--electric-azure)_75%,transparent)] backdrop-blur">
+    <Card className="border-border/50 bg-background/90 overflow-hidden rounded-[1.75rem] backdrop-blur">
       <CardHeader className="border-border/70 gap-3 border-b bg-[image:var(--surface-gradient)] py-5">
         <CardTitle className="text-xl tracking-[-0.03em]">
           Calculation inputs

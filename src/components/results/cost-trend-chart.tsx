@@ -165,7 +165,7 @@ export function CostTrendChart({ comparison, termYears }: CostTrendChartProps) {
   const showDiy1 = !comparison.diyOption1Unavailable;
 
   return (
-    <Card className="border-border/70 bg-background/90 rounded-[1.75rem] shadow-[0_32px_100px_-56px_color-mix(in_oklab,var(--electric-azure)_75%,transparent)]">
+    <Card className="border-border/50 bg-background/90 rounded-[1.75rem]">
       <CardHeader className="gap-3 border-b border-[color:var(--dark-mineral)]/12 bg-[image:var(--surface-gradient)] py-5">
         <CardTitle className="text-xl tracking-[-0.03em]">
           Cost over time

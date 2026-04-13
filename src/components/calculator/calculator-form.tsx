@@ -89,7 +89,7 @@ export function CalculatorForm({
   }, [completeInputs, onInputsChange]);
 
   return (
-    <Card className="border-border/50 bg-background/90 overflow-hidden rounded-[1.75rem] backdrop-blur">
+    <Card className="border-border/50 bg-background/90 overflow-hidden rounded-[1.75rem] pt-0 backdrop-blur">
       <CardHeader className="border-border/70 gap-3 border-b bg-[image:var(--surface-gradient)] py-5">
         <CardTitle className="text-xl tracking-[-0.03em]">
           Calculation inputs

@@ -25,6 +25,33 @@ function collectClassTokens() {
 const diffuseShadowPattern = /^shadow-\[0_\d+px_\d+px_-\d+px_color-mix/;
 
 describe("card borders", () => {
+  it("gradient-header card wrappers have pt-0 and overflow-hidden to eliminate the white gap", () => {
+    render(
+      <>
+        <CalculatorForm onInputsChange={vi.fn()} />
+        <ResultsPanel
+          comparison={fixtureComparison}
+          capacityTiB={FIXTURE_CAPACITY_TIB}
+          termYears={FIXTURE_TERM_YEARS}
+          restorePercentage={20}
+        />
+      </>,
+    );
+
+    const gradientHeaders = Array.from(
+      document.body.querySelectorAll<HTMLElement>(
+        '[class*="surface-gradient"]',
+      ),
+    );
+    expect(gradientHeaders.length).toBeGreaterThanOrEqual(2);
+
+    gradientHeaders.forEach((header) => {
+      const card = header.parentElement;
+      expect(card?.className).toMatch(/\bpt-0\b/);
+      expect(card?.className).toMatch(/\boverflow-hidden\b/);
+    });
+  });
+
   it("renders card components without large diffuse shadows", () => {
     render(
       <>

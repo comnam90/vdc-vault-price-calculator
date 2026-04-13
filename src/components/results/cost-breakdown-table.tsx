@@ -111,7 +111,7 @@ export function CostBreakdownTable({
   }, [comparison, excludeEgress]);
 
   return (
-    <Card className="border-border/50 bg-background/90 rounded-[1.75rem]">
+    <Card className="border-border/50 bg-background/90 overflow-hidden rounded-[1.75rem] pt-0">
       <CardHeader className="gap-3 border-b border-[color:var(--dark-mineral)]/12 bg-[image:var(--surface-gradient)] py-5">
         <CardTitle className="text-xl tracking-[-0.03em]">
           Cost breakdown

@@ -18,6 +18,15 @@ describe("TermSelector", () => {
     expect(screen.getByRole("radio", { name: "5 Years" })).toBeInTheDocument();
   });
 
+  it("lays out term buttons in a 5-column grid so all options are always on one row", () => {
+    render(<TermSelector onTermChange={vi.fn()} />);
+
+    const radiogroup = screen.getByRole("radiogroup", {
+      name: /commitment term/i,
+    });
+    expect(radiogroup.className).toMatch(/grid-cols-5/);
+  });
+
   it("uses gap-3 on the fieldset so the legend-to-radiogroup spacing matches other form field labels", () => {
     const { container } = render(<TermSelector onTermChange={vi.fn()} />);
 

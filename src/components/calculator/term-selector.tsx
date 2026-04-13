@@ -57,7 +57,7 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
       <div
         role="radiogroup"
         aria-labelledby={TERM_LABEL_ID}
-        className="border-border/70 flex flex-wrap gap-2 rounded-2xl border bg-[color:var(--card-tint-neutral)]/70 p-2"
+        className="border-border/70 grid grid-cols-5 gap-2 rounded-2xl border bg-[color:var(--card-tint-neutral)]/70 p-2"
       >
         {TERM_OPTIONS.map((years) => {
           const isSelected = years === selectedValue;
@@ -73,7 +73,7 @@ export function TermSelector({ value = 1, onTermChange }: TermSelectorProps) {
               onClick={() => onTermChange(years)}
               onKeyDown={(event) => handleArrowNavigation(event, years)}
               className={cn(
-                "flex-1 rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
+                "rounded-xl border px-3 py-2 text-center text-sm font-medium transition-colors",
                 isSelected
                   ? "bg-background text-foreground border-[color:var(--viridis)]/30 shadow-[0_10px_30px_-18px_var(--viridis)]"
                   : "text-muted-foreground hover:bg-background/70 hover:text-foreground border-transparent bg-transparent",

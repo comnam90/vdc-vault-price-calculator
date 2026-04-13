@@ -206,6 +206,14 @@ describe("CostBreakdownTable", () => {
     ).toBeInTheDocument();
   });
 
+  it("applies font-mono to non-category data cells", () => {
+    render(<CostBreakdownTable comparison={fixtureComparison} />);
+
+    // $5,040.00 appears in both the Storage body row and the footer Total row
+    const cells = screen.getAllByText("$5,040.00");
+    cells.forEach((cell) => expect(cell).toHaveClass("font-mono"));
+  });
+
   it("overage row shows '--' for Advanced and DIY columns", () => {
     render(
       <CostBreakdownTable

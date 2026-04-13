@@ -136,28 +136,30 @@ export function CostBreakdownTable({
             {data.map((row) => (
               <TableRow key={row.category}>
                 <TableCell>{row.category}</TableCell>
-                <TableCell>{row.foundation}</TableCell>
-                <TableCell>{row.advanced}</TableCell>
-                <TableCell>{row.diyOption1}</TableCell>
-                <TableCell>{row.diyOption2}</TableCell>
+                <TableCell className="font-mono">{row.foundation}</TableCell>
+                <TableCell className="font-mono">{row.advanced}</TableCell>
+                <TableCell className="font-mono">{row.diyOption1}</TableCell>
+                <TableCell className="font-mono">{row.diyOption2}</TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell>Total</TableCell>
-              <TableCell>
+              <TableCell className="font-mono">
                 {formatVaultTotal(comparison.vaultFoundation)}
               </TableCell>
-              <TableCell>
+              <TableCell className="font-mono">
                 {formatVaultTotal(comparison.vaultAdvanced)}
               </TableCell>
-              <TableCell>
+              <TableCell className="font-mono">
                 {comparison.diyOption1Unavailable
                   ? "N/A"
                   : formatUSD(comparison.diyOption1.total)}
               </TableCell>
-              <TableCell>{formatUSD(comparison.diyOption2.total)}</TableCell>
+              <TableCell className="font-mono">
+                {formatUSD(comparison.diyOption2.total)}
+              </TableCell>
             </TableRow>
           </TableFooter>
         </Table>

@@ -170,6 +170,30 @@ describe("SummaryCards", () => {
     expect(grid?.className).toMatch(/xl:grid-cols-4/);
   });
 
+  it("applies font-mono to the total value", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    expect(screen.getByText("$5,040.00")).toHaveClass("font-mono");
+  });
+
+  it("applies font-mono to the effective rate value", () => {
+    render(
+      <SummaryCards
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    expect(screen.getByText("$14/TB/mo")).toHaveClass("font-mono");
+  });
+
   it("shows ZRS not available text and excludes it from cheapest when option1 unavailable", () => {
     render(
       <SummaryCards

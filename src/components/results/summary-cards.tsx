@@ -166,7 +166,7 @@ export function SummaryCards({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="dark:text-foreground text-2xl font-semibold tracking-[-0.05em] text-[color:var(--dark-mineral)] [font-variant-numeric:tabular-nums]">
+              <p className="dark:text-foreground font-mono text-2xl font-semibold tracking-[-0.05em] text-[color:var(--dark-mineral)] [font-variant-numeric:tabular-nums]">
                 {formatTotalValue(
                   card.total,
                   card.pricingTbd,
@@ -177,7 +177,7 @@ export function SummaryCards({
                 <p className="text-muted-foreground font-mono text-[0.68rem] tracking-[0.2em] uppercase">
                   Effective rate
                 </p>
-                <p className="text-sm font-medium">
+                <p className="font-mono text-sm font-medium">
                   {formatRateValue(
                     card.rate,
                     card.pricingTbd,

@@ -53,8 +53,9 @@ describe("card borders", () => {
 
     gradientHeaders.forEach((header) => {
       const card = header.parentElement;
-      expect(card?.className).toMatch(/\bpt-0\b/);
-      expect(card?.className).toMatch(/\boverflow-hidden\b/);
+      expect(card).not.toBeNull();
+      expect(card!.className).toMatch(/\bpt-0\b/);
+      expect(card!.className).toMatch(/\boverflow-hidden\b/);
     });
   });
 

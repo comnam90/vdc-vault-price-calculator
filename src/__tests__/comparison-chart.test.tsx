@@ -90,4 +90,51 @@ describe("ChartTooltip percentage display", () => {
     );
     expect(screen.queryByText(/%/)).not.toBeInTheDocument();
   });
+
+  it("shows base and overage with percentages when Foundation has restore overage", () => {
+    render(
+      <ChartTooltip
+        active
+        label="VDC Vault Foundation"
+        payload={[
+          { name: "VDC Vault Foundation", value: 4200, fill: "#0f0" },
+          { name: "Restore Overage", value: 840, fill: "#f80" },
+        ]}
+      />,
+    );
+    // 4200/5040 ≈ 83%, 840/5040 ≈ 17%
+    expect(screen.getByText("(83%)")).toBeInTheDocument();
+    expect(screen.getByText("(17%)")).toBeInTheDocument();
+  });
+});
+
+describe("ComparisonChart Foundation overage", () => {
+  const comparisonWithOverage = {
+    ...fixtureComparison,
+    vaultFoundation: {
+      total: 5040,
+      perTbMonth: 14,
+      pricingTbd: false,
+      overage: 840,
+    },
+  };
+
+  it("shows Restore Overage legend entry only when Foundation overage is present", () => {
+    const { rerender } = render(
+      <ComparisonChart comparison={fixtureComparison} />,
+    );
+    expect(screen.queryByText("Restore Overage")).not.toBeInTheDocument();
+
+    rerender(<ComparisonChart comparison={comparisonWithOverage} />);
+    expect(screen.getByText("Restore Overage")).toBeInTheDocument();
+  });
+
+  it("renders an extra overage bar rectangle when Foundation overage is present", () => {
+    const { container } = render(
+      <ComparisonChart comparison={comparisonWithOverage} />,
+    );
+    expect(container.querySelectorAll(".recharts-bar-rectangle")).toHaveLength(
+      13,
+    );
+  });
 });

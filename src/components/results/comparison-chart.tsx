@@ -24,7 +24,8 @@ interface ComparisonChartProps {
 
 interface ChartDatum {
   label: string;
-  vaultFoundation: number;
+  vaultFoundationBase: number;
+  vaultFoundationOverage: number;
   vaultAdvanced: number;
   storage: number;
   writeOps: number;
@@ -41,7 +42,11 @@ const DIY_LEGEND_ITEMS: Array<{ name: string; fill: string }> = [
   { name: "Internet Egress", fill: "var(--ignis)" },
 ];
 
-const VAULT_ZERO = { vaultFoundation: 0, vaultAdvanced: 0 };
+const VAULT_ZERO = {
+  vaultFoundationBase: 0,
+  vaultFoundationOverage: 0,
+  vaultAdvanced: 0,
+};
 const DIY_ZERO = {
   storage: 0,
   writeOps: 0,
@@ -54,10 +59,13 @@ function buildChartData(comparison: ComparisonResult): ChartDatum[] {
   const data: ChartDatum[] = [];
 
   if (comparison.vaultFoundation.total !== null) {
+    const overage = comparison.vaultFoundation.overage ?? 0;
+    const base = comparison.vaultFoundation.total - overage;
     data.push({
       label: "VDC Vault Foundation",
       ...VAULT_ZERO,
-      vaultFoundation: comparison.vaultFoundation.total,
+      vaultFoundationBase: base,
+      vaultFoundationOverage: overage,
       ...DIY_ZERO,
     });
   }
@@ -98,13 +106,20 @@ function buildChartData(comparison: ComparisonResult): ChartDatum[] {
 
 interface ChartLegendProps {
   data: ChartDatum[];
+  hasFoundationOverage: boolean;
 }
 
-function ChartLegend({ data }: ChartLegendProps) {
+function ChartLegend({ data, hasFoundationOverage }: ChartLegendProps) {
   const vaultItems: Array<{ name: string; fill: string }> = [];
 
-  if (data.some((d) => d.vaultFoundation > 0)) {
+  if (data.some((d) => d.vaultFoundationBase > 0)) {
     vaultItems.push({ name: "VDC Vault Foundation", fill: "var(--success)" });
+  }
+  if (hasFoundationOverage) {
+    // var(--warning) is also used for Data Retrieval in DIY rows; the two
+    // series never coexist in the same stacked bar, so the shared token is
+    // unambiguous in the chart itself — legend labels distinguish them.
+    vaultItems.push({ name: "Restore Overage", fill: "var(--warning)" });
   }
   if (data.some((d) => d.vaultAdvanced > 0)) {
     vaultItems.push({ name: "VDC Vault Advanced", fill: "var(--info)" });
@@ -233,6 +248,7 @@ function WrappedXAxisTick({
 
 export function ComparisonChart({ comparison }: ComparisonChartProps) {
   const data = buildChartData(comparison);
+  const hasFoundationOverage = data.some((d) => d.vaultFoundationOverage > 0);
 
   return (
     <Card className="border-border/50 bg-background/90 overflow-hidden rounded-[1.75rem] pt-0">
@@ -241,8 +257,8 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
           Cost comparison
         </CardTitle>
         <CardDescription>
-          Vault totals render as single bars while DIY options reveal their full
-          cost stack.
+          Foundation splits into base cost and restore overage when applicable;
+          DIY options reveal their full cost breakdown.
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
@@ -288,10 +304,18 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
                * DIY rows have only storage/writeOps/etc non-zero.
                */}
               <Bar
-                dataKey="vaultFoundation"
+                dataKey="vaultFoundationBase"
                 name="VDC Vault Foundation"
                 stackId="cost"
                 fill="var(--success)"
+                legendType="none"
+                radius={hasFoundationOverage ? [0, 0, 0, 0] : [6, 6, 0, 0]}
+              />
+              <Bar
+                dataKey="vaultFoundationOverage"
+                name="Restore Overage"
+                stackId="cost"
+                fill="var(--warning)"
                 legendType="none"
                 radius={[6, 6, 0, 0]}
               />
@@ -342,7 +366,7 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <ChartLegend data={data} />
+        <ChartLegend data={data} hasFoundationOverage={hasFoundationOverage} />
       </CardContent>
     </Card>
   );

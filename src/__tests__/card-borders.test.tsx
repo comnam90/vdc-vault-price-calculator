@@ -7,6 +7,9 @@ import {
   fixtureComparison,
 } from "@/__tests__/fixtures/comparison-result";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
+import { ComparisonChart } from "@/components/results/comparison-chart";
+import { CostBreakdownTable } from "@/components/results/cost-breakdown-table";
+import { CostTrendChart } from "@/components/results/cost-trend-chart";
 import { ResultsPanel } from "@/components/results/results-panel";
 
 vi.mock("@/hooks/use-regions", () => ({
@@ -26,14 +29,17 @@ const diffuseShadowPattern = /^shadow-\[0_\d+px_\d+px_-\d+px_color-mix/;
 
 describe("card borders", () => {
   it("gradient-header card wrappers have pt-0 and overflow-hidden to eliminate the white gap", () => {
+    // Render each gradient-header card directly: ResultsPanel renders CostBreakdownTable
+    // and CostTrendChart inside inactive Radix tabs, so they are not in the DOM unless
+    // the tab is activated. Render them explicitly to cover all four cards.
     render(
       <>
         <CalculatorForm onInputsChange={vi.fn()} />
-        <ResultsPanel
+        <ComparisonChart comparison={fixtureComparison} />
+        <CostBreakdownTable comparison={fixtureComparison} />
+        <CostTrendChart
           comparison={fixtureComparison}
-          capacityTiB={FIXTURE_CAPACITY_TIB}
           termYears={FIXTURE_TERM_YEARS}
-          restorePercentage={20}
         />
       </>,
     );
@@ -43,7 +49,7 @@ describe("card borders", () => {
         '[class*="surface-gradient"]',
       ),
     );
-    expect(gradientHeaders.length).toBeGreaterThanOrEqual(2);
+    expect(gradientHeaders).toHaveLength(4);
 
     gradientHeaders.forEach((header) => {
       const card = header.parentElement;

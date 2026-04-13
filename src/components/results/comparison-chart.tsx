@@ -140,7 +140,7 @@ function numericValue(value: TooltipEntry["value"]): number {
   return typeof value === "number" ? value : 0;
 }
 
-function ChartTooltip({
+export function ChartTooltip({
   active,
   payload,
   label,
@@ -153,6 +153,9 @@ function ChartTooltip({
 
   const entries = payload.filter((e) => numericValue(e.value) > 0);
   if (!entries.length) return null;
+
+  const total = entries.reduce((sum, e) => sum + numericValue(e.value), 0);
+  const showPct = entries.length > 1;
 
   return (
     <div className="border-border/80 bg-card rounded-2xl border p-3 shadow-lg">
@@ -173,6 +176,11 @@ function ChartTooltip({
               style={{ color: entry.fill }}
             >
               {formatUSD(numericValue(entry.value))}
+              {showPct && (
+                <span className="text-muted-foreground ml-1.5 font-normal">
+                  ({Math.round((numericValue(entry.value) / total) * 100)}%)
+                </span>
+              )}
             </span>
           </div>
         ))}

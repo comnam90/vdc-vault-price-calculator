@@ -106,15 +106,19 @@ function buildChartData(comparison: ComparisonResult): ChartDatum[] {
 
 interface ChartLegendProps {
   data: ChartDatum[];
+  hasFoundationOverage: boolean;
 }
 
-function ChartLegend({ data }: ChartLegendProps) {
+function ChartLegend({ data, hasFoundationOverage }: ChartLegendProps) {
   const vaultItems: Array<{ name: string; fill: string }> = [];
 
   if (data.some((d) => d.vaultFoundationBase > 0)) {
     vaultItems.push({ name: "VDC Vault Foundation", fill: "var(--success)" });
   }
-  if (data.some((d) => d.vaultFoundationOverage > 0)) {
+  if (hasFoundationOverage) {
+    // var(--warning) is also used for Data Retrieval in DIY rows; the two
+    // series never coexist in the same stacked bar, so the shared token is
+    // unambiguous in the chart itself — legend labels distinguish them.
     vaultItems.push({ name: "Restore Overage", fill: "var(--warning)" });
   }
   if (data.some((d) => d.vaultAdvanced > 0)) {
@@ -253,8 +257,8 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
           Cost comparison
         </CardTitle>
         <CardDescription>
-          Vault totals render as single bars while DIY options reveal their full
-          cost stack.
+          Foundation splits into base cost and restore overage when applicable;
+          DIY options reveal their full cost breakdown.
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
@@ -362,7 +366,7 @@ export function ComparisonChart({ comparison }: ComparisonChartProps) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <ChartLegend data={data} />
+        <ChartLegend data={data} hasFoundationOverage={hasFoundationOverage} />
       </CardContent>
     </Card>
   );

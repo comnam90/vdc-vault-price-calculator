@@ -4,12 +4,12 @@ import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { MissingCloudPricingAlert } from "@/components/results/missing-cloud-pricing-alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const ResultsPanel = lazy(async () => {
   const m = await import("@/components/results/results-panel");
   return { default: m.ResultsPanel };
 });
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CLOUD_PRICING } from "@/data/cloud-pricing";
 import { useRegions } from "@/hooks/use-regions";
 import { useUrlState } from "@/hooks/use-url-state";

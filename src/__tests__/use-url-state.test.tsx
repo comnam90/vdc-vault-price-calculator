@@ -31,15 +31,15 @@ describe("useUrlState", () => {
     vi.useRealTimers();
   });
 
-  it("returns empty initialValues when no URL params present", () => {
+  it("returns empty urlDerivedInputs when no URL params present", () => {
     const { result } = renderHook(() => useUrlState());
-    expect(result.current.initialValues).toEqual({});
+    expect(result.current.urlDerivedInputs).toEqual({});
   });
 
   it("parses all three fields from URL on mount", () => {
     setLocationSearch("?region=aws-us-east-1&term=3&capacity=50");
     const { result } = renderHook(() => useUrlState());
-    expect(result.current.initialValues).toEqual({
+    expect(result.current.urlDerivedInputs).toEqual({
       regionId: "aws-us-east-1",
       termYears: 3,
       capacityTiB: 50,

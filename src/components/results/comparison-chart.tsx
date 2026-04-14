@@ -204,6 +204,10 @@ export function ChartTooltip({
   );
 }
 
+// Max characters per tick line — tuned so labels fit within a single bar column
+// at the chart's default rendered width (~960 px / 4–5 bars).
+const TICK_WRAP_AT_CHARS = 14;
+
 function WrappedXAxisTick({
   x = 0,
   y = 0,
@@ -218,7 +222,7 @@ function WrappedXAxisTick({
   let current = "";
   for (const word of words) {
     const candidate = current ? `${current} ${word}` : word;
-    if (candidate.length > 14 && current) {
+    if (candidate.length > TICK_WRAP_AT_CHARS && current) {
       lines.push(current);
       current = word;
     } else {

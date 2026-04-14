@@ -22,6 +22,8 @@ export function calculateStorageCost(
  * Write ops cost.
  * Number of ops = capacityTiB × TIB_TO_MB / OPERATION_SIZE_MB
  * Each batch of opsBatchSize ops costs opsCost dollars.
+ *
+ * @param termMonths - Uses months (not years) to match the monthly storage billing cycle.
  */
 export function calculateWriteOpsCost(
   capacityTiB: number,
@@ -36,6 +38,9 @@ export function calculateWriteOpsCost(
 /**
  * Read ops cost.
  * Assumes readFactor of stored data is read back per year (defaults to ANNUAL_READ_FACTOR).
+ *
+ * @param termYears - Uses years (not months) because the restore factor is an annual rate.
+ *   This is intentionally different from calculateWriteOpsCost which uses termMonths.
  */
 export function calculateReadOpsCost(
   capacityTiB: number,

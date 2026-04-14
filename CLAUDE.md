@@ -1,16 +1,14 @@
-# PROJECT KNOWLEDGE BASE
+# CLAUDE.md
 
-**Generated:** 2026-04-07
-**Commit:** bc8e926
-**Branch:** mvp-phases-1-6
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## OVERVIEW
 
 Client-side SPA for comparing Veeam Data Cloud Vault pricing against DIY cloud storage in VDC-supported regions. The app fetches `vdc_vault` region availability from the public VDC Services Map API, combines that with static Vault/cloud pricing data, and renders a calculator-driven comparison UI. React 19 + Vite 7.3 + TypeScript 5.9 + Tailwind 4.1 + shadcn/ui + Recharts + TanStack Table.
 
-## STATUS: MVP COMPLETE + PHASE 5 POLISH
+## STATUS
 
-Core flow is complete: region fetch -> calculator inputs -> comparison engine -> summary cards/chart/breakdown. Phase 5 polish is in place: reduced-motion-safe animation classes, improved calculator control labeling, and responsive 4-card layout at `lg`/1024px+. Current verification baseline: 101 tests across 25 test files, lint clean, production build succeeds, Cloudflare Pages workflows present.
+Core flow is complete: region fetch -> calculator inputs -> comparison engine -> summary cards/chart/breakdown. Lint clean, production build succeeds, Cloudflare Pages workflows present.
 
 ## STRUCTURE
 
@@ -57,7 +55,7 @@ Core flow is complete: region fetch -> calculator inputs -> comparison engine ->
     │   ├── layout/                  # Header/footer chrome
     │   ├── results/                 # Cards, chart, breakdown table, assumptions, alerts
     │   └── ui/                      # shadcn/radix primitives
-    └── __tests__/                   # 25 focused unit/component test files + setup
+    └── __tests__/                   # 36 focused unit/component test files + setup
 ```
 
 ## WHERE TO LOOK
@@ -138,8 +136,14 @@ npm run build         # tsc -b && vite build
 npm run lint          # eslint .
 npm run preview       # Preview production build
 npm run test          # Vitest watch mode
-npm run test:run      # Single test run
+npm run test:run      # Run all tests once
 npm run test:coverage # Coverage run
+
+# Run a single test file
+npx vitest run src/__tests__/comparison-engine.test.ts
+
+# Filter tests by name pattern
+npx vitest run -t "pattern"
 ```
 
 ## ENGINEERING STANDARDS (NON-NEGOTIABLE)

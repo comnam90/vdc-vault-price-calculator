@@ -194,6 +194,37 @@ describe("SummaryCards", () => {
     expect(screen.getByText("$14/TB/mo")).toHaveClass("font-mono");
   });
 
+  it("shows Lowest total badge on both cards when they share the minimum cost", () => {
+    // Set Foundation total equal to diyOption2 total so they tie at $4,500
+    render(
+      <SummaryCards
+        comparison={{
+          ...fixtureComparison,
+          vaultFoundation: {
+            total: 4500,
+            perTbMonth: 12.5,
+            pricingTbd: false,
+          },
+        }}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+      />,
+    );
+
+    const badges = screen.getAllByText("Lowest total");
+    expect(badges).toHaveLength(2);
+
+    const foundationCard = screen
+      .getByText("VDC Vault Foundation")
+      .closest('[data-slot="card"]');
+    const diyOption2Card = screen
+      .getByText("S3 Infrequent Access")
+      .closest('[data-slot="card"]');
+
+    expect(foundationCard).toHaveClass("bg-card-tint-success");
+    expect(diyOption2Card).toHaveClass("bg-card-tint-success");
+  });
+
   it("shows ZRS not available text and excludes it from cheapest when option1 unavailable", () => {
     render(
       <SummaryCards

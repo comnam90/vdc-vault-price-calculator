@@ -29,6 +29,12 @@ vi.mock("@/components/results/cost-breakdown-table", () => ({
   ),
 }));
 
+vi.mock("@/components/results/executive-summary", () => ({
+  ExecutiveSummary: () => (
+    <div data-testid="executive-summary">Executive summary</div>
+  ),
+}));
+
 describe("ResultsPanel", () => {
   it("returns null when no comparison is available", () => {
     const { container } = render(
@@ -200,5 +206,102 @@ describe("ResultsPanel", () => {
     );
 
     expect(screen.getByText(/50% annual restore/i)).toBeInTheDocument();
+  });
+
+  it("renders the view mode toggle with Architect and Executive options", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
+      />,
+    );
+
+    expect(screen.getByRole("tab", { name: "Architect" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Executive" })).toBeInTheDocument();
+  });
+
+  it("shows architect view by default with overview tabs visible", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
+      />,
+    );
+
+    expect(screen.getByTestId("summary-cards")).toBeInTheDocument();
+    expect(screen.getByTestId("comparison-chart")).toBeInTheDocument();
+    expect(screen.queryByTestId("executive-summary")).not.toBeInTheDocument();
+  });
+
+  it("switches to executive view when Executive tab is clicked", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
+      />,
+    );
+
+    const executiveTab = screen.getByRole("tab", { name: "Executive" });
+    fireEvent.mouseDown(executiveTab);
+    fireEvent.click(executiveTab);
+
+    expect(screen.getByTestId("executive-summary")).toBeInTheDocument();
+    expect(screen.queryByTestId("summary-cards")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("comparison-chart")).not.toBeInTheDocument();
+  });
+
+  it("switches back to architect view when Architect tab is clicked", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
+      />,
+    );
+
+    const executiveTab = screen.getByRole("tab", { name: "Executive" });
+    fireEvent.mouseDown(executiveTab);
+    fireEvent.click(executiveTab);
+
+    expect(screen.getByTestId("executive-summary")).toBeInTheDocument();
+
+    const architectTab = screen.getByRole("tab", { name: "Architect" });
+    fireEvent.mouseDown(architectTab);
+    fireEvent.click(architectTab);
+
+    expect(screen.getByTestId("summary-cards")).toBeInTheDocument();
+    expect(screen.queryByTestId("executive-summary")).not.toBeInTheDocument();
+  });
+
+  it("hides overview, breakdown, and trend tabs in executive mode", () => {
+    render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={3}
+        restorePercentage={20}
+      />,
+    );
+
+    const executiveTab = screen.getByRole("tab", { name: "Executive" });
+    fireEvent.mouseDown(executiveTab);
+    fireEvent.click(executiveTab);
+
+    expect(
+      screen.queryByRole("tab", { name: "Overview" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: "Breakdown" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: /over time/i }),
+    ).not.toBeInTheDocument();
   });
 });

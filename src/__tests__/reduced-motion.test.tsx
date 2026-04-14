@@ -7,6 +7,7 @@ import {
   fixtureComparison,
 } from "@/__tests__/fixtures/comparison-result";
 import { RegionSelector } from "@/components/calculator/region-selector";
+import { ExecutiveSummary } from "@/components/results/executive-summary";
 import { ResultsPanel } from "@/components/results/results-panel";
 import type { Region } from "@/types/region";
 
@@ -40,6 +41,7 @@ describe("reduced motion", () => {
           termYears={FIXTURE_TERM_YEARS}
           restorePercentage={20}
         />
+        <ExecutiveSummary comparison={fixtureComparison} />
         <RegionSelector
           regions={[]}
           selectedRegion={null}

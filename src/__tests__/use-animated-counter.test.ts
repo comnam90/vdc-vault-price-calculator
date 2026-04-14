@@ -54,6 +54,7 @@ describe("useAnimatedCounter", () => {
 
   it("updates when target changes", async () => {
     mockReducedMotion(true);
+    vi.useFakeTimers();
 
     const { result, rerender } = renderHook(
       ({ target }) => useAnimatedCounter(target),
@@ -64,7 +65,15 @@ describe("useAnimatedCounter", () => {
 
     rerender({ target: 200 });
 
+    // Reduced-motion path uses a single RAF, so advance one frame
+    await act(async () => {
+      vi.advanceTimersByTime(20);
+      await Promise.resolve();
+    });
+
     expect(result.current).toBe(200);
+
+    vi.useRealTimers();
   });
 
   it("starts from 0 on initial render when motion is enabled", () => {

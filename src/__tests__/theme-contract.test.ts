@@ -6,24 +6,15 @@ import { describe, expect, it } from "vitest";
 
 const indexCss = readFileSync(resolve(process.cwd(), "src/index.css"), "utf8");
 
-function getDarkSchemeRootBlock(source: string): string {
-  const mediaMatch = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/.exec(
-    source,
-  );
-  const mediaStart = mediaMatch?.index ?? -1;
+function getDarkClassBlock(source: string): string {
+  const classMatch = /^\.dark\s*\{/m.exec(source);
+  const classStart = classMatch?.index ?? -1;
 
-  if (mediaStart === -1) {
-    throw new Error("Missing prefers-color-scheme dark media block");
+  if (classStart === -1) {
+    throw new Error("Missing .dark class block");
   }
 
-  const rootMatch = /:root\s*\{/.exec(source.slice(mediaStart));
-  const rootStart = rootMatch === null ? -1 : mediaStart + rootMatch.index;
-
-  if (rootStart === -1) {
-    throw new Error("Missing :root block inside dark media query");
-  }
-
-  const blockStart = source.indexOf("{", rootStart);
+  const blockStart = source.indexOf("{", classStart);
   let depth = 0;
 
   for (let index = blockStart; index < source.length; index += 1) {
@@ -42,18 +33,18 @@ function getDarkSchemeRootBlock(source: string): string {
     }
   }
 
-  throw new Error("Unclosed dark-mode :root block");
+  throw new Error("Unclosed .dark class block");
 }
 
 describe("dark theme contract", () => {
-  it("defines readable semantic foreground tokens for prefers-color-scheme dark", () => {
-    const darkRootBlock = getDarkSchemeRootBlock(indexCss);
+  it("defines readable semantic foreground tokens in the .dark class block", () => {
+    const darkClassBlock = getDarkClassBlock(indexCss);
 
-    expect(darkRootBlock).toContain("--background:");
-    expect(darkRootBlock).toContain("--foreground:");
-    expect(darkRootBlock).toContain("--card:");
-    expect(darkRootBlock).toContain("--card-foreground:");
-    expect(darkRootBlock).toContain("--popover:");
-    expect(darkRootBlock).toContain("--popover-foreground:");
+    expect(darkClassBlock).toContain("--background:");
+    expect(darkClassBlock).toContain("--foreground:");
+    expect(darkClassBlock).toContain("--card:");
+    expect(darkClassBlock).toContain("--card-foreground:");
+    expect(darkClassBlock).toContain("--popover:");
+    expect(darkClassBlock).toContain("--popover-foreground:");
   });
 });

@@ -3,6 +3,7 @@ import type { CalculatorInputs } from "@/types/calculator";
 const TERM_MIN = 1;
 const TERM_MAX = 5;
 const CAPACITY_MIN = 1;
+const CAPACITY_MAX = 100_000;
 const RESTORE_MIN = 0;
 const RESTORE_MAX = 100;
 const DEFAULT_RESTORE_PERCENTAGE = 20;
@@ -27,7 +28,11 @@ export function parseUrlParams(search: string): Partial<CalculatorInputs> {
   const capacityRaw = params.get("capacity");
   if (capacityRaw !== null) {
     const capacity = parseInt(capacityRaw, 10);
-    if (!isNaN(capacity) && capacity >= CAPACITY_MIN) {
+    if (
+      !isNaN(capacity) &&
+      capacity >= CAPACITY_MIN &&
+      capacity <= CAPACITY_MAX
+    ) {
       result.capacityTiB = capacity;
     }
   }

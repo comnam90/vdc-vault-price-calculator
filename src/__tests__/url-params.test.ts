@@ -77,8 +77,26 @@ describe("parseUrlParams", () => {
     expect(parseUrlParams("?capacity=1")).toEqual({ capacityTiB: 1 });
   });
 
-  it("accepts large capacity values", () => {
-    expect(parseUrlParams("?capacity=10000")).toEqual({ capacityTiB: 10000 });
+  it("accepts capacity=100000 (maximum)", () => {
+    expect(parseUrlParams("?capacity=100000")).toEqual({
+      capacityTiB: 100_000,
+    });
+  });
+
+  it("omits capacity=100001 (above maximum)", () => {
+    const result = parseUrlParams("?capacity=100001");
+    expect(result).not.toHaveProperty("capacityTiB");
+  });
+
+  it("round-trips capacity=100000 through serialiseUrlParams", () => {
+    const inputs: CalculatorInputs = {
+      regionId: "aws-us-east-1",
+      termYears: 1,
+      capacityTiB: 100_000,
+      restorePercentage: 20,
+    };
+    const result = parseUrlParams("?" + serialiseUrlParams(inputs));
+    expect(result.capacityTiB).toBe(100_000);
   });
 
   it("ignores unknown params", () => {

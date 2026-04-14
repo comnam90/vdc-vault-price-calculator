@@ -33,6 +33,14 @@ export function useUrlState(): UseUrlStateResult {
 
   const pushTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (pushTimeoutRef.current !== null) {
+        clearTimeout(pushTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const syncToUrl = useCallback((inputs: CalculatorInputs | null) => {
     if (pushTimeoutRef.current !== null) {
       clearTimeout(pushTimeoutRef.current);

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.3.0...v1.3.1) (2026-04-14)
+
+
+### Bug Fixes
+
+* **theme:** remove media query dark tokens that override explicit light mode ([#66](https://github.com/comnam90/vdc-vault-tco-calculator/issues/66)) ([881310f](https://github.com/comnam90/vdc-vault-tco-calculator/commit/881310f7864fac29da9cef30b72df6def0aeab73)), closes [#65](https://github.com/comnam90/vdc-vault-tco-calculator/issues/65)
+
 ## [1.3.0](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.2.3...v1.3.0) (2026-04-13)
 
 

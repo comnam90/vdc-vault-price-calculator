@@ -4,18 +4,12 @@ import { parseUrlParams, serialiseUrlParams } from "@/lib/url-params";
 import type { CalculatorInputs } from "@/types/calculator";
 
 interface UseUrlStateResult {
-  initialValues: Partial<CalculatorInputs>;
   urlDerivedInputs: Partial<CalculatorInputs>;
   urlKey: string;
   syncToUrl: (inputs: CalculatorInputs | null) => void;
 }
 
 export function useUrlState(): UseUrlStateResult {
-  const initialValues = useMemo(
-    () => parseUrlParams(window.location.search),
-    [],
-  );
-
   const [currentSearch, setCurrentSearch] = useState(window.location.search);
 
   const urlDerivedInputs = useMemo(
@@ -53,5 +47,5 @@ export function useUrlState(): UseUrlStateResult {
     }, 300);
   }, []);
 
-  return { initialValues, urlDerivedInputs, urlKey: currentSearch, syncToUrl };
+  return { urlDerivedInputs, urlKey: currentSearch, syncToUrl };
 }

@@ -31,7 +31,6 @@ const regions: Region[] = [
 ];
 
 const defaultUrlState = {
-  initialValues: {},
   urlDerivedInputs: {},
   urlKey: "",
   syncToUrl: vi.fn(),
@@ -136,11 +135,6 @@ describe("App", () => {
 
   it("pre-populates the form and auto-shows results when URL has all three params", async () => {
     vi.mocked(useUrlState).mockReturnValue({
-      initialValues: {
-        regionId: "aws-us-east-1",
-        termYears: 3,
-        capacityTiB: 8,
-      },
       urlDerivedInputs: {
         regionId: "aws-us-east-1",
         termYears: 3,

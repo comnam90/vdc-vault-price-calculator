@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.3.1...v1.3.2) (2026-04-14)
+
+
+### Bug Fixes
+
+* address code review corrections (timeout cleanup, capacity bound, tie badge test) ([#68](https://github.com/comnam90/vdc-vault-tco-calculator/issues/68)) ([c35afdd](https://github.com/comnam90/vdc-vault-tco-calculator/commit/c35afddd33908cd688eb604fcd73110b978cb72d))
+
 ## [1.3.1](https://github.com/comnam90/vdc-vault-tco-calculator/compare/v1.3.0...v1.3.1) (2026-04-14)
 
 

@@ -87,4 +87,43 @@ describe("useAnimatedCounter", () => {
 
     vi.useRealTimers();
   });
+
+  it("continues from intermediate value when target changes mid-animation", async () => {
+    mockReducedMotion(false);
+    vi.useFakeTimers();
+
+    const { result, rerender } = renderHook(
+      ({ target }) => useAnimatedCounter(target, 600),
+      { initialProps: { target: 5000 } },
+    );
+
+    // Advance to ~25% of animation
+    await act(async () => {
+      for (let i = 0; i < 8; i++) {
+        vi.advanceTimersByTime(20);
+        await Promise.resolve();
+      }
+    });
+
+    const midValue = result.current;
+    expect(midValue).toBeGreaterThan(0);
+    expect(midValue).toBeLessThan(5000);
+
+    // Change target while animation is running
+    rerender({ target: 10000 });
+
+    // Let cleanup + one new tick run
+    await act(async () => {
+      vi.advanceTimersByTime(20);
+      await Promise.resolve();
+    });
+
+    // New animation must continue from midValue, not restart from old target (5000).
+    // With the bug, cleanup sets fromRef to 5000, so the first tick yields ≥ 5000.
+    // With the fix, fromRef holds midValue, so the first tick stays < 5000.
+    expect(result.current).toBeGreaterThanOrEqual(midValue);
+    expect(result.current).toBeLessThan(5000);
+
+    vi.useRealTimers();
+  });
 });

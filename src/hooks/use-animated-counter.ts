@@ -55,7 +55,9 @@ export function useAnimatedCounter(
       const progress = Math.min(elapsed / duration, 1);
       const current = from + delta * easeOut(progress);
 
-      setValue(Math.round(current));
+      const rounded = Math.round(current);
+      setValue(rounded);
+      fromRef.current = rounded;
 
       if (progress < 1) {
         rafId = requestAnimationFrame(tick);
@@ -69,7 +71,6 @@ export function useAnimatedCounter(
 
     return () => {
       cancelAnimationFrame(rafId);
-      fromRef.current = target;
     };
   }, [target, duration]);
 

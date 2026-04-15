@@ -304,4 +304,31 @@ describe("ResultsPanel", () => {
       screen.queryByRole("tab", { name: /over time/i }),
     ).not.toBeInTheDocument();
   });
+
+  it("view-mode TabsTriggers have aria-controls pointing to in-DOM tabpanels", () => {
+    const { container } = render(
+      <ResultsPanel
+        comparison={fixtureComparison}
+        capacityTiB={FIXTURE_CAPACITY_TIB}
+        termYears={FIXTURE_TERM_YEARS}
+        restorePercentage={20}
+      />,
+    );
+
+    const architectTab = screen.getByRole("tab", { name: "Architect" });
+    const executiveTab = screen.getByRole("tab", { name: "Executive" });
+
+    const architectPanelId = architectTab.getAttribute("aria-controls");
+    const executivePanelId = executiveTab.getAttribute("aria-controls");
+
+    expect(architectPanelId).toBeTruthy();
+    expect(executivePanelId).toBeTruthy();
+
+    expect(
+      container.querySelector(`[id="${architectPanelId}"][role="tabpanel"]`),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(`[id="${executivePanelId}"][role="tabpanel"]`),
+    ).toBeInTheDocument();
+  });
 });

@@ -67,7 +67,7 @@ export function ExecutiveSummary({ comparison }: ExecutiveSummaryProps) {
               </p>
             </>
           ) : (
-            <p className="font-mono text-3xl font-bold tracking-[-0.05em] sm:text-4xl">
+            <p className="dark:text-foreground font-mono text-3xl font-bold tracking-[-0.05em] text-[color:var(--dark-mineral)] sm:text-4xl">
               Pricing TBD
             </p>
           )}

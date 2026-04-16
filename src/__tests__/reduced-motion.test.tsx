@@ -7,6 +7,7 @@ import {
   fixtureComparison,
 } from "@/__tests__/fixtures/comparison-result";
 import { RegionSelector } from "@/components/calculator/region-selector";
+import { ExecutiveSummary } from "@/components/results/executive-summary";
 import { ResultsPanel } from "@/components/results/results-panel";
 import type { Region } from "@/types/region";
 
@@ -39,6 +40,12 @@ describe("reduced motion", () => {
           capacityTiB={FIXTURE_CAPACITY_TIB}
           termYears={FIXTURE_TERM_YEARS}
           restorePercentage={20}
+        />
+        <ExecutiveSummary
+          comparison={fixtureComparison}
+          capacityTiB={FIXTURE_CAPACITY_TIB}
+          termYears={FIXTURE_TERM_YEARS}
+          regionLabel="AWS · US East (N. Virginia)"
         />
         <RegionSelector
           regions={[]}

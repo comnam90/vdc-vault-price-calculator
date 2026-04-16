@@ -8,7 +8,7 @@ Client-side SPA for comparing Veeam Data Cloud Vault pricing against DIY cloud s
 
 ## STATUS
 
-Core flow is complete: region fetch -> calculator inputs -> comparison engine -> summary cards/chart/breakdown. Lint clean, production build succeeds, Cloudflare Pages workflows present.
+Core flow is complete: region fetch -> calculator inputs -> comparison engine -> summary cards/chart/breakdown. Additional shipped capabilities: shareable URL state, light/dark theme toggle, executive/architect results view toggle, cost-trend chart, restore-percentage slider, egress toggle, and animated counters. Lint clean, production build succeeds, Cloudflare Pages workflows present.
 
 ## STRUCTURE
 
@@ -37,12 +37,17 @@ Core flow is complete: region fetch -> calculator inputs -> comparison engine ->
     │   ├── cloud-pricing.ts         # Static pricing for 60+ VDC regions
     │   └── vault-pricing.ts         # Vault Foundation/Advanced Core + Non-Core placeholders
     ├── hooks/
-    │   └── use-regions.ts           # Fetch/caching hook for region availability
+    │   ├── use-regions.ts           # Fetch/caching hook for region availability
+    │   ├── use-animated-counter.ts  # Motion-safe animated numeric counters
+    │   ├── use-theme.ts             # Light/dark theme state + system preference
+    │   └── use-url-state.ts         # Bidirectional sync of calculator inputs <-> URL
     ├── lib/
     │   ├── api-client.ts            # Public API fetch + cache/inflight dedupe
     │   ├── comparison-engine.ts     # Orchestrates Vault + DIY totals
     │   ├── vault-calculator.ts      # Vault term-cost math
     │   ├── diy-calculator.ts        # DIY storage/op/egress math
+    │   ├── executive-summary.ts     # Executive-view derived metrics
+    │   ├── url-params.ts            # Encode/decode calculator inputs to URL params
     │   ├── format-utils.ts          # USD, compact-number, presentation helpers
     │   ├── constants.ts             # Shared calculator/API constants
     │   └── utils.ts                 # Shared `cn()` helper
@@ -53,27 +58,30 @@ Core flow is complete: region fetch -> calculator inputs -> comparison engine ->
     ├── components/
     │   ├── calculator/              # Capacity, term, region inputs, form composition
     │   ├── layout/                  # Header/footer chrome
-    │   ├── results/                 # Cards, chart, breakdown table, assumptions, alerts
+    │   ├── results/                 # Summary cards, comparison + trend charts, breakdown, executive summary, assumptions, alerts
     │   └── ui/                      # shadcn/radix primitives
-    └── __tests__/                   # 36 focused unit/component test files + setup
+    └── __tests__/                   # ~40 focused unit/component test files + setup
 ```
 
 ## WHERE TO LOOK
 
-| Need                              | Location                                                                                   | Notes                                                                    |
-| --------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Product intent                    | `README.md`                                                                                | Scope, disclaimer, supported comparison modes                            |
-| Authoritative implementation spec | `docs/plans/mvp-implementation.md`                                                         | Phase-by-phase requirements used to build the MVP                        |
-| App orchestration                 | `src/App.tsx`                                                                              | Owns complete calculator inputs, region load state, result gating        |
-| Region API integration            | `src/hooks/use-regions.ts`, `src/lib/api-client.ts`                                        | Public fetch, local cache, inflight request dedupe                       |
-| Static pricing sources            | `src/data/cloud-pricing.ts`, `src/data/vault-pricing.ts`                                   | Cloud pricing by VDC region ID; Vault RRP values + Non-Core placeholders |
-| Core comparison logic             | `src/lib/comparison-engine.ts`, `src/lib/vault-calculator.ts`, `src/lib/diy-calculator.ts` | Pure, test-driven cost math                                              |
-| Calculator UI                     | `src/components/calculator/`                                                               | Region selector, term selector, capacity input, parent form              |
-| Results UI                        | `src/components/results/`                                                                  | Summary cards, chart, breakdown, assumptions, non-core alert             |
-| Design tokens + motion            | `src/index.css`                                                                            | Tailwind v4 token mapping, color system, motion variables                |
-| Shared types                      | `src/types/`                                                                               | Use these before introducing new shapes                                  |
-| Test patterns                     | `src/__tests__/`                                                                           | Role-first component tests, shared setup, no snapshots                   |
-| CI/CD                             | `.github/workflows/`                                                                       | CI, Release Please deploy path, manual publish workflow                  |
+| Need                              | Location                                                                                   | Notes                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Product intent                    | `README.md`                                                                                | Scope, disclaimer, supported comparison modes                                               |
+| Authoritative implementation spec | `docs/plans/mvp-implementation.md`                                                         | Phase-by-phase requirements used to build the MVP                                           |
+| App orchestration                 | `src/App.tsx`                                                                              | Owns complete calculator inputs, region load state, result gating                           |
+| Region API integration            | `src/hooks/use-regions.ts`, `src/lib/api-client.ts`                                        | Public fetch, local cache, inflight request dedupe                                          |
+| Static pricing sources            | `src/data/cloud-pricing.ts`, `src/data/vault-pricing.ts`                                   | Cloud pricing by VDC region ID; Vault RRP values + Non-Core placeholders                    |
+| Core comparison logic             | `src/lib/comparison-engine.ts`, `src/lib/vault-calculator.ts`, `src/lib/diy-calculator.ts` | Pure, test-driven cost math                                                                 |
+| Calculator UI                     | `src/components/calculator/`                                                               | Region selector, term selector, capacity input, parent form                                 |
+| Results UI                        | `src/components/results/`                                                                  | Summary cards, comparison + trend charts, breakdown, executive summary, assumptions, alerts |
+| Executive-view derivation         | `src/lib/executive-summary.ts`, `src/components/results/executive-summary.tsx`             | Pure helpers for executive-vs-architect view toggle                                         |
+| URL state sharing                 | `src/hooks/use-url-state.ts`, `src/lib/url-params.ts`                                      | Deep-linkable calculator state; source of truth for shared links                            |
+| Theme handling                    | `src/hooks/use-theme.ts`                                                                   | Light/dark/system theme state + persistence                                                 |
+| Design tokens + motion            | `src/index.css`                                                                            | Tailwind v4 token mapping, color system, motion variables                                   |
+| Shared types                      | `src/types/`                                                                               | Use these before introducing new shapes                                                     |
+| Test patterns                     | `src/__tests__/`                                                                           | Role-first component tests, shared setup, no snapshots                                      |
+| CI/CD                             | `.github/workflows/`                                                                       | CI, Release Please deploy path, manual publish workflow                                     |
 
 ## DATA SOURCES
 
@@ -90,6 +98,7 @@ Pricing is approximate and public-list-based. No discounts, reserved pricing, ne
 - **Motion:** every animation class must be `motion-safe:` gated; reduced-motion coverage exists in `src/__tests__/reduced-motion.test.tsx`
 - **Accessibility:** prefer real labeling semantics (`Label` with `htmlFor`, or `fieldset`/`legend` for grouped controls); role-first queries in tests
 - **State management:** `App.tsx` owns completed calculator input state; derived comparison data comes from `useMemo`, not duplicated mutable state
+- **URL state:** shareable URL params (via `use-url-state.ts` + `url-params.ts`) are the source of truth for deep-linked calculator state; keep encode/decode pure and round-trip safe
 - **Data flow:** keep pricing and calculator logic pure in `src/lib/`; UI components should format and present results, not recalculate core totals
 - **Components:** one exported component per file outside shadcn-generated UI primitives
 - **Testing:** query priority is `getByRole`/`findByRole` first; add focused tests for calculator logic and interaction regressions; no snapshot tests

@@ -19,6 +19,7 @@ interface ResultsPanelProps {
   termYears: number;
   excludeEgress?: boolean;
   restorePercentage: number;
+  regionLabel?: string;
 }
 
 export function ResultsPanel({
@@ -27,6 +28,7 @@ export function ResultsPanel({
   termYears,
   excludeEgress,
   restorePercentage,
+  regionLabel = "",
 }: ResultsPanelProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const [viewMode, setViewMode] = useState<ViewMode>("architect");
@@ -136,7 +138,12 @@ export function ResultsPanel({
         </TabsContent>
 
         <TabsContent value="executive">
-          <ExecutiveSummary comparison={comparison} />
+          <ExecutiveSummary
+            comparison={comparison}
+            capacityTiB={capacityTiB}
+            termYears={termYears}
+            regionLabel={regionLabel}
+          />
         </TabsContent>
       </Tabs>
     </section>

@@ -98,6 +98,11 @@ function App() {
                     termYears={inputs.termYears}
                     excludeEgress={inputs.excludeEgress === true}
                     restorePercentage={inputs.restorePercentage}
+                    regionLabel={
+                      selectedRegion
+                        ? `${selectedRegion.provider} · ${selectedRegion.name}`
+                        : ""
+                    }
                   />
                 </Suspense>
               ) : null}

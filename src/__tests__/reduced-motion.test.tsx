@@ -41,7 +41,12 @@ describe("reduced motion", () => {
           termYears={FIXTURE_TERM_YEARS}
           restorePercentage={20}
         />
-        <ExecutiveSummary comparison={fixtureComparison} />
+        <ExecutiveSummary
+          comparison={fixtureComparison}
+          capacityTiB={FIXTURE_CAPACITY_TIB}
+          termYears={FIXTURE_TERM_YEARS}
+          regionLabel="AWS · US East (N. Virginia)"
+        />
         <RegionSelector
           regions={[]}
           selectedRegion={null}

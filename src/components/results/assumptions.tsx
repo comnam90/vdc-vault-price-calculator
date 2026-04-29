@@ -29,6 +29,9 @@ export function Assumptions({ restorePercentage }: AssumptionsProps) {
         <ul className="text-muted-foreground grid gap-3 pt-5 text-sm leading-6">
           <li>
             1 MB operation size is applied to every write and read transaction.
+            Write operations assume the full dataset is re-written once per
+            month (equivalent to a monthly full backup); actual costs will be
+            lower for incremental-only workloads.
           </li>
           <li>
             {restorePercentage}% annual restore is assumed for data read back
